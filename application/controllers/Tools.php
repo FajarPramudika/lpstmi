@@ -162,7 +162,6 @@ class Tools extends CI_Controller {
 			'body_attrs'             => $parts['body_attrs'],
 			'head'                   => $this->variant('head', $slug, $head),
 			'foot'                   => $this->variant('foot', $slug, $foot),
-			'menu_active'            => $active,
 			'img_hints'              => $hints,
 			'footer_logo_post_image' => $params['footer_logo_post_image'],
 		);
@@ -334,10 +333,10 @@ class Tools extends CI_Controller {
 
 		foreach (array('drawer', 'header', 'footer') as $name)
 		{
-			$parts[$name] = $clone->neutralize_menu($parts[$name], $active);
+			$parts[$name] = $clone->neutralize_main_menu($clone->neutralize_menu($parts[$name], $active));
 			$parts[$name] = $clone->neutralize_img_hints($parts[$name], $name, $hints);
 		}
-		$parts['footer'] = $clone->neutralize_footer($parts['footer'], $params);
+		$parts['footer'] = $clone->neutralize_footer($clone->neutralize_footer_links($parts['footer']), $params);
 
 		return array($parts, $active, $hints, $params);
 	}

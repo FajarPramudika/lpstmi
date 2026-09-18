@@ -14,7 +14,8 @@ class MY_Controller extends CI_Controller {
 	 *   title       : isi <title> (sudah dalam bentuk HTML)
 	 *   body_attrs  : atribut tag <body> apa adanya
 	 *   head / foot : nama varian aset di views/layouts/head/ dan views/layouts/foot/
-	 *   menu_active : kelas menu aktif per ID menu-item (lihat wp_menu_active())
+	 *   menu_context: halaman yang sedang dibuka, untuk menandai menu aktif (lihat Menu_model::active_for())
+	 *                 array('page' => slug) | array('category' => id) | array('post_categories' => [id])
 	 *   img_hints   : fetchpriority/loading per <img> di header/drawer/footer (lihat wp_img_hint())
 	 */
 	protected function render(array $page, array $data = array())
@@ -23,11 +24,13 @@ class MY_Controller extends CI_Controller {
 
 		$this->load->model('footer_link_model');
 		$this->load->model('contact_model');
+		$this->load->model('menu_model');
 
 		$data = array_merge(array(
 			'canonical'              => current_url(),
 			'gt_orig_url'            => ($uri === '') ? '/' : '/'.$uri.'/',
-			'menu_active'            => array(),
+			'menu_context'           => array(),
+			'main_menu'              => $this->menu_model->tree(),
 			'img_hints'              => array(),
 			'footer_logo_post_image' => FALSE,
 			'footer_links'           => $this->footer_link_model->all(),
@@ -35,8 +38,9 @@ class MY_Controller extends CI_Controller {
 		), $page, $data);
 
 		$html = $this->load->view('layouts/main', $data, TRUE);
+		$active = $this->menu_model->active_for($data['menu_context'] + array('url' => current_url()));
 
-		$this->output->set_output(wp_menu_active($html, $data['menu_active']));
+		$this->output->set_output(wp_menu_active($html, $active));
 	}
 }
 

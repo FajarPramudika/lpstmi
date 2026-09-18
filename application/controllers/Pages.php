@@ -57,6 +57,8 @@ class Pages extends MY_Controller {
 			$data['home_options'] = $this->home_option_model->get_all();
 		}
 
+		$data['menu_context'] = array('page' => ($slug === 'home') ? '' : $slug);
+
 		$this->render($pages[$slug], $data);
 	}
 }

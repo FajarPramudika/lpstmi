@@ -8,6 +8,7 @@ $nav = array(
 	array('terms:category', 'admin/terms/index/category', 'Kategori', TRUE),
 	array('terms:tag', 'admin/terms/index/tag', 'Tag', TRUE),
 	array('home_settings', 'admin/home_settings', 'Pengaturan Beranda', TRUE),
+	array('menu', 'admin/menu', 'Menu', $user['role'] === 'admin'),
 	array('footer_links', 'admin/footer_links', 'Link Footer', TRUE),
 	array('users', 'admin/users', 'Pengguna', $user['role'] === 'admin'),
 );

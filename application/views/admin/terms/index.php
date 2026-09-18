@@ -27,5 +27,5 @@
 	</div>
 </div>
 <?php if ($type === 'category'): ?>
-<p class="hint">Menu utama situs (header) tidak berubah otomatis saat kategori ditambah. Menu kategori yang ditandai aktif diatur di <code>application/config/site.php</code>.</p>
+<p class="hint">Kategori baru tidak otomatis masuk menu utama situs. Tambahkan lewat menu <a href="<?= site_url('admin/menu/create') ?>">Menu</a> (khusus admin).</p>
 <?php endif; ?>

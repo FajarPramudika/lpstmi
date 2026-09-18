@@ -46,16 +46,6 @@ class Posts extends MY_Controller {
 			}
 		}
 
-		$menu_active = array();
-		foreach ($categories as $c)
-		{
-			$item = $this->menu_item_for($c['slug']);
-			if ($item)
-			{
-				$menu_active[$item] = 'current-post-ancestor current-menu-parent current-post-parent';
-			}
-		}
-
 		$this->render(array(
 			'view'                   => 'posts/single',
 			'title'                  => wp_document_title(array($post['title'], $this->config->item('site_title'))),
@@ -64,7 +54,7 @@ class Posts extends MY_Controller {
 				.' data-link="type-2" data-prefix="single_blog_post" data-header="type-1:sticky" data-footer="type-1" itemscope="itemscope" itemtype="https://schema.org/Blog"',
 			'head'                   => $post['layout_head'] ? $post['layout_head'] : 'post',
 			'foot'                   => $post['layout_foot'] ? $post['layout_foot'] : (preg_match('/class="pdfemb-viewer"|class=\x27w3eden\x27/', $content) ? 'post-pdf' : 'post'),
-			'menu_active'            => $menu_active,
+			'menu_context'           => array('post_categories' => array_column($categories, 'id')),
 			'img_hints'              => $this->single_img_hints($content, $elementor),
 			'footer_logo_post_image' => TRUE,
 		), array(
@@ -91,20 +81,12 @@ class Posts extends MY_Controller {
 			show_404();
 		}
 
-		$menu_active = array();
-		$item = $this->menu_item_for($slug);
-		if ($item)
-		{
-			$menu_active[$item] = 'current-menu-item';
-			$menu_active[$this->config->item('menu_category_parent')] = 'current-menu-ancestor current-menu-parent';
-		}
-
 		$this->archive('category', $term['name'], 'category/'.$slug, array('term_id' => $term['id']), $page, array(
 			'classes'     => 'category category-'.$slug.' category-'.$term['id'],
 			'prefix'      => 'categories',
 			'label'       => 'Category',
 			'feed_title'  => html_escape($term['name']).' Category Feed',
-			'menu_active' => $menu_active,
+			'menu_context' => array('category' => $term['id']),
 		));
 	}
 
@@ -187,7 +169,7 @@ class Posts extends MY_Controller {
 			'body_attrs'             => ' class="'.$body.'" data-link="type-2" data-prefix="'.$opt['prefix'].'" data-header="type-1:sticky" data-footer="type-1"',
 			'head'                   => 'archive',
 			'foot'                   => 'archive',
-			'menu_active'            => isset($opt['menu_active']) ? $opt['menu_active'] : array(),
+			'menu_context'           => isset($opt['menu_context']) ? $opt['menu_context'] : array(),
 			'img_hints'              => array(
 				'header:0' => 'fetchpriority="high" ',
 				'header:2' => 'fetchpriority="high" ',
@@ -256,12 +238,5 @@ class Posts extends MY_Controller {
 		$hints['footer:0'] = $next(FALSE);
 
 		return array_filter($hints);
-	}
-
-	protected function menu_item_for($category_slug)
-	{
-		$items = $this->config->item('menu_category_items');
-
-		return isset($items[$category_slug]) ? $items[$category_slug] : NULL;
 	}
 }

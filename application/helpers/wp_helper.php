@@ -457,3 +457,84 @@ if ( ! function_exists('wp_local_url'))
 		return $url;
 	}
 }
+
+if ( ! function_exists('wp_nav_menu'))
+{
+	/**
+	 * Menu utama seperti Walker_Nav_Menu WordPress + tema Blocksy.
+	 *
+	 * $tree   : Menu_model::tree()
+	 * $mobile : FALSE = header desktop (ul#menu-menu-utama), TRUE = menu mobile di drawer (ul#menu-menu-utama-1)
+	 *
+	 * Kelas menu aktif disisipkan belakangan oleh wp_menu_active().
+	 */
+	function wp_nav_menu(array $tree, $mobile)
+	{
+		$open = $mobile ? '<ul id="menu-menu-utama-1" class="">' : '<ul id="menu-menu-utama" class="menu">';
+
+		return $open.wp_nav_menu_items($tree, 0, $mobile).'</ul>';
+	}
+}
+
+if ( ! function_exists('wp_nav_menu_items'))
+{
+	function wp_nav_menu_items(array $items, $depth, $mobile)
+	{
+		static $types = array(
+			'page'     => 'menu-item-type-post_type menu-item-object-page',
+			'category' => 'menu-item-type-taxonomy menu-item-object-category',
+			'custom'   => 'menu-item-type-custom menu-item-object-custom',
+		);
+		$icon_desktop = '<svg class="ct-icon" width="8" height="8" viewBox="0 0 15 15" aria-hidden="true"><path d="M2.1,3.2l5.4,5.4l5.4-5.4L15,4.3l-7.5,7.5L0,4.3L2.1,3.2z"/></svg>';
+		$icon_mobile = '<svg class="ct-icon toggle-icon-3" width="12" height="12" viewBox="0 0 15 15" aria-hidden="true"><path d="M2.6,5.8L2.6,5.8l4.3,5C7,11,7.3,11.1,7.5,11.1S8,11,8.1,10.8l4.2-4.9l0.1-0.1c0.1-0.1,0.1-0.2,0.1-0.3c0-0.3-0.2-0.5-0.5-0.5l0,0H3l0,0c-0.3,0-0.5,0.2-0.5,0.5C2.5,5.7,2.5,5.8,2.6,5.8z"/></svg>';
+		$toggle = ' aria-label="Expand dropdown menu" aria-haspopup="true" aria-expanded="false"';
+
+		$indent = str_repeat("\t", $depth);
+		$html = '';
+		foreach ($items as $item)
+		{
+			$has_children = ! empty($item['children']);
+			$href = Menu_model::href($item);
+
+			$classes = 'menu-item '.$types[$item['type']];
+			if (($item['type'] === 'page' && $item['slug'] === '') OR ($item['type'] === 'custom' && $href === site_url()))
+			{
+				$classes .= ' menu-item-home';
+			}
+			if ($has_children)
+			{
+				$classes .= ' menu-item-has-children';
+			}
+			$classes .= ' menu-item-'.$item['id'];
+			if ($has_children && ! $mobile)
+			{
+				$classes .= ($depth === 0) ? ' animated-submenu-block' : ' animated-submenu-inline';
+			}
+
+			$label = wp_texturize(str_replace(array('<', '>'), array('&lt;', '&gt;'), $item['title']));
+			$link = '<a'.($href !== NULL ? ' href="'.html_escape($href).'"' : '').' class="ct-menu-link">'.$label;
+
+			$html .= $indent.'<li'.($mobile ? '' : ' id="menu-item-'.$item['id'].'"').' class="'.$classes.'">';
+			if ( ! $has_children)
+			{
+				$html .= $link.'</a>';
+			}
+			elseif ($mobile)
+			{
+				$html .= '<span class="ct-sub-menu-parent">'.$link.'</a><button class="ct-toggle-dropdown-mobile"'.$toggle.'>'.$icon_mobile.'</button></span>';
+			}
+			else
+			{
+				$html .= $link.'<span class="ct-toggle-dropdown-desktop">'.$icon_desktop.'</span></a><button class="ct-toggle-dropdown-desktop-ghost"'.$toggle.'></button>';
+			}
+
+			if ($has_children)
+			{
+				$html .= "\n".$indent.'<ul class="sub-menu">'."\n".wp_nav_menu_items($item['children'], $depth + 1, $mobile).$indent."</ul>\n";
+			}
+			$html .= "</li>\n";
+		}
+
+		return $html;
+	}
+}

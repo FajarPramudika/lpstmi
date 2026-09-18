@@ -113,72 +113,7 @@
 	data-id="menu" data-interaction="hover"	data-menu="type-1"
 	data-dropdown="type-1:simple"	data-stretch	data-responsive="no"	itemscope="" itemtype="https://schema.org/SiteNavigationElement"	aria-label="Menu Utama">
 
-	<ul id="menu-menu-utama" class="menu"><li id="menu-item-1794" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-1794"><a href="<?= site_url('') ?>" class="ct-menu-link">HOME</a></li>
-<li id="menu-item-1795" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1795 animated-submenu-block"><a class="ct-menu-link">PROFILE<span class="ct-toggle-dropdown-desktop"><svg class="ct-icon" width="8" height="8" viewBox="0 0 15 15" aria-hidden="true"><path d="M2.1,3.2l5.4,5.4l5.4-5.4L15,4.3l-7.5,7.5L0,4.3L2.1,3.2z"/></svg></span></a><button class="ct-toggle-dropdown-desktop-ghost" aria-label="Expand dropdown menu" aria-haspopup="true" aria-expanded="false"></button>
-<ul class="sub-menu">
-	<li id="menu-item-1816" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1816"><a href="<?= site_url('sejarah-kampus') ?>" class="ct-menu-link">SEJARAH KAMPUS</a></li>
-	<li id="menu-item-1822" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1822"><a href="<?= site_url('visi-dan-misi') ?>" class="ct-menu-link">VISI DAN MISI</a></li>
-	<li id="menu-item-1796" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1796"><a href="<?= site_url('akademik') ?>" class="ct-menu-link">AKADEMIK</a></li>
-	<li id="menu-item-1820" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1820"><a href="<?= site_url('tupoksi') ?>" class="ct-menu-link">TUPOKSI</a></li>
-	<li id="menu-item-1824" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1824 animated-submenu-inline"><a href="#" class="ct-menu-link">AKREDITASI<span class="ct-toggle-dropdown-desktop"><svg class="ct-icon" width="8" height="8" viewBox="0 0 15 15" aria-hidden="true"><path d="M2.1,3.2l5.4,5.4l5.4-5.4L15,4.3l-7.5,7.5L0,4.3L2.1,3.2z"/></svg></span></a><button class="ct-toggle-dropdown-desktop-ghost" aria-label="Expand dropdown menu" aria-haspopup="true" aria-expanded="false"></button>
-	<ul class="sub-menu">
-		<li id="menu-item-1798" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1798"><a href="<?= site_url('akreditasi-sekolah-tinggi-manajemen-industri') ?>" class="ct-menu-link">SEKOLAH TINGGI MANAJEMEN INDUSTRI</a></li>
-		<li id="menu-item-1797" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1797"><a href="<?= site_url('akreditasi-politeknik-stmi') ?>" class="ct-menu-link">POLITEKNIK STMI JAKARTA</a></li>
-	</ul>
-</li>
-	<li id="menu-item-1819" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1819"><a href="<?= site_url('struktur-organsasi') ?>" class="ct-menu-link">STRUKTUR ORGANISASI</a></li>
-	<li id="menu-item-1813" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1813"><a href="<?= site_url('profile-pejabat') ?>" class="ct-menu-link">PROFILE PEJABAT</a></li>
-	<li id="menu-item-1805" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1805"><a href="<?= site_url('lokasi-kampus') ?>" class="ct-menu-link">LOKASI KAMPUS</a></li>
-	<li id="menu-item-1802" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1802"><a href="<?= site_url('keanggotaan-senat') ?>" class="ct-menu-link">KEANGGOTAAN SENAT</a></li>
-	<li id="menu-item-1818" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1818"><a href="<?= site_url('statistik') ?>" class="ct-menu-link">STATISTIK</a></li>
-</ul>
-</li>
-<li id="menu-item-1825" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1825 animated-submenu-block"><a href="#" class="ct-menu-link">PROGRAM STUDI<span class="ct-toggle-dropdown-desktop"><svg class="ct-icon" width="8" height="8" viewBox="0 0 15 15" aria-hidden="true"><path d="M2.1,3.2l5.4,5.4l5.4-5.4L15,4.3l-7.5,7.5L0,4.3L2.1,3.2z"/></svg></span></a><button class="ct-toggle-dropdown-desktop-ghost" aria-label="Expand dropdown menu" aria-haspopup="true" aria-expanded="false"></button>
-<ul class="sub-menu">
-	<li id="menu-item-1826" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1826"><a href="http://tio.stmi.ac.id/" class="ct-menu-link">TEKNIK INDUSTRI OTOMOTIF</a></li>
-	<li id="menu-item-1827" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1827"><a href="http://siio.stmi.ac.id/" class="ct-menu-link">SISTEM INFORMASI INDUSTRI OTOMOTIF</a></li>
-	<li id="menu-item-1828" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1828"><a href="http://abo.stmi.ac.id/" class="ct-menu-link">ADMINISTRASI BISNIS OTOMOTIF</a></li>
-	<li id="menu-item-1829" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1829"><a href="http://tkp.stmi.ac.id/" class="ct-menu-link">TEKNIK KIMIA POLIMER</a></li>
-	<li id="menu-item-1830" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1830"><a href="http://tro.stmi.ac.id/" class="ct-menu-link">TEKNOLOGI REKAYASA OTOMOTIF</a></li>
-	<li id="menu-item-1831" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1831"><a class="ct-menu-link">TENAGA PENYULUH LAPANGAN</a></li>
-</ul>
-</li>
-<li id="menu-item-1832" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1832 animated-submenu-block"><a class="ct-menu-link">BERITA<span class="ct-toggle-dropdown-desktop"><svg class="ct-icon" width="8" height="8" viewBox="0 0 15 15" aria-hidden="true"><path d="M2.1,3.2l5.4,5.4l5.4-5.4L15,4.3l-7.5,7.5L0,4.3L2.1,3.2z"/></svg></span></a><button class="ct-toggle-dropdown-desktop-ghost" aria-label="Expand dropdown menu" aria-haspopup="true" aria-expanded="false"></button>
-<ul class="sub-menu">
-	<li id="menu-item-1834" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1834"><a href="<?= site_url('category/berita-kampus') ?>" class="ct-menu-link">BERITA KAMPUS</a></li>
-	<li id="menu-item-1833" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-1833"><a href="<?= site_url('category/pengumuman') ?>" class="ct-menu-link">PENGUMUMAN KAMPUS</a></li>
-	<li id="menu-item-2727" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-2727"><a href="<?= site_url('category/article') ?>" class="ct-menu-link">ARTIKEL</a></li>
-	<li id="menu-item-1835" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1835"><a href="<?= site_url('lowongan-kerja') ?>" class="ct-menu-link">LOWONGAN KERJA</a></li>
-</ul>
-</li>
-<li id="menu-item-1836" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1836 animated-submenu-block"><a class="ct-menu-link">PELAYANAN PUBLIK<span class="ct-toggle-dropdown-desktop"><svg class="ct-icon" width="8" height="8" viewBox="0 0 15 15" aria-hidden="true"><path d="M2.1,3.2l5.4,5.4l5.4-5.4L15,4.3l-7.5,7.5L0,4.3L2.1,3.2z"/></svg></span></a><button class="ct-toggle-dropdown-desktop-ghost" aria-label="Expand dropdown menu" aria-haspopup="true" aria-expanded="false"></button>
-<ul class="sub-menu">
-	<li id="menu-item-1799" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1799"><a href="<?= site_url('daftar-informasi') ?>" class="ct-menu-link">DAFTAR INFORMASI</a></li>
-	<li id="menu-item-1806" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1806"><a href="<?= site_url('maklumat-pelayanan') ?>" class="ct-menu-link">MAKLUMAT PELAYANAN</a></li>
-	<li id="menu-item-1837" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-1837"><a class="ct-menu-link">PERINGATAN DINI</a></li>
-	<li id="menu-item-1817" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1817"><a href="<?= site_url('sop') ?>" class="ct-menu-link">SOP</a></li>
-	<li id="menu-item-1808" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1808"><a href="<?= site_url('mou') ?>" class="ct-menu-link">MOU</a></li>
-	<li id="menu-item-1810" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1810"><a href="<?= site_url('penetapan-standar-pelayanan') ?>" class="ct-menu-link">PENETAPAN STANDAR PELAYANAN</a></li>
-	<li id="menu-item-1801" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1801"><a href="<?= site_url('hasil-survey-kepuasan') ?>" class="ct-menu-link">HASIL SURVEY KEPUASAN</a></li>
-	<li id="menu-item-1800" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1800"><a href="<?= site_url('hasil-indeks-persepsi-korupsi') ?>" class="ct-menu-link">HASIL INDEKS PERSEPSI KORUPSI</a></li>
-	<li id="menu-item-1807" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1807"><a href="<?= site_url('materi-workshop') ?>" class="ct-menu-link">MATERI WORKSHOP</a></li>
-	<li id="menu-item-1809" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1809"><a href="<?= site_url('pedoman-akademik-dan-non-akademik') ?>" class="ct-menu-link">PEDOMAN AKADEMIK DAN NON AKADEMIK</a></li>
-	<li id="menu-item-3038" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-3038"><a href="<?= site_url('laporan-keuangan') ?>" class="ct-menu-link">LAPORAN KEUANGAN</a></li>
-</ul>
-</li>
-<li id="menu-item-1838" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-has-children menu-item-1838 animated-submenu-block"><a class="ct-menu-link">PERATURAN<span class="ct-toggle-dropdown-desktop"><svg class="ct-icon" width="8" height="8" viewBox="0 0 15 15" aria-hidden="true"><path d="M2.1,3.2l5.4,5.4l5.4-5.4L15,4.3l-7.5,7.5L0,4.3L2.1,3.2z"/></svg></span></a><button class="ct-toggle-dropdown-desktop-ghost" aria-label="Expand dropdown menu" aria-haspopup="true" aria-expanded="false"></button>
-<ul class="sub-menu">
-	<li id="menu-item-1811" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1811"><a href="<?= site_url('peraturan') ?>" class="ct-menu-link">PERATURAN</a></li>
-	<li id="menu-item-1823" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1823"><a href="<?= site_url('zona-integritas') ?>" class="ct-menu-link">ZONA INTEGRITAS</a></li>
-	<li id="menu-item-1815" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1815"><a href="<?= site_url('rencana-strategis') ?>" class="ct-menu-link">RENCANA STRATEGIS</a></li>
-	<li id="menu-item-1814" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1814"><a href="<?= site_url('rencana-kinerja') ?>" class="ct-menu-link">RENCANA KINERJA</a></li>
-	<li id="menu-item-1812" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1812"><a href="<?= site_url('perkin') ?>" class="ct-menu-link">PERKIN</a></li>
-	<li id="menu-item-1803" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1803"><a href="<?= site_url('lakip') ?>" class="ct-menu-link">LAKIP</a></li>
-	<li id="menu-item-1804" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1804"><a href="<?= site_url('laporan-tri-wulan') ?>" class="ct-menu-link">LAPORAN TRI WULAN</a></li>
-</ul>
-</li>
-<li id="menu-item-1821" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1821"><a href="<?= site_url('unit-mahasiswa') ?>" class="ct-menu-link">UNIT MAHASISWA</a></li>
-</ul></nav>
+	<?= wp_nav_menu($main_menu, FALSE) ?></nav>
 
 
 <div

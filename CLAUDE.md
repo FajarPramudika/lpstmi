@@ -110,6 +110,11 @@ lpstmi/
     `lib/swiper/v8/css/swiper.min.css`, `css/conditionals/dialog.min.css`, `css/conditionals/lightbox.min.css`.
     (`css/custom-lightbox.min.css` juga 404 di live, jadi tidak ada yang hilang.)
   - PDF Embedder (pdf.js 2.2.228): `pdfjs/pdf.worker.min.js` + 169 file `pdfjs/cmaps/*.bcmap`.
+  - `pdfjs/pdf.min277b.worker.js` = salinan `pdf.worker.min.js`. PDF Embedder 4.9.2 tidak mengisi `workerSrc`, jadi pdf.js
+    menurunkan nama worker dari nama file skripnya sendiri (`pdf.min.js` → `pdf.worker.min.js`). Karena HTTrack mengganti
+    namanya menjadi `pdf.min277b.js`, pdf.js mencari `pdf.min277b.worker.js` ("Setting up fake worker failed").
+    Pola yang sama berlaku untuk skrip lain yang menurunkan path dari nama filenya sendiri: sediakan file dengan nama
+    turunan tersebut, jangan ubah markup.
   Kalau ada tema/plugin baru yang memuat chunk dari live, unduh dengan cara yang sama (nama asli, jangan menimpa file yang ada).
 
 ## Arsitektur CI3
@@ -127,7 +132,8 @@ application/
 ├── libraries/Wp_clone.php             # logika konversi clone -> view (clean, rewrite URL, split, netralisasi)
 ├── helpers/wp_helper.php              # port fungsi WordPress: texturize, srcset, paginasi, tanggal, menu aktif, dll.
 ├── helpers/admin_helper.php           # slugify, unique_slug, auto_excerpt, content_to_tokens, paginasi admin
-├── config/site.php                    # pemetaan kategori -> item menu header, judul situs
+├── models/Menu_model.php               # menu utama (tabel menu_items): pohon, URL, menu aktif otomatis
+├── config/site.php                    # judul situs
 ├── config/pages.php                   # DIHASILKAN tools: daftar halaman statis + metadata
 └── views/
     ├── layouts/main.php               # susunan: document_open, title, head/<varian>, <body>, drawer, header, isi, footer, foot/<varian>
@@ -143,8 +149,15 @@ application/
 - **Kenapa head/foot berupa varian:** WordPress hanya memuat CSS/JS yang dipakai tiap halaman, jadi daftar dan urutannya
   berbeda per template (home, page Elementor, post, arsip, download, ...). `tools convert` otomatis memakai ulang varian yang
   isinya identik, dan membuat varian baru kalau belum ada.
-- **Menu aktif:** partial menyimpan menu versi netral. Kelas aktif per halaman ada di `menu_active` (config/pages.php), lalu
-  disisipkan oleh `wp_menu_active()` dengan urutan kelas yang sama seperti WordPress.
+- **Menu utama** (header desktop `ul#menu-menu-utama` + mobile `ul#menu-menu-utama-1`) dirender dari tabel `menu_items`
+  oleh `wp_nav_menu($main_menu, $mobile)` (port `Walker_Nav_Menu` + markup Blocksy), dipanggil di partial header/drawer.
+- **Menu aktif** dihitung otomatis oleh `Menu_model::active_for($menu_context)` (controller mengisi `menu_context`:
+  `page` slug / `category` id / `post_categories`), lalu disisipkan `wp_menu_active()` dengan urutan kelas seperti WordPress.
+  `config/pages.php` tidak lagi menyimpan `menu_active`.
+- Bagian partial yang dinamis (menu utama, kontak, media sosial, link footer) punya padanan "netralisasi" di `Wp_clone`
+  (`neutralize_main_menu`, `neutralize_contacts`, `neutralize_footer_links`) yang dipakai `Tools::prepare()`, supaya
+  `tools check/convert/layout` tetap bisa membandingkan clone dengan partial. **Kalau partial diubah jadi dinamis, tambahkan
+  netralisasinya juga**, lalu pastikan `tools check` tetap `502 OK`.
 - **Atribut gambar di layout** (`fetchpriority="high"`, `loading="lazy"`) berbeda per halaman, jadi disimpan di `img_hints`.
 - Isi `data-gt-orig-url` GTranslate = `/<uri>/` (otomatis), `<link rel="canonical">` = `current_url()`.
 - **Jangan menambah whitespace/newline** di view layout & halaman: output harus byte-identik.
@@ -203,9 +216,10 @@ Semua aturan ini sudah diverifikasi byte-per-byte terhadap 186 post + 152 halama
   wp_get_loading_optimization_attributes: gambar konten ber-width/height dihitung dulu, kecuali post Elementor).
 - Varian layout: head `post` (post Elementor: `post-<ID>`), foot `post-pdf` jika konten punya `class="pdfemb-viewer"` atau
   `class='w3eden'` (Download Manager), selain itu `post`; arsip: head `archive` (link feed per term/author), foot `archive`.
-- Menu aktif: post → item kategori miliknya `current-post-ancestor current-menu-parent current-post-parent`;
-  arsip kategori → `current-menu-item` + induk 1832 `current-menu-ancestor current-menu-parent`. Pemetaan kategori → ID
-  item menu di `config/site.php` (menu header statis; kategori baru tidak otomatis masuk menu).
+- Menu aktif (`Menu_model::active_for()`): halaman statis → item halamannya `current-menu-item page_item page-item-<ID>
+  current_page_item`; post → item kategori miliknya `current-post-ancestor current-menu-parent current-post-parent` (induknya
+  tidak ditandai); arsip kategori → `current-menu-item`; item URL bebas yang sama dengan URL sekarang → `current-menu-item`.
+  Induk langsung item current: `current-menu-ancestor current-menu-parent`, induk di atasnya: `current-menu-ancestor`.
 - Body class post Elementor mendapat `elementor-page elementor-page-<ID>`.
 
 ## Panel admin (`/admin`)
@@ -226,7 +240,14 @@ Semua aturan ini sudah diverifikasi byte-per-byte terhadap 186 post + 152 halama
   (pdf/doc/docx/xls/xlsx/ppt/pptx/zip), file disimpan di `wp-content/uploads/YYYY/MM/`. Gambar dibuatkan ukuran seperti
   WordPress (`libraries/Media_uploader.php`): medium 300, large 1024, thumbnail 150 crop, medium_large 768, 1536, 2048,
   dan `-scaled` jika > 2560 px. Alt text bisa diubah. Hapus media menghapus semua file ukurannya.
-- **Kategori & tag:** tambah/ubah/hapus (`/admin/terms/index/category|tag`).
+- **Kategori & tag:** tambah/ubah/hapus (`/admin/terms/index/category|tag`). Kategori baru tidak otomatis masuk menu.
+- **Menu** (`/admin/menu`, **khusus admin**): pohon menu utama, tambah/edit item (label, tipe halaman/kategori/URL bebas/label
+  tanpa link, induk), naik/turun, tambah sub-item, hapus (sub-item ikut terhapus). **Kedalaman tidak dibatasi** (keputusan user).
+  Tabel `menu_items` (migrasi 011): `id` (ID item WordPress untuk 47 item awal; kelas `menu-item-<ID>`), `parent_id`
+  (FK ON DELETE CASCADE), `position`, `title` (teks; tampil lewat `wp_texturize()`), `type` (page/category/custom),
+  `object_id` (page: ID page WordPress untuk `page-item-<ID>`; category: `terms.id`), `slug` (page; '' = beranda),
+  `url` (custom; token `{base_url}`, NULL = tanpa link). Pilihan halaman = halaman di `config/pages.php` + halaman yang sudah
+  ada di menu tapi belum dimigrasi (ditandai "belum ada"; link 404 sampai halamannya dikonversi).
 - **Pengguna:** tambah/ubah/nonaktifkan/hapus (hanya jika tidak punya post), profil sendiri + ganti password (min. 10 karakter).
 - Halaman statis (`config/pages.php` + `views/pages/`) **tidak** diedit lewat admin.
 
@@ -267,7 +288,8 @@ php index.php tools verify all
 4. Satu halaman selesai dan terverifikasi dulu, baru lanjut ke halaman berikutnya.
 5. Cek sintaks PHP 7.3: `php -l <file>`.
 
-Status per 2026-09-18: halaman statis `home`, `sejarah-kampus`, `visi-dan-misi` sudah dikonversi dan `verify` OK.
+Status per 2026-09-19: **semua 33 halaman statis** (Page WordPress) sudah dikonversi dan `verify` OK, kecuali `home` yang
+sengaja berbeda sejak commit konten beranda dinamis (blok `<style>` "Override Elementor animation visibility").
 Semua 186 post dan 152 halaman arsip (kategori, tag, author, dengan paginasi) dirender dari database dan `verify_db` OK.
 Setelah mengubah template/helper post, **wajib** jalankan `php index.php tools verify_db` (harus `BEDA 0`).
 Catatan: varian foot `archive` juga dipakai halaman `sejarah-kampus` (isinya kebetulan identik).

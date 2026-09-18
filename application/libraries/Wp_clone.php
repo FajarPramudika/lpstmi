@@ -485,11 +485,38 @@ class Wp_clone {
 		);
 	}
 
+	/**
+	 * Menu utama (header desktop & mobile) diganti pemanggilan wp_nav_menu(), sama seperti di partial.
+	 */
+	public function neutralize_main_menu($html)
+	{
+		$html = preg_replace('#<ul id="menu-menu-utama" class="menu">.*?</ul>(?=</nav>)#s', '<?= wp_nav_menu($main_menu, FALSE) ?>', $html);
+
+		return preg_replace('#<ul id="menu-menu-utama-1" class="">.*?</ul>(?=</nav>)#s', '<?= wp_nav_menu($main_menu, TRUE) ?>', $html);
+	}
+
+	/**
+	 * Daftar link footer (menu-footer-menu) diganti loop $footer_links, sama seperti di partial footer.
+	 */
+	public function neutralize_footer_links($html)
+	{
+		$loop = '<ul id="menu-footer-menu" class="widget-menu"><?php foreach ($footer_links as $i => $link): ?>'
+			.'<li id="menu-item-<?= 619 + $i ?>" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-<?= 619 + $i ?>">'
+			.'<a href="<?= html_escape($link[\'url\']) ?>"><?= html_escape($link[\'title\']) ?></a></li>'."\n"
+			.'<?php endforeach; ?></ul>';
+
+		return preg_replace_callback('#<ul id="menu-footer-menu" class="widget-menu">.*?</ul>#s', function () use ($loop) {
+			return $loop;
+		}, $html);
+	}
+
 	public function neutralize_contacts($html)
 	{
-		$html = str_replace("humas@stmi.ac.id\n", "<?= html_escape(\$contacts['email']) . \"\\n\" ?>", $html);
-		$html = str_replace("021-42888206\n", "<?= html_escape(\$contacts['phone']) . \"\\n\" ?>", $html);
-		$html = str_replace("0851-552-44455\n", "<?= html_escape(\$contacts['whatsapp']) . \"\\n\" ?>", $html);
+		// PHP menelan newline setelah tag penutup, jadi newline aslinya dicetak lewat . "\n" (sama seperti di partial).
+		$html = str_replace("humas@stmi.ac.id\n", "<?= html_escape(\$contacts['email']) . \"\\n\" ?>\n", $html);
+		$html = str_replace("021-42888206\n", "<?= html_escape(\$contacts['phone']) . \"\\n\" ?>\n", $html);
+		$html = str_replace("0851-552-44455 \n", "<?= html_escape(\$contacts['whatsapp']) ?> \n", $html);
+		$html = str_replace("0851-552-44455\n", "<?= html_escape(\$contacts['whatsapp']) . \"\\n\" ?>\n", $html);
 		$html = str_replace('https:\/\/web.whatsapp.com\/send?phone=6285155244455', '<?= str_replace(\'/\', \'\\/\', html_escape($contacts[\'whatsapp_url\'])) ?>', $html);
 		$html = str_replace('"value":"6285155244455"', '"value":"<?= html_escape(preg_replace(\'/[^0-9]/\', \'\', strpos($contacts[\'whatsapp\'], \'0\') === 0 ? \'62\' . substr($contacts[\'whatsapp\'], 1) : $contacts[\'whatsapp\'])) ?>"', $html);
 		
