@@ -42,7 +42,7 @@ if ( ! function_exists('wp_menu_active'))
 		{
 			return $html;
 		}
-
+		
 		return preg_replace_callback(
 			'/(<li\b[^>]*?class=")([^"]*\bmenu-item-(\d+)\b[^"]*)("[^>]*>(?:\s*<a href="[^"]*")?)/',
 			function ($m) use ($active) {

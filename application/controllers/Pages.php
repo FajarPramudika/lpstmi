@@ -40,6 +40,23 @@ class Pages extends MY_Controller {
 			show_404();
 		}
 
-		$this->render($pages[$slug]);
+		$data = [];
+		if ($slug === 'home')
+		{
+			$this->load->model('home_featured_link_model');
+			$this->load->model('home_study_program_model');
+			$this->load->model('home_banner_model');
+			$this->load->model('home_partner_model');
+			$this->load->model('home_option_model');
+			
+			$data['featured_links'] = $this->home_featured_link_model->all();
+			$data['featured_links_grouped'] = $this->home_featured_link_model->grouped_by_row();
+			$data['study_programs'] = $this->home_study_program_model->all();
+			$data['home_banners'] = $this->home_banner_model->all();
+			$data['home_partners'] = $this->home_partner_model->all();
+			$data['home_options'] = $this->home_option_model->get_all();
+		}
+
+		$this->render($pages[$slug], $data);
 	}
 }

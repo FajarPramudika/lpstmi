@@ -2,6 +2,9 @@
 </title>
 <meta name='robots' content='max-image-preview:large' />
 	<style>img:is([sizes="auto" i], [sizes^="auto," i]) { contain-intrinsic-size: 3000px 1500px }</style>
+	<style>/* Override Elementor animation visibility - no Elementor frontend JS */
+.elementor-invisible { visibility: visible !important; opacity: 1 !important; }
+</style>
 	
 		<!-- Meta Tag Manager -->
 		<meta name="description" content="Website resmi Politeknik STMI, Jakarta. STMI merupakan Sekolah Tinnggi yang menyelenggarakan pendidikan program studi Diploma IV dibawah naungan Kementerian Perindustrian Republik Indonesia" />

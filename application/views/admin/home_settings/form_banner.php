@@ -1,0 +1,52 @@
+<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
+<?php $is_create = empty($banner); ?>
+<?= form_open($is_create ? 'admin/home_settings/store_banner' : 'admin/home_settings/update_banner/'.$banner['id']) ?>
+<div class="editor-layout">
+	<div>
+		<div class="card">
+			<div class="field">
+				<label for="image_path">Path Gambar (Image Path)</label>
+				<input type="text" id="image_path" name="image_path" required maxlength="255" value="<?= $is_create ? '' : html_escape($banner['image_path']) ?>">
+				<div class="hint">Contoh: <code>wp-content/uploads/2024/03/Header.jpg</code></div>
+			</div>
+
+			<div class="field">
+				<label for="image_srcset">Gambar Cadangan (Image Srcset - Opsional)</label>
+				<input type="text" id="image_srcset" name="image_srcset" value="<?= $is_create ? '' : html_escape($banner['image_srcset']) ?>">
+			</div>
+
+			<div class="field">
+				<label for="image_class">Kelas CSS Gambar (Image Class)</label>
+				<input type="text" id="image_class" name="image_class" required value="<?= $is_create ? 'swiper-slide-image' : html_escape($banner['image_class']) ?>">
+			</div>
+
+			<div class="field">
+				<label for="url">URL Tautan (Opsional)</label>
+				<input type="url" id="url" name="url" value="<?= $is_create ? '' : html_escape($banner['url']) ?>">
+				<div class="hint">Jika banner diklik menuju halaman tertentu.</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="editor-side">
+		<div class="card">
+			<div class="field">
+				<label for="order_num">Urutan (Order)</label>
+				<input type="number" id="order_num" name="order_num" required value="<?= $is_create ? 0 : html_escape($banner['order_num']) ?>">
+			</div>
+			
+			<button type="submit" class="btn btn-primary" style="width:100%;justify-content:center"><?= $is_create ? 'Tambah Banner' : 'Simpan Perubahan' ?></button>
+			<p style="text-align:center;margin:10px 0 0"><a href="<?= site_url('admin/home_settings?tab=banners') ?>">Batal</a></p>
+		</div>
+
+		<?php if (!$is_create): ?>
+		<div class="card">
+			<label>Pratinjau Banner</label>
+			<div style="margin-top: 10px; background: #f4f4f4; padding: 10px; border-radius: 5px; text-align: center;">
+				<img src="<?= base_url(html_escape($banner['image_path'])) ?>" alt="" style="max-width: 100%; height: auto;">
+			</div>
+		</div>
+		<?php endif; ?>
+	</div>
+</div>
+<?= form_close() ?>

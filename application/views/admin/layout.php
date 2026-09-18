@@ -7,6 +7,7 @@ $nav = array(
 	array('media', 'admin/media', 'Media', TRUE),
 	array('terms:category', 'admin/terms/index/category', 'Kategori', TRUE),
 	array('terms:tag', 'admin/terms/index/tag', 'Tag', TRUE),
+	array('home_settings', 'admin/home_settings', 'Pengaturan Beranda', TRUE),
 	array('footer_links', 'admin/footer_links', 'Link Footer', TRUE),
 	array('users', 'admin/users', 'Pengguna', $user['role'] === 'admin'),
 );
@@ -39,6 +40,7 @@ $flash = $this->session->flashdata('flash');
 			<li class="sep"></li>
 			<li><a href="<?= site_url('admin/pages') ?>" <?= isset($menu_pages) ? 'class="active"' : '' ?>>Halaman</a></li>
 			<li><a href="<?= site_url('admin/footer_links') ?>" <?= isset($menu_footer_links) ? 'class="active"' : '' ?>>Link Footer</a></li>
+			<li><a href="<?= site_url('admin/home_settings') ?>" <?= isset($menu_home_settings) ? 'class="active"' : '' ?>>Beranda Dinamis (Baru)</a></li>
 			<li><a href="<?= site_url('admin/contacts') ?>" <?= isset($menu_contacts) ? 'class="active"' : '' ?>>Kontak</a></li>
 		</ul>
 		<div class="sidebar-foot">

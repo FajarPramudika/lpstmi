@@ -143,7 +143,7 @@
 							
 															<span class="contact-text">
 									
-									<?= html_escape($contacts['email']) ?>
+									<?= html_escape($contacts['email']) . "\n" ?>
 																	</span>
 													</div>
 									</li>
@@ -155,7 +155,7 @@
 							
 															<span class="contact-text">
 									
-									<?= html_escape($contacts['phone']) ?>
+									<?= html_escape($contacts['phone']) . "\n" ?>
 																	</span>
 													</div>
 									</li>

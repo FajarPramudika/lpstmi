@@ -9,7 +9,9 @@
 				<div class="elementor-widget-container">
 							<div class="elementor-image-carousel-wrapper swiper" role="region" aria-roledescription="carousel" aria-label="Image Carousel" dir="ltr">
 			<div class="elementor-image-carousel swiper-wrapper swiper-image-stretch" aria-live="off">
-								<div class="swiper-slide" role="group" aria-roledescription="slide" aria-label="1 of 1"><figure class="swiper-slide-inner"><img decoding="async" class="swiper-slide-image" src="<?= base_url('wp-content/uploads/2024/03/Header-Politeknik-STMI.jpg') ?>" alt="Header Politeknik STMI" /></figure></div>			</div>
+								<?php $i = 1; foreach($home_banners as $banner): ?>
+								<div class="swiper-slide" role="group" aria-roledescription="slide" aria-label="<?= $i++ ?> of <?= count($home_banners) ?>"><?php if($banner['url']): ?><a href="<?= html_escape($banner['url']) ?>"><?php endif; ?><figure class="swiper-slide-inner"><img decoding="async" class="<?= html_escape($banner['image_class']) ?>" src="<?= base_url(html_escape($banner['image_path'])) ?>" alt="Header Politeknik STMI"<?= $banner['image_srcset'] ? ' srcset="' . html_escape($banner['image_srcset']) . '"' : '' ?> /></figure><?php if($banner['url']): ?></a><?php endif; ?></div>
+<?php endforeach; ?>			</div>
 					</div>
 						</div>
 				</div>
@@ -17,98 +19,20 @@
 				</div>
 		<div class="elementor-element elementor-element-c0f24ab e-flex e-con-boxed e-con e-parent" data-id="c0f24ab" data-element_type="container">
 					<div class="e-con-inner">
-		<div class="elementor-element elementor-element-6516bd0 e-con-full animated-slow e-flex elementor-invisible e-con e-child" data-id="6516bd0" data-element_type="container" data-settings="{&quot;animation&quot;:&quot;fadeIn&quot;}">
-		<div class="elementor-element elementor-element-5fda677 e-con-full e-flex e-con e-child" data-id="5fda677" data-element_type="container">
-				<div class="elementor-element elementor-element-e1a2c9b e-transform elementor-widget elementor-widget-image" data-id="e1a2c9b" data-element_type="widget" data-settings="{&quot;_animation&quot;:&quot;none&quot;,&quot;_transform_scale_effect_hover&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:0.9,&quot;sizes&quot;:[]},&quot;_transform_scale_effect_hover_tablet&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:&quot;&quot;,&quot;sizes&quot;:[]},&quot;_transform_scale_effect_hover_mobile&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:&quot;&quot;,&quot;sizes&quot;:[]}}" data-widget_type="image.default">
+		<?php foreach ($featured_links_grouped as $row_num => $links_row): ?>
+<div class="elementor-element elementor-element-<?= $row_num == 1 ? '6516bd0' : '48f0e4c' ?> e-con-full animated-slow e-flex elementor-invisible e-con e-child" data-id="<?= $row_num == 1 ? '6516bd0' : '48f0e4c' ?>" data-element_type="container" data-settings="{&quot;animation&quot;:&quot;fadeIn&quot;}" style="justify-content: center; gap: 10px;">
+<?php foreach($links_row as $link): ?>
+		<div class="elementor-element elementor-element-<?= $link['container_id'] ?> e-con-full e-flex e-con e-child" data-id="<?= $link['container_id'] ?>" data-element_type="container" style="flex: 1 1 0%; max-width: 220px; min-width: 150px;">
+				<div class="elementor-element elementor-element-<?= $link['widget_id'] ?> e-transform elementor-widget elementor-widget-image" data-id="<?= $link['widget_id'] ?>" data-element_type="widget" data-settings="{&quot;_animation&quot;:&quot;none&quot;,&quot;_transform_scale_effect_hover&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:0.9,&quot;sizes&quot;:[]},&quot;_transform_scale_effect_hover_tablet&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:&quot;&quot;,&quot;sizes&quot;:[]},&quot;_transform_scale_effect_hover_mobile&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:&quot;&quot;,&quot;sizes&quot;:[]}}" data-widget_type="image.default">
 				<div class="elementor-widget-container">
-																<a href="http://e-learning.stmi.ac.id/" target="_blank">
-							<img decoding="async" width="348" height="89" src="<?= base_url('wp-content/uploads/2024/03/E-Learning-STMI.png') ?>" class="attachment-full size-full wp-image-724" alt="" srcset="<?= base_url('wp-content/uploads/2024/03/E-Learning-STMI.png') ?> 348w, <?= base_url('wp-content/uploads/2024/03/E-Learning-STMI-300x77.png') ?> 300w" sizes="(max-width: 348px) 100vw, 348px" />								</a>
+																<a href="<?= html_escape($link['url']) ?>"<?= strpos($link['url'], 'ppid.stmi.ac.id') !== false ? '' : ' target="_blank"' ?>>
+							<?= $link['img_hint_key'] ? wp_img_hint($img_hints, $link['img_hint_key']) : '' ?><img <?= strpos($link['url'], 'e-learning') === false ? 'loading="lazy" ' : '' ?>decoding="async" width="348" height="89" src="<?= base_url(html_escape($link['image_path'])) ?>" class="<?= html_escape($link['image_class']) ?>" alt=""<?= $link['image_srcset'] ? ' srcset="' . base_url(explode(' ', $link['image_srcset'])[0]) . ' 348w, ' . base_url(explode(' ', $link['image_srcset'])[2]) . ' 300w" sizes="(max-width: 348px) 100vw, 348px"' : '' ?> />								</a>
 															</div>
 				</div>
 				</div>
-		<div class="elementor-element elementor-element-d587fad e-con-full e-flex e-con e-child" data-id="d587fad" data-element_type="container">
-				<div class="elementor-element elementor-element-3640020 e-transform elementor-widget elementor-widget-image" data-id="3640020" data-element_type="widget" data-settings="{&quot;_animation&quot;:&quot;none&quot;,&quot;_transform_scale_effect_hover&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:0.9,&quot;sizes&quot;:[]},&quot;_transform_scale_effect_hover_tablet&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:&quot;&quot;,&quot;sizes&quot;:[]},&quot;_transform_scale_effect_hover_mobile&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:&quot;&quot;,&quot;sizes&quot;:[]}}" data-widget_type="image.default">
-				<div class="elementor-widget-container">
-																<a href="http://jarvis.stmi.ac.id/" target="_blank">
-							<img loading="lazy" decoding="async" width="348" height="89" src="<?= base_url('wp-content/uploads/2024/03/Jarvis-STMI.png') ?>" class="attachment-full size-full wp-image-723" alt="" srcset="<?= base_url('wp-content/uploads/2024/03/Jarvis-STMI.png') ?> 348w, <?= base_url('wp-content/uploads/2024/03/Jarvis-STMI-300x77.png') ?> 300w" sizes="(max-width: 348px) 100vw, 348px" />								</a>
-															</div>
-				</div>
-				</div>
-		<div class="elementor-element elementor-element-d8a9667 e-con-full e-flex e-con e-child" data-id="d8a9667" data-element_type="container">
-				<div class="elementor-element elementor-element-0387f7d e-transform elementor-widget elementor-widget-image" data-id="0387f7d" data-element_type="widget" data-settings="{&quot;_animation&quot;:&quot;none&quot;,&quot;_transform_scale_effect_hover&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:0.9,&quot;sizes&quot;:[]},&quot;_transform_scale_effect_hover_tablet&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:&quot;&quot;,&quot;sizes&quot;:[]},&quot;_transform_scale_effect_hover_mobile&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:&quot;&quot;,&quot;sizes&quot;:[]}}" data-widget_type="image.default">
-				<div class="elementor-widget-container">
-																<a href="http://spm.stmi.ac.id/" target="_blank">
-							<img loading="lazy" decoding="async" width="348" height="89" src="<?= base_url('wp-content/uploads/2024/03/SPM-STMI.png') ?>" class="attachment-full size-full wp-image-726" alt="" srcset="<?= base_url('wp-content/uploads/2024/03/SPM-STMI.png') ?> 348w, <?= base_url('wp-content/uploads/2024/03/SPM-STMI-300x77.png') ?> 300w" sizes="(max-width: 348px) 100vw, 348px" />								</a>
-															</div>
-				</div>
-				</div>
-		<div class="elementor-element elementor-element-1858478 e-con-full e-flex e-con e-child" data-id="1858478" data-element_type="container">
-				<div class="elementor-element elementor-element-adce476 e-transform elementor-widget elementor-widget-image" data-id="adce476" data-element_type="widget" data-settings="{&quot;_animation&quot;:&quot;none&quot;,&quot;_transform_scale_effect_hover&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:0.9,&quot;sizes&quot;:[]},&quot;_transform_scale_effect_hover_tablet&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:&quot;&quot;,&quot;sizes&quot;:[]},&quot;_transform_scale_effect_hover_mobile&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:&quot;&quot;,&quot;sizes&quot;:[]}}" data-widget_type="image.default">
-				<div class="elementor-widget-container">
-																<a href="http://p2m.stmi.ac.id/" target="_blank">
-							<img loading="lazy" decoding="async" width="348" height="89" src="<?= base_url('wp-content/uploads/2024/03/P2M-STMI.png') ?>" class="attachment-full size-full wp-image-727" alt="" srcset="<?= base_url('wp-content/uploads/2024/03/P2M-STMI.png') ?> 348w, <?= base_url('wp-content/uploads/2024/03/P2M-STMI-300x77.png') ?> 300w" sizes="(max-width: 348px) 100vw, 348px" />								</a>
-															</div>
-				</div>
-				</div>
-		<div class="elementor-element elementor-element-264a112 e-con-full e-flex e-con e-child" data-id="264a112" data-element_type="container">
-				<div class="elementor-element elementor-element-a382c05 e-transform elementor-widget elementor-widget-image" data-id="a382c05" data-element_type="widget" data-settings="{&quot;_animation&quot;:&quot;none&quot;,&quot;_transform_scale_effect_hover&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:0.9,&quot;sizes&quot;:[]},&quot;_transform_scale_effect_hover_tablet&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:&quot;&quot;,&quot;sizes&quot;:[]},&quot;_transform_scale_effect_hover_mobile&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:&quot;&quot;,&quot;sizes&quot;:[]}}" data-widget_type="image.default">
-				<div class="elementor-widget-container">
-																<a href="https://karir.stmi.ac.id/" target="_blank">
-							<img loading="lazy" decoding="async" width="348" height="89" src="<?= base_url('wp-content/uploads/2024/03/Career-STMI.png') ?>" class="attachment-full size-full wp-image-731" alt="" srcset="<?= base_url('wp-content/uploads/2024/03/Career-STMI.png') ?> 348w, <?= base_url('wp-content/uploads/2024/03/Career-STMI-300x77.png') ?> 300w" sizes="(max-width: 348px) 100vw, 348px" />								</a>
-															</div>
-				</div>
-				</div>
-				</div>
-		<div class="elementor-element elementor-element-48f0e4c e-con-full animated-slow e-flex elementor-invisible e-con e-child" data-id="48f0e4c" data-element_type="container" data-settings="{&quot;animation&quot;:&quot;fadeIn&quot;}">
-		<div class="elementor-element elementor-element-1a9ae2c e-con-full e-flex e-con e-child" data-id="1a9ae2c" data-element_type="container">
-				<div class="elementor-element elementor-element-06459aa e-transform elementor-widget elementor-widget-image" data-id="06459aa" data-element_type="widget" data-settings="{&quot;_animation&quot;:&quot;none&quot;,&quot;_transform_scale_effect_hover&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:0.9,&quot;sizes&quot;:[]},&quot;_transform_scale_effect_hover_tablet&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:&quot;&quot;,&quot;sizes&quot;:[]},&quot;_transform_scale_effect_hover_mobile&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:&quot;&quot;,&quot;sizes&quot;:[]}}" data-widget_type="image.default">
-				<div class="elementor-widget-container">
-																<a href="http://spi.stmi.ac.id/" target="_blank">
-							<img loading="lazy" decoding="async" width="348" height="89" src="<?= base_url('wp-content/uploads/2024/03/SPI-STMI.png') ?>" class="attachment-full size-full wp-image-735" alt="" srcset="<?= base_url('wp-content/uploads/2024/03/SPI-STMI.png') ?> 348w, <?= base_url('wp-content/uploads/2024/03/SPI-STMI-300x77.png') ?> 300w" sizes="(max-width: 348px) 100vw, 348px" />								</a>
-															</div>
-				</div>
-				</div>
-		<div class="elementor-element elementor-element-881f224 e-con-full e-flex e-con e-child" data-id="881f224" data-element_type="container">
-				<div class="elementor-element elementor-element-0f8fbb2 e-transform elementor-widget elementor-widget-image" data-id="0f8fbb2" data-element_type="widget" data-settings="{&quot;_animation&quot;:&quot;none&quot;,&quot;_transform_scale_effect_hover&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:0.9,&quot;sizes&quot;:[]},&quot;_transform_scale_effect_hover_tablet&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:&quot;&quot;,&quot;sizes&quot;:[]},&quot;_transform_scale_effect_hover_mobile&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:&quot;&quot;,&quot;sizes&quot;:[]}}" data-widget_type="image.default">
-				<div class="elementor-widget-container">
-																<a href="http://lsp.stmi.ac.id/" target="_blank">
-							<img loading="lazy" decoding="async" width="348" height="89" src="<?= base_url('wp-content/uploads/2025/07/Add-a-heading-5.png') ?>" class="attachment-full size-full wp-image-2857" alt="" />								</a>
-															</div>
-				</div>
-				</div>
-		<div class="elementor-element elementor-element-18779a0 e-con-full e-flex e-con e-child" data-id="18779a0" data-element_type="container">
-				<div class="elementor-element elementor-element-d917188 e-transform elementor-widget elementor-widget-image" data-id="d917188" data-element_type="widget" data-settings="{&quot;_animation&quot;:&quot;none&quot;,&quot;_transform_scale_effect_hover&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:0.9,&quot;sizes&quot;:[]},&quot;_transform_scale_effect_hover_tablet&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:&quot;&quot;,&quot;sizes&quot;:[]},&quot;_transform_scale_effect_hover_mobile&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:&quot;&quot;,&quot;sizes&quot;:[]}}" data-widget_type="image.default">
-				<div class="elementor-widget-container">
-																<a href="http://lib.stmi.ac.id/" target="_blank">
-							<img loading="lazy" decoding="async" width="348" height="89" src="<?= base_url('wp-content/uploads/2024/03/Perpustakaan-STMI.png') ?>" class="attachment-full size-full wp-image-740" alt="" srcset="<?= base_url('wp-content/uploads/2024/03/Perpustakaan-STMI.png') ?> 348w, <?= base_url('wp-content/uploads/2024/03/Perpustakaan-STMI-300x77.png') ?> 300w" sizes="(max-width: 348px) 100vw, 348px" />								</a>
-															</div>
-				</div>
-				</div>
-		<div class="elementor-element elementor-element-c2d66d6 e-con-full e-flex e-con e-child" data-id="c2d66d6" data-element_type="container">
-				<div class="elementor-element elementor-element-71418fb e-transform elementor-widget elementor-widget-image" data-id="71418fb" data-element_type="widget" data-settings="{&quot;_animation&quot;:&quot;none&quot;,&quot;_transform_scale_effect_hover&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:0.9,&quot;sizes&quot;:[]},&quot;_transform_scale_effect_hover_tablet&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:&quot;&quot;,&quot;sizes&quot;:[]},&quot;_transform_scale_effect_hover_mobile&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:&quot;&quot;,&quot;sizes&quot;:[]}}" data-widget_type="image.default">
-				<div class="elementor-widget-container">
-																<a href="http://virtualtour.stmi.ac.id/" target="_blank">
-							<img loading="lazy" decoding="async" width="348" height="89" src="<?= base_url('wp-content/uploads/2024/03/Virtual-Tour-STMI.png') ?>" class="attachment-full size-full wp-image-744" alt="" srcset="<?= base_url('wp-content/uploads/2024/03/Virtual-Tour-STMI.png') ?> 348w, <?= base_url('wp-content/uploads/2024/03/Virtual-Tour-STMI-300x77.png') ?> 300w" sizes="(max-width: 348px) 100vw, 348px" />								</a>
-															</div>
-				</div>
-				</div>
-		<div class="elementor-element elementor-element-1410334 e-con-full e-flex e-con e-child" data-id="1410334" data-element_type="container">
-				<div class="elementor-element elementor-element-509c686 e-transform elementor-widget elementor-widget-image" data-id="509c686" data-element_type="widget" data-settings="{&quot;_animation&quot;:&quot;none&quot;,&quot;_transform_scale_effect_hover&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:0.9,&quot;sizes&quot;:[]},&quot;_transform_scale_effect_hover_tablet&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:&quot;&quot;,&quot;sizes&quot;:[]},&quot;_transform_scale_effect_hover_mobile&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:&quot;&quot;,&quot;sizes&quot;:[]}}" data-widget_type="image.default">
-				<div class="elementor-widget-container">
-																<a href="https://span.lapor.go.id/" target="_blank">
-							<img loading="lazy" decoding="async" width="348" height="89" src="<?= base_url('wp-content/uploads/2024/03/Pengaduan-STMI.png') ?>" class="attachment-full size-full wp-image-748" alt="" srcset="<?= base_url('wp-content/uploads/2024/03/Pengaduan-STMI.png') ?> 348w, <?= base_url('wp-content/uploads/2024/03/Pengaduan-STMI-300x77.png') ?> 300w" sizes="(max-width: 348px) 100vw, 348px" />								</a>
-															</div>
-				</div>
-				</div>
-		<div class="elementor-element elementor-element-92f247a e-con-full e-flex e-con e-child" data-id="92f247a" data-element_type="container">
-				<div class="elementor-element elementor-element-3f77ebf e-transform elementor-widget elementor-widget-image" data-id="3f77ebf" data-element_type="widget" data-settings="{&quot;_animation&quot;:&quot;none&quot;,&quot;_transform_scale_effect_hover&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:0.9,&quot;sizes&quot;:[]},&quot;_transform_scale_effect_hover_tablet&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:&quot;&quot;,&quot;sizes&quot;:[]},&quot;_transform_scale_effect_hover_mobile&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:&quot;&quot;,&quot;sizes&quot;:[]}}" data-widget_type="image.default">
-				<div class="elementor-widget-container">
-																<a href="https://ppid.stmi.ac.id/layanan/pengaduan_gratifikasi">
-							<img loading="lazy" decoding="async" width="348" height="89" src="<?= base_url('wp-content/uploads/2024/03/Gratifikasi-STMI.png') ?>" class="attachment-full size-full wp-image-750" alt="" srcset="<?= base_url('wp-content/uploads/2024/03/Gratifikasi-STMI.png') ?> 348w, <?= base_url('wp-content/uploads/2024/03/Gratifikasi-STMI-300x77.png') ?> 300w" sizes="(max-width: 348px) 100vw, 348px" />								</a>
-															</div>
-				</div>
-				</div>
-				</div>
+<?php endforeach; ?>
+</div>
+<?php endforeach; ?>
 					</div>
 				</div>
 		<div class="elementor-element elementor-element-c3fba5b e-flex e-con-boxed e-con e-parent" data-id="c3fba5b" data-element_type="container">
@@ -178,27 +102,28 @@ STMI <br> JAKARTA</h5>				</div>
 				</div>
 		<div class="elementor-element elementor-element-2f34736 e-flex e-con-boxed e-con e-parent" data-id="2f34736" data-element_type="container">
 					<div class="e-con-inner">
-		<div class="elementor-element elementor-element-64b9fa9 e-con-full animated-slow e-flex elementor-invisible e-con e-child" data-id="64b9fa9" data-element_type="container" data-settings="{&quot;background_background&quot;:&quot;gradient&quot;,&quot;animation&quot;:&quot;zoomIn&quot;}">
-				<div class="elementor-element elementor-element-c18b7b4 elementor-view-framed elementor-shape-circle elementor-invisible elementor-widget elementor-widget-icon" data-id="c18b7b4" data-element_type="widget" data-settings="{&quot;_animation&quot;:&quot;fadeIn&quot;}" data-widget_type="icon.default">
+<?php foreach($study_programs as $prog): ?>
+		<div class="elementor-element elementor-element-<?= $prog['container_id'] ?> e-con-full animated-slow e-flex elementor-invisible e-con e-child" data-id="<?= $prog['container_id'] ?>" data-element_type="container" data-settings="{&quot;background_background&quot;:&quot;gradient&quot;,&quot;animation&quot;:&quot;zoomIn&quot;}">
+				<div class="elementor-element elementor-element-<?= $prog['icon_id'] ?> elementor-view-framed elementor-shape-circle elementor-invisible elementor-widget elementor-widget-icon" data-id="<?= $prog['icon_id'] ?>" data-element_type="widget" data-settings="{&quot;_animation&quot;:&quot;fadeIn&quot;}" data-widget_type="icon.default">
 				<div class="elementor-widget-container">
 							<div class="elementor-icon-wrapper">
 			<a class="elementor-icon" href="#">
-			<svg aria-hidden="true" class="e-font-icon-svg e-fas-cogs" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M512.1 191l-8.2 14.3c-3 5.3-9.4 7.5-15.1 5.4-11.8-4.4-22.6-10.7-32.1-18.6-4.6-3.8-5.8-10.5-2.8-15.7l8.2-14.3c-6.9-8-12.3-17.3-15.9-27.4h-16.5c-6 0-11.2-4.3-12.2-10.3-2-12-2.1-24.6 0-37.1 1-6 6.2-10.4 12.2-10.4h16.5c3.6-10.1 9-19.4 15.9-27.4l-8.2-14.3c-3-5.2-1.9-11.9 2.8-15.7 9.5-7.9 20.4-14.2 32.1-18.6 5.7-2.1 12.1.1 15.1 5.4l8.2 14.3c10.5-1.9 21.2-1.9 31.7 0L552 6.3c3-5.3 9.4-7.5 15.1-5.4 11.8 4.4 22.6 10.7 32.1 18.6 4.6 3.8 5.8 10.5 2.8 15.7l-8.2 14.3c6.9 8 12.3 17.3 15.9 27.4h16.5c6 0 11.2 4.3 12.2 10.3 2 12 2.1 24.6 0 37.1-1 6-6.2 10.4-12.2 10.4h-16.5c-3.6 10.1-9 19.4-15.9 27.4l8.2 14.3c3 5.2 1.9 11.9-2.8 15.7-9.5 7.9-20.4 14.2-32.1 18.6-5.7 2.1-12.1-.1-15.1-5.4l-8.2-14.3c-10.4 1.9-21.2 1.9-31.7 0zm-10.5-58.8c38.5 29.6 82.4-14.3 52.8-52.8-38.5-29.7-82.4 14.3-52.8 52.8zM386.3 286.1l33.7 16.8c10.1 5.8 14.5 18.1 10.5 29.1-8.9 24.2-26.4 46.4-42.6 65.8-7.4 8.9-20.2 11.1-30.3 5.3l-29.1-16.8c-16 13.7-34.6 24.6-54.9 31.7v33.6c0 11.6-8.3 21.6-19.7 23.6-24.6 4.2-50.4 4.4-75.9 0-11.5-2-20-11.9-20-23.6V418c-20.3-7.2-38.9-18-54.9-31.7L74 403c-10 5.8-22.9 3.6-30.3-5.3-16.2-19.4-33.3-41.6-42.2-65.7-4-10.9.4-23.2 10.5-29.1l33.3-16.8c-3.9-20.9-3.9-42.4 0-63.4L12 205.8c-10.1-5.8-14.6-18.1-10.5-29 8.9-24.2 26-46.4 42.2-65.8 7.4-8.9 20.2-11.1 30.3-5.3l29.1 16.8c16-13.7 34.6-24.6 54.9-31.7V57.1c0-11.5 8.2-21.5 19.6-23.5 24.6-4.2 50.5-4.4 76-.1 11.5 2 20 11.9 20 23.6v33.6c20.3 7.2 38.9 18 54.9 31.7l29.1-16.8c10-5.8 22.9-3.6 30.3 5.3 16.2 19.4 33.2 41.6 42.1 65.8 4 10.9.1 23.2-10 29.1l-33.7 16.8c3.9 21 3.9 42.5 0 63.5zm-117.6 21.1c59.2-77-28.7-164.9-105.7-105.7-59.2 77 28.7 164.9 105.7 105.7zm243.4 182.7l-8.2 14.3c-3 5.3-9.4 7.5-15.1 5.4-11.8-4.4-22.6-10.7-32.1-18.6-4.6-3.8-5.8-10.5-2.8-15.7l8.2-14.3c-6.9-8-12.3-17.3-15.9-27.4h-16.5c-6 0-11.2-4.3-12.2-10.3-2-12-2.1-24.6 0-37.1 1-6 6.2-10.4 12.2-10.4h16.5c3.6-10.1 9-19.4 15.9-27.4l-8.2-14.3c-3-5.2-1.9-11.9 2.8-15.7 9.5-7.9 20.4-14.2 32.1-18.6 5.7-2.1 12.1.1 15.1 5.4l8.2 14.3c10.5-1.9 21.2-1.9 31.7 0l8.2-14.3c3-5.3 9.4-7.5 15.1-5.4 11.8 4.4 22.6 10.7 32.1 18.6 4.6 3.8 5.8 10.5 2.8 15.7l-8.2 14.3c6.9 8 12.3 17.3 15.9 27.4h16.5c6 0 11.2 4.3 12.2 10.3 2 12 2.1 24.6 0 37.1-1 6-6.2 10.4-12.2 10.4h-16.5c-3.6 10.1-9 19.4-15.9 27.4l8.2 14.3c3 5.2 1.9 11.9-2.8 15.7-9.5 7.9-20.4 14.2-32.1 18.6-5.7 2.1-12.1-.1-15.1-5.4l-8.2-14.3c-10.4 1.9-21.2 1.9-31.7 0zM501.6 431c38.5 29.6 82.4-14.3 52.8-52.8-38.5-29.6-82.4 14.3-52.8 52.8z"></path></svg>			</a>
+			<svg aria-hidden="true" class="<?= $prog['container_id'] === '64b9fa9' ? 'e-font-icon-svg e-fas-cogs' : ($prog['container_id'] === 'f049439' ? 'e-font-icon-svg e-fas-vial' : ($prog['container_id'] === '7f98178' ? 'e-font-icon-svg e-fas-laptop-code' : ($prog['container_id'] === '29352f3' ? 'e-font-icon-svg e-fas-calculator' : 'e-font-icon-svg e-fas-atom'))) ?>" viewBox="0 0 <?= $prog['container_id'] === '64b9fa9' || $prog['container_id'] === '7f98178' ? '640' : ($prog['container_id'] === 'f049439' ? '480' : '448') ?> 512" xmlns="http://www.w3.org/2000/svg"><?= $prog['icon_svg'] ?></svg>			</a>
 		</div>
 						</div>
 				</div>
-				<div class="elementor-element elementor-element-d90cccf elementor-widget elementor-widget-heading" data-id="d90cccf" data-element_type="widget" data-widget_type="heading.default">
+				<div class="elementor-element elementor-element-<?= $prog['heading_id'] ?> elementor-widget elementor-widget-heading" data-id="<?= $prog['heading_id'] ?>" data-element_type="widget" data-widget_type="heading.default">
 				<div class="elementor-widget-container">
-					<h6 class="elementor-heading-title elementor-size-default">Teknik Industri <br> Otomotif</h6>				</div>
+					<h6 class="elementor-heading-title elementor-size-default"><?= $prog['title'] ?></h6>				</div>
 				</div>
-				<div class="elementor-element elementor-element-e8a9d7e elementor-widget elementor-widget-text-editor" data-id="e8a9d7e" data-element_type="widget" data-widget_type="text-editor.default">
+				<div class="elementor-element elementor-element-<?= $prog['text_id'] ?> elementor-widget elementor-widget-text-editor" data-id="<?= $prog['text_id'] ?>" data-element_type="widget" data-widget_type="text-editor.default">
 				<div class="elementor-widget-container">
-									<p>Unggul dan terdepan dalam Teknik Industri Otomotif, serta memimpin dalam pemenuhan tenaga kerja di sektor otomotif regional dan nasional.</p>								</div>
+									<p><?= html_escape($prog['description']) ?></p>								</div>
 				</div>
-				<div class="elementor-element elementor-element-7442f68 elementor-align-center elementor-widget elementor-widget-button" data-id="7442f68" data-element_type="widget" data-widget_type="button.default">
+				<div class="elementor-element elementor-element-<?= $prog['button_id'] ?> elementor-align-center elementor-widget elementor-widget-button" data-id="<?= $prog['button_id'] ?>" data-element_type="widget" data-widget_type="button.default">
 				<div class="elementor-widget-container">
 									<div class="elementor-button-wrapper">
-					<a class="elementor-button elementor-button-link elementor-size-xs" href="https://tio.stmi.ac.id/" target="_blank">
+					<a class="elementor-button elementor-button-link elementor-size-xs" href="<?= html_escape($prog['url']) ?>" target="_blank">
 						<span class="elementor-button-content-wrapper">
 									<span class="elementor-button-text">Selengkapnya</span>
 					</span>
@@ -207,122 +132,7 @@ STMI <br> JAKARTA</h5>				</div>
 								</div>
 				</div>
 				</div>
-		<div class="elementor-element elementor-element-f049439 e-con-full animated-slow e-flex elementor-invisible e-con e-child" data-id="f049439" data-element_type="container" data-settings="{&quot;background_background&quot;:&quot;gradient&quot;,&quot;animation&quot;:&quot;zoomIn&quot;}">
-				<div class="elementor-element elementor-element-ad6679a elementor-view-framed elementor-shape-circle elementor-invisible elementor-widget elementor-widget-icon" data-id="ad6679a" data-element_type="widget" data-settings="{&quot;_animation&quot;:&quot;fadeIn&quot;}" data-widget_type="icon.default">
-				<div class="elementor-widget-container">
-							<div class="elementor-icon-wrapper">
-			<a class="elementor-icon" href="#">
-			<svg aria-hidden="true" class="e-font-icon-svg e-fas-vial" viewBox="0 0 480 512" xmlns="http://www.w3.org/2000/svg"><path d="M477.7 186.1L309.5 18.3c-3.1-3.1-8.2-3.1-11.3 0l-34 33.9c-3.1 3.1-3.1 8.2 0 11.3l11.2 11.1L33 316.5c-38.8 38.7-45.1 102-9.4 143.5 20.6 24 49.5 36 78.4 35.9 26.4 0 52.8-10 72.9-30.1l246.3-245.7 11.2 11.1c3.1 3.1 8.2 3.1 11.3 0l34-33.9c3.1-3 3.1-8.1 0-11.2zM318 256H161l148-147.7 78.5 78.3L318 256z"></path></svg>			</a>
-		</div>
-						</div>
-				</div>
-				<div class="elementor-element elementor-element-69cbda6 elementor-widget elementor-widget-heading" data-id="69cbda6" data-element_type="widget" data-widget_type="heading.default">
-				<div class="elementor-widget-container">
-					<h6 class="elementor-heading-title elementor-size-default">Teknik Kimia Polimer</h6>				</div>
-				</div>
-				<div class="elementor-element elementor-element-baa634f elementor-widget elementor-widget-text-editor" data-id="baa634f" data-element_type="widget" data-widget_type="text-editor.default">
-				<div class="elementor-widget-container">
-									<p>Menjadi pelopor pendidikan Teknik Kimia berbasis polimer untuk menghasilkan tenaga kerja unggul dan berdaya saing global di industri otomotif.</p>								</div>
-				</div>
-				<div class="elementor-element elementor-element-670ff96 elementor-align-center elementor-widget elementor-widget-button" data-id="670ff96" data-element_type="widget" data-widget_type="button.default">
-				<div class="elementor-widget-container">
-									<div class="elementor-button-wrapper">
-					<a class="elementor-button elementor-button-link elementor-size-xs" href="https://tkp.stmi.ac.id/" target="_blank">
-						<span class="elementor-button-content-wrapper">
-									<span class="elementor-button-text">Selengkapnya</span>
-					</span>
-					</a>
-				</div>
-								</div>
-				</div>
-				</div>
-		<div class="elementor-element elementor-element-7f98178 e-con-full animated-slow e-flex elementor-invisible e-con e-child" data-id="7f98178" data-element_type="container" data-settings="{&quot;background_background&quot;:&quot;gradient&quot;,&quot;animation&quot;:&quot;zoomIn&quot;}">
-				<div class="elementor-element elementor-element-57f9592 elementor-view-framed elementor-shape-circle elementor-invisible elementor-widget elementor-widget-icon" data-id="57f9592" data-element_type="widget" data-settings="{&quot;_animation&quot;:&quot;fadeIn&quot;}" data-widget_type="icon.default">
-				<div class="elementor-widget-container">
-							<div class="elementor-icon-wrapper">
-			<a class="elementor-icon" href="#">
-			<svg aria-hidden="true" class="e-font-icon-svg e-fas-laptop-code" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"><path d="M255.03 261.65c6.25 6.25 16.38 6.25 22.63 0l11.31-11.31c6.25-6.25 6.25-16.38 0-22.63L253.25 192l35.71-35.72c6.25-6.25 6.25-16.38 0-22.63l-11.31-11.31c-6.25-6.25-16.38-6.25-22.63 0l-58.34 58.34c-6.25 6.25-6.25 16.38 0 22.63l58.35 58.34zm96.01-11.3l11.31 11.31c6.25 6.25 16.38 6.25 22.63 0l58.34-58.34c6.25-6.25 6.25-16.38 0-22.63l-58.34-58.34c-6.25-6.25-16.38-6.25-22.63 0l-11.31 11.31c-6.25 6.25-6.25 16.38 0 22.63L386.75 192l-35.71 35.72c-6.25 6.25-6.25 16.38 0 22.63zM624 416H381.54c-.74 19.81-14.71 32-32.74 32H288c-18.69 0-33.02-17.47-32.77-32H16c-8.8 0-16 7.2-16 16v16c0 35.2 28.8 64 64 64h512c35.2 0 64-28.8 64-64v-16c0-8.8-7.2-16-16-16zM576 48c0-26.4-21.6-48-48-48H112C85.6 0 64 21.6 64 48v336h512V48zm-64 272H128V64h384v256z"></path></svg>			</a>
-		</div>
-						</div>
-				</div>
-				<div class="elementor-element elementor-element-4f06a0c elementor-widget elementor-widget-heading" data-id="4f06a0c" data-element_type="widget" data-widget_type="heading.default">
-				<div class="elementor-widget-container">
-					<h6 class="elementor-heading-title elementor-size-default">Sistem Informasi Industri Otomotif</h6>				</div>
-				</div>
-				<div class="elementor-element elementor-element-6d47d8e elementor-widget elementor-widget-text-editor" data-id="6d47d8e" data-element_type="widget" data-widget_type="text-editor.default">
-				<div class="elementor-widget-container">
-									<p>Penyedia Sumber Daya Manusia di bidang Sistem Informasi yang kompeten dan unggul untuk sektor industri dalam negeri.</p>								</div>
-				</div>
-				<div class="elementor-element elementor-element-7a5982b elementor-align-center elementor-widget elementor-widget-button" data-id="7a5982b" data-element_type="widget" data-widget_type="button.default">
-				<div class="elementor-widget-container">
-									<div class="elementor-button-wrapper">
-					<a class="elementor-button elementor-button-link elementor-size-xs" href="https://siio.stmi.ac.id/" target="_blank">
-						<span class="elementor-button-content-wrapper">
-									<span class="elementor-button-text">Selengkapnya</span>
-					</span>
-					</a>
-				</div>
-								</div>
-				</div>
-				</div>
-		<div class="elementor-element elementor-element-29352f3 e-con-full animated-slow e-flex elementor-invisible e-con e-child" data-id="29352f3" data-element_type="container" data-settings="{&quot;background_background&quot;:&quot;gradient&quot;,&quot;animation&quot;:&quot;zoomIn&quot;}">
-				<div class="elementor-element elementor-element-84ab0a9 elementor-view-framed elementor-shape-circle elementor-invisible elementor-widget elementor-widget-icon" data-id="84ab0a9" data-element_type="widget" data-settings="{&quot;_animation&quot;:&quot;fadeIn&quot;}" data-widget_type="icon.default">
-				<div class="elementor-widget-container">
-							<div class="elementor-icon-wrapper">
-			<a class="elementor-icon" href="#">
-			<svg aria-hidden="true" class="e-font-icon-svg e-fas-calculator" viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><path d="M400 0H48C22.4 0 0 22.4 0 48v416c0 25.6 22.4 48 48 48h352c25.6 0 48-22.4 48-48V48c0-25.6-22.4-48-48-48zM128 435.2c0 6.4-6.4 12.8-12.8 12.8H76.8c-6.4 0-12.8-6.4-12.8-12.8v-38.4c0-6.4 6.4-12.8 12.8-12.8h38.4c6.4 0 12.8 6.4 12.8 12.8v38.4zm0-128c0 6.4-6.4 12.8-12.8 12.8H76.8c-6.4 0-12.8-6.4-12.8-12.8v-38.4c0-6.4 6.4-12.8 12.8-12.8h38.4c6.4 0 12.8 6.4 12.8 12.8v38.4zm128 128c0 6.4-6.4 12.8-12.8 12.8h-38.4c-6.4 0-12.8-6.4-12.8-12.8v-38.4c0-6.4 6.4-12.8 12.8-12.8h38.4c6.4 0 12.8 6.4 12.8 12.8v38.4zm0-128c0 6.4-6.4 12.8-12.8 12.8h-38.4c-6.4 0-12.8-6.4-12.8-12.8v-38.4c0-6.4 6.4-12.8 12.8-12.8h38.4c6.4 0 12.8 6.4 12.8 12.8v38.4zm128 128c0 6.4-6.4 12.8-12.8 12.8h-38.4c-6.4 0-12.8-6.4-12.8-12.8V268.8c0-6.4 6.4-12.8 12.8-12.8h38.4c6.4 0 12.8 6.4 12.8 12.8v166.4zm0-256c0 6.4-6.4 12.8-12.8 12.8H76.8c-6.4 0-12.8-6.4-12.8-12.8V76.8C64 70.4 70.4 64 76.8 64h294.4c6.4 0 12.8 6.4 12.8 12.8v102.4z"></path></svg>			</a>
-		</div>
-						</div>
-				</div>
-				<div class="elementor-element elementor-element-b02f143 elementor-widget elementor-widget-heading" data-id="b02f143" data-element_type="widget" data-widget_type="heading.default">
-				<div class="elementor-widget-container">
-					<h6 class="elementor-heading-title elementor-size-default">Administrasi Bisnis Otomotif</h6>				</div>
-				</div>
-				<div class="elementor-element elementor-element-2a44ec3 elementor-widget elementor-widget-text-editor" data-id="2a44ec3" data-element_type="widget" data-widget_type="text-editor.default">
-				<div class="elementor-widget-container">
-									<p>Menjadi pelopor unit pendidikan menghasilkan tenaga kerja unggul di bidang administrasi bisnis industri otomotif.</p>								</div>
-				</div>
-				<div class="elementor-element elementor-element-30eb295 elementor-align-center elementor-widget elementor-widget-button" data-id="30eb295" data-element_type="widget" data-widget_type="button.default">
-				<div class="elementor-widget-container">
-									<div class="elementor-button-wrapper">
-					<a class="elementor-button elementor-button-link elementor-size-xs" href="https://abo.stmi.ac.id/" target="_blank">
-						<span class="elementor-button-content-wrapper">
-									<span class="elementor-button-text">Selengkapnya</span>
-					</span>
-					</a>
-				</div>
-								</div>
-				</div>
-				</div>
-		<div class="elementor-element elementor-element-bd762c0 e-con-full animated-slow e-flex elementor-invisible e-con e-child" data-id="bd762c0" data-element_type="container" data-settings="{&quot;background_background&quot;:&quot;gradient&quot;,&quot;animation&quot;:&quot;zoomIn&quot;}">
-				<div class="elementor-element elementor-element-54f1231 elementor-view-framed elementor-shape-circle elementor-invisible elementor-widget elementor-widget-icon" data-id="54f1231" data-element_type="widget" data-settings="{&quot;_animation&quot;:&quot;fadeIn&quot;}" data-widget_type="icon.default">
-				<div class="elementor-widget-container">
-							<div class="elementor-icon-wrapper">
-			<a class="elementor-icon" href="#">
-			<svg aria-hidden="true" class="e-font-icon-svg e-fas-atom" viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><path d="M223.99908,224a32,32,0,1,0,32.00782,32A32.06431,32.06431,0,0,0,223.99908,224Zm214.172-96c-10.877-19.5-40.50979-50.75-116.27544-41.875C300.39168,34.875,267.63386,0,223.99908,0s-76.39066,34.875-97.89653,86.125C50.3369,77.375,20.706,108.5,9.82907,128-6.54984,157.375-5.17484,201.125,34.958,256-5.17484,310.875-6.54984,354.625,9.82907,384c29.13087,52.375,101.64652,43.625,116.27348,41.875C147.60842,477.125,180.36429,512,223.99908,512s76.3926-34.875,97.89652-86.125c14.62891,1.75,87.14456,10.5,116.27544-41.875C454.55,354.625,453.175,310.875,413.04017,256,453.175,201.125,454.55,157.375,438.171,128ZM63.33886,352c-4-7.25-.125-24.75,15.00391-48.25,6.87695,6.5,14.12891,12.875,21.88087,19.125,1.625,13.75,4,27.125,6.75,40.125C82.34472,363.875,67.09081,358.625,63.33886,352Zm36.88478-162.875c-7.752,6.25-15.00392,12.625-21.88087,19.125-15.12891-23.5-19.00392-41-15.00391-48.25,3.377-6.125,16.37891-11.5,37.88478-11.5,1.75,0,3.875.375,5.75.375C104.09864,162.25,101.84864,175.625,100.22364,189.125ZM223.99908,64c9.50195,0,22.25586,13.5,33.88282,37.25-11.252,3.75-22.50391,8-33.88282,12.875-11.377-4.875-22.62892-9.125-33.88283-12.875C201.74516,77.5,214.49712,64,223.99908,64Zm0,384c-9.502,0-22.25392-13.5-33.88283-37.25,11.25391-3.75,22.50587-8,33.88283-12.875C235.378,402.75,246.62994,407,257.8819,410.75,246.25494,434.5,233.501,448,223.99908,448Zm0-112a80,80,0,1,1,80-80A80.00023,80.00023,0,0,1,223.99908,336ZM384.6593,352c-3.625,6.625-19.00392,11.875-43.63479,11,2.752-13,5.127-26.375,6.752-40.125,7.75195-6.25,15.00391-12.625,21.87891-19.125C384.7843,327.25,388.6593,344.75,384.6593,352ZM369.65538,208.25c-6.875-6.5-14.127-12.875-21.87891-19.125-1.625-13.5-3.875-26.875-6.752-40.25,1.875,0,4.002-.375,5.752-.375,21.50391,0,34.50782,5.375,37.88283,11.5C388.6593,167.25,384.7843,184.75,369.65538,208.25Z"></path></svg>			</a>
-		</div>
-						</div>
-				</div>
-				<div class="elementor-element elementor-element-7fff532 elementor-widget elementor-widget-heading" data-id="7fff532" data-element_type="widget" data-widget_type="heading.default">
-				<div class="elementor-widget-container">
-					<h6 class="elementor-heading-title elementor-size-default">Teknologi Rekayasa Otomotif</h6>				</div>
-				</div>
-				<div class="elementor-element elementor-element-2e95780 elementor-widget elementor-widget-text-editor" data-id="2e95780" data-element_type="widget" data-widget_type="text-editor.default">
-				<div class="elementor-widget-container">
-									<p>Menjadi program vokasional terdepan yang menghasilkan tenaga kerja unggul dalam bidang desain dan teknologi manufaktur tooling otomotif</p>								</div>
-				</div>
-				<div class="elementor-element elementor-element-97a47f8 elementor-align-center elementor-widget elementor-widget-button" data-id="97a47f8" data-element_type="widget" data-widget_type="button.default">
-				<div class="elementor-widget-container">
-									<div class="elementor-button-wrapper">
-					<a class="elementor-button elementor-button-link elementor-size-xs" href="https://tro.stmi.ac.id/" target="_blank">
-						<span class="elementor-button-content-wrapper">
-									<span class="elementor-button-text">Selengkapnya</span>
-					</span>
-					</a>
-				</div>
-								</div>
-				</div>
-				</div>
+<?php endforeach; ?>
 					</div>
 				</div>
 		<div class="elementor-element elementor-element-1c25c44 e-flex e-con-boxed e-con e-parent" data-id="1c25c44" data-element_type="container">
@@ -347,7 +157,7 @@ STMI <br> JAKARTA</h5>				</div>
 		<div class="elementor-element elementor-element-8da43ed e-flex e-con-boxed e-con e-parent" data-id="8da43ed" data-element_type="container">
 					<div class="e-con-inner">
 		<div class="elementor-element elementor-element-7d87a38 e-con-full animated-slow e-flex elementor-invisible e-con e-child" data-id="7d87a38" data-element_type="container" data-settings="{&quot;animation&quot;:&quot;fadeInLeft&quot;}">
-				<div class="elementor-element elementor-element-d603588 elementor-widget elementor-widget-video" data-id="d603588" data-element_type="widget" data-settings="{&quot;youtube_url&quot;:&quot;https:\/\/youtu.be\/kTt11d4Twik&quot;,&quot;loop&quot;:&quot;yes&quot;,&quot;video_type&quot;:&quot;youtube&quot;,&quot;controls&quot;:&quot;yes&quot;}" data-widget_type="video.default">
+				<div class="elementor-element elementor-element-d603588 elementor-widget elementor-widget-video" data-id="d603588" data-element_type="widget" data-settings="{&quot;youtube_url&quot;:&quot;<?= isset($home_options['video_url']) ? html_escape(str_replace('/', '\/', $home_options['video_url'])) : '' ?>&quot;,&quot;loop&quot;:&quot;yes&quot;,&quot;video_type&quot;:&quot;youtube&quot;,&quot;controls&quot;:&quot;yes&quot;}" data-widget_type="video.default">
 				<div class="elementor-widget-container">
 							<div class="elementor-wrapper elementor-open-inline">
 			<div class="elementor-video"></div>		</div>
@@ -366,58 +176,41 @@ STMI <br> JAKARTA</h5>				</div>
 				</div>
 					</div>
 				</div>
-		<div class="elementor-element elementor-element-9e7ab36 e-con-full e-flex e-con e-child" data-id="9e7ab36" data-element_type="container">
-		<div class="elementor-element elementor-element-65b0ae6 e-con-full e-flex e-con e-child" data-id="65b0ae6" data-element_type="container">
-				<div class="elementor-element elementor-element-344313a elementor-widget elementor-widget-image" data-id="344313a" data-element_type="widget" data-widget_type="image.default">
+<?php 
+$partner_css_map = [
+    ['container_id' => '65b0ae6', 'widget_id' => '344313a'],
+    ['container_id' => '9043359', 'widget_id' => 'd5a33bd'],
+    ['container_id' => 'c423b5e', 'widget_id' => 'f4dcff6'],
+    ['container_id' => '0714c57', 'widget_id' => '783bc0f'],
+    ['container_id' => 'c406723', 'widget_id' => 'c473515'],
+    ['container_id' => '5e1b92b', 'widget_id' => '72be9fd'],
+    ['container_id' => '4fea60c', 'widget_id' => '4a0eace'],
+    ['container_id' => 'e45c5fc', 'widget_id' => 'd96a3ce'],
+];
+$row_ids = ['9e7ab36', 'aeb7343'];
+
+$chunks = array_chunk($home_partners, 4);
+foreach($chunks as $i => $chunk):
+    $row_id = isset($row_ids[$i]) ? $row_ids[$i] : 'aeb7343';
+?>
+		<div class="elementor-element elementor-element-<?= $row_id ?> e-con-full e-flex e-con e-child" data-id="<?= $row_id ?>" data-element_type="container">
+<?php foreach($chunk as $j => $partner): 
+        $idx = $i * 4 + $j;
+        $c_id = isset($partner_css_map[$idx]) ? $partner_css_map[$idx]['container_id'] : 'e45c5fc';
+        $w_id = isset($partner_css_map[$idx]) ? $partner_css_map[$idx]['widget_id'] : 'd96a3ce';
+?>
+				<div class="elementor-element elementor-element-<?= $c_id ?> e-con-full e-flex e-con e-child" data-id="<?= $c_id ?>" data-element_type="container">
+				<div class="elementor-element elementor-element-<?= $w_id ?> elementor-widget elementor-widget-image" data-id="<?= $w_id ?>" data-element_type="widget" data-widget_type="image.default">
 				<div class="elementor-widget-container">
-															<img loading="lazy" decoding="async" width="150" height="150" src="<?= base_url('wp-content/uploads/2024/03/Logo-PT.-Mada-Wikri-Tunggal-150x150-1.jpg') ?>" class="attachment-full size-full wp-image-1050" alt="" />															</div>
-				</div>
-				</div>
-		<div class="elementor-element elementor-element-9043359 e-con-full e-flex e-con e-child" data-id="9043359" data-element_type="container">
-				<div class="elementor-element elementor-element-d5a33bd elementor-widget elementor-widget-image" data-id="d5a33bd" data-element_type="widget" data-widget_type="image.default">
-				<div class="elementor-widget-container">
-															<img loading="lazy" decoding="async" width="150" height="150" src="<?= base_url('wp-content/uploads/2024/03/Logo-PT-Hasura-Mitra-Gemilang-150x150-1.jpg') ?>" class="attachment-full size-full wp-image-1049" alt="" />															</div>
-				</div>
-				</div>
-		<div class="elementor-element elementor-element-c423b5e e-con-full e-flex e-con e-child" data-id="c423b5e" data-element_type="container">
-				<div class="elementor-element elementor-element-f4dcff6 elementor-widget elementor-widget-image" data-id="f4dcff6" data-element_type="widget" data-widget_type="image.default">
-				<div class="elementor-widget-container">
-															<img loading="lazy" decoding="async" width="150" height="150" src="<?= base_url('wp-content/uploads/2024/03/Logo-PT-Bumimulia-Indah-Lestari-1-1-150x150-1.jpg') ?>" class="attachment-full size-full wp-image-1048" alt="" />															</div>
-				</div>
-				</div>
-		<div class="elementor-element elementor-element-0714c57 e-con-full e-flex e-con e-child" data-id="0714c57" data-element_type="container">
-				<div class="elementor-element elementor-element-783bc0f elementor-widget elementor-widget-image" data-id="783bc0f" data-element_type="widget" data-widget_type="image.default">
-				<div class="elementor-widget-container">
-															<img loading="lazy" decoding="async" width="150" height="150" src="<?= base_url('wp-content/uploads/2024/03/Logo-PT-Autoplastik-Indonesia-150x150-1.jpg') ?>" class="attachment-full size-full wp-image-1047" alt="" />															</div>
+					<?php if($partner['url']): ?><a href="<?= html_escape($partner['url']) ?>" target="_blank"><?php endif; ?>
+					<img loading="lazy" decoding="async" width="150" height="150" src="<?= base_url(html_escape($partner['image_path'])) ?>" class="attachment-full size-full" alt="<?= html_escape($partner['name']) ?>" />
+					<?php if($partner['url']): ?></a><?php endif; ?>
 				</div>
 				</div>
 				</div>
-		<div class="elementor-element elementor-element-aeb7343 e-con-full e-flex e-con e-child" data-id="aeb7343" data-element_type="container">
-		<div class="elementor-element elementor-element-c406723 e-con-full e-flex e-con e-child" data-id="c406723" data-element_type="container">
-				<div class="elementor-element elementor-element-c473515 elementor-widget elementor-widget-image" data-id="c473515" data-element_type="widget" data-widget_type="image.default">
-				<div class="elementor-widget-container">
-															<img loading="lazy" decoding="async" width="150" height="150" src="<?= base_url('wp-content/uploads/2024/03/Logo-PT-Emblem-Asia-150x150-1.jpg') ?>" class="attachment-full size-full wp-image-1046" alt="" />															</div>
-				</div>
-				</div>
-		<div class="elementor-element elementor-element-5e1b92b e-con-full e-flex e-con e-child" data-id="5e1b92b" data-element_type="container">
-				<div class="elementor-element elementor-element-72be9fd elementor-widget elementor-widget-image" data-id="72be9fd" data-element_type="widget" data-widget_type="image.default">
-				<div class="elementor-widget-container">
-															<img loading="lazy" decoding="async" width="150" height="150" src="<?= base_url('wp-content/uploads/2024/03/Logo-PT-Injeksi-Plastik-Pasifik-150x150-1.jpg') ?>" class="attachment-full size-full wp-image-1045" alt="" />															</div>
-				</div>
-				</div>
-		<div class="elementor-element elementor-element-4fea60c e-con-full e-flex e-con e-child" data-id="4fea60c" data-element_type="container">
-				<div class="elementor-element elementor-element-4a0eace elementor-widget elementor-widget-image" data-id="4a0eace" data-element_type="widget" data-widget_type="image.default">
-				<div class="elementor-widget-container">
-															<img loading="lazy" decoding="async" width="150" height="150" src="<?= base_url('wp-content/uploads/2024/03/Inti-Ganda-Perdana.jpg') ?>" class="attachment-full size-full wp-image-1549" alt="" />															</div>
-				</div>
-				</div>
-		<div class="elementor-element elementor-element-e45c5fc e-con-full e-flex e-con e-child" data-id="e45c5fc" data-element_type="container">
-				<div class="elementor-element elementor-element-d96a3ce elementor-widget elementor-widget-image" data-id="d96a3ce" data-element_type="widget" data-widget_type="image.default">
-				<div class="elementor-widget-container">
-															<img loading="lazy" decoding="async" width="150" height="150" src="<?= base_url('wp-content/uploads/2024/03/United-Tractors.jpg') ?>" class="attachment-full size-full wp-image-1550" alt="" />															</div>
-				</div>
-				</div>
-				</div>
+<?php endforeach; ?>
+		</div>
+<?php endforeach; ?>
 		<div class="elementor-element elementor-element-37c411f e-flex e-con-boxed e-con e-child" data-id="37c411f" data-element_type="container">
 					<div class="e-con-inner">
 				<div class="elementor-element elementor-element-d9b340c elementor-align-center elementor-widget elementor-widget-button" data-id="d9b340c" data-element_type="widget" data-widget_type="button.default">
