@@ -21,12 +21,15 @@ class MY_Controller extends CI_Controller {
 	{
 		$uri = $this->uri->uri_string();
 
+		$this->load->model('footer_link_model');
+
 		$data = array_merge(array(
 			'canonical'              => current_url(),
 			'gt_orig_url'            => ($uri === '') ? '/' : '/'.$uri.'/',
 			'menu_active'            => array(),
 			'img_hints'              => array(),
 			'footer_logo_post_image' => FALSE,
+			'footer_links'           => $this->footer_link_model->all(),
 		), $page, $data);
 
 		$html = $this->load->view('layouts/main', $data, TRUE);

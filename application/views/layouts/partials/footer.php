@@ -11,17 +11,8 @@ hs.src = ('//s10.histats.com/js15_as.js');
 (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(hs);
 })();</script>
 <noscript><a href="<?= site_url('') ?>" target="_blank"><img <?= wp_img_hint($img_hints, 'footer:1') ?> src="//sstatic1.histats.com/0.gif?2578358&amp;101" alt="" border="0"></a></noscript>
-<!-- Histats.com  END  --></div></div></div><div data-column="widget-area-1"><div class="ct-widget is-layout-flow widget_nav_menu" id="nav_menu-2"><h3 class="widget-title">Link :</h3><div class="menu-footer-menu-container"><ul id="menu-footer-menu" class="widget-menu"><li id="menu-item-619" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-619"><a href="#">Kementerian Perindustrian RI</a></li>
-<li id="menu-item-620" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-620"><a href="#">Akreditasi BAN-PT</a></li>
-<li id="menu-item-621" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-621"><a href="#">FB Grup Prodi Sistem Informasi</a></li>
-<li id="menu-item-622" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-622"><a href="#">Pendaftaran Mahasiswa Baru</a></li>
-<li id="menu-item-623" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-623"><a href="#">Tracer Studi Alumni</a></li>
-<li id="menu-item-624" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-624"><a href="#">E-Learning STMI</a></li>
-<li id="menu-item-625" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-625"><a href="#">P2M STMI</a></li>
-<li id="menu-item-626" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-626"><a href="#">FB Group Prodi Manajemen Bisnis Industri</a></li>
-<li id="menu-item-627" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-627"><a href="#">Katalog Perpustakaan Online STMI</a></li>
-<li id="menu-item-628" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-628"><a href="#">Satuan Penjaminan Mutu</a></li>
-</ul></div></div></div><div data-column="widget-area-3"><div class="ct-widget is-layout-flow widget_text" id="text-4"><h3 class="widget-title">Alamat :</h3>			<div class="textwidget"><p>Jl Letjen Suprapto No. 26 RT. 000 RW. 000<br />
+<!-- Histats.com  END  --></div></div></div><div data-column="widget-area-1"><div class="ct-widget is-layout-flow widget_nav_menu" id="nav_menu-2"><h3 class="widget-title">Link :</h3><div class="menu-footer-menu-container"><ul id="menu-footer-menu" class="widget-menu"><?php foreach ($footer_links as $i => $link): ?><li id="menu-item-<?= 619 + $i ?>" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-<?= 619 + $i ?>"><a href="<?= html_escape($link['url']) ?>"><?= html_escape($link['title']) ?></a></li>
+<?php endforeach; ?></ul></div></div></div><div data-column="widget-area-3"><div class="ct-widget is-layout-flow widget_text" id="text-4"><h3 class="widget-title">Alamat :</h3>			<div class="textwidget"><p>Jl Letjen Suprapto No. 26 RT. 000 RW. 000<br />
 Cempaka Putih Timur, Cempaka Putih<br />
 Kota Jakarta Pusat &#8211; 10510</p>
 </div>

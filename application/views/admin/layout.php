@@ -7,6 +7,7 @@ $nav = array(
 	array('media', 'admin/media', 'Media', TRUE),
 	array('terms:category', 'admin/terms/index/category', 'Kategori', TRUE),
 	array('terms:tag', 'admin/terms/index/tag', 'Tag', TRUE),
+	array('footer_links', 'admin/footer_links', 'Link Footer', TRUE),
 	array('users', 'admin/users', 'Pengguna', $user['role'] === 'admin'),
 );
 $current = ($section === 'terms') ? 'terms:'.($sub === 'tag' ? 'tag' : 'category') : $section;
