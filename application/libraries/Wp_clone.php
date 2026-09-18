@@ -492,6 +492,12 @@ class Wp_clone {
 		$html = str_replace('0851-552-44455', '<?= html_escape($contacts[\'whatsapp\']) ?>', $html);
 		$html = str_replace('https:\/\/web.whatsapp.com\/send?phone=6285155244455', '<?= str_replace(\'/\', \'\\/\', html_escape($contacts[\'whatsapp_url\'])) ?>', $html);
 		$html = str_replace('"value":"6285155244455"', '"value":"<?= html_escape(preg_replace(\'/[^0-9]/\', \'\', strpos($contacts[\'whatsapp\'], \'0\') === 0 ? \'62\' . substr($contacts[\'whatsapp\'], 1) : $contacts[\'whatsapp\'])) ?>"', $html);
+		
+		$html = str_replace('https://twitter.com/stmijakarta?lang=en', '<?= html_escape($contacts[\'social_twitter\']) ?>', $html);
+		$html = str_replace('https://www.instagram.com/stmijakarta/?hl=en', '<?= html_escape($contacts[\'social_instagram\']) ?>', $html);
+		$html = str_replace('https://www.facebook.com/PoliteknikSTMIJakarta', '<?= html_escape($contacts[\'social_facebook\']) ?>', $html);
+		$html = str_replace('https://www.youtube.com/channel/UCFalakPYmXniFeqHapt1k8w', '<?= html_escape($contacts[\'social_youtube\']) ?>', $html);
+		
 		return $html;
 	}
 }

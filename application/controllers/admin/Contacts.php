@@ -14,10 +14,14 @@ class Contacts extends Admin_Controller {
 		if ($this->input->method() === 'post')
 		{
 			$data = array(
-				'email'        => $this->input->post('email'),
-				'phone'        => $this->input->post('phone'),
-				'whatsapp'     => $this->input->post('whatsapp'),
-				'whatsapp_url' => $this->input->post('whatsapp_url'),
+				'email'            => $this->input->post('email'),
+				'phone'            => $this->input->post('phone'),
+				'whatsapp'         => $this->input->post('whatsapp'),
+				'whatsapp_url'     => $this->input->post('whatsapp_url'),
+				'social_twitter'   => $this->input->post('social_twitter'),
+				'social_instagram' => $this->input->post('social_instagram'),
+				'social_facebook'  => $this->input->post('social_facebook'),
+				'social_youtube'   => $this->input->post('social_youtube'),
 			);
 
 			$this->contact_model->update_all($data);

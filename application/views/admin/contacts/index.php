@@ -21,6 +21,24 @@
 			<input type="url" name="whatsapp_url" class="form-control" value="<?= html_escape($contacts['whatsapp_url']) ?>" required>
 			<p class="hint">URL tujuan saat WhatsApp diklik. Biasanya diawali dengan https://web.whatsapp.com/send?phone=</p>
 		</div>
+		<hr style="margin:20px 0;border:0;border-top:1px solid #ddd">
+		<h3>Tautan Sosial Media</h3>
+		<div class="form-group">
+			<label>X (Twitter) URL</label>
+			<input type="url" name="social_twitter" class="form-control" value="<?= html_escape($contacts['social_twitter'] ?? '') ?>">
+		</div>
+		<div class="form-group">
+			<label>Instagram URL</label>
+			<input type="url" name="social_instagram" class="form-control" value="<?= html_escape($contacts['social_instagram'] ?? '') ?>">
+		</div>
+		<div class="form-group">
+			<label>Facebook URL</label>
+			<input type="url" name="social_facebook" class="form-control" value="<?= html_escape($contacts['social_facebook'] ?? '') ?>">
+		</div>
+		<div class="form-group">
+			<label>YouTube URL</label>
+			<input type="url" name="social_youtube" class="form-control" value="<?= html_escape($contacts['social_youtube'] ?? '') ?>">
+		</div>
 		<div class="form-actions">
 			<button type="submit" class="btn btn-primary">Simpan Pengaturan</button>
 		</div>

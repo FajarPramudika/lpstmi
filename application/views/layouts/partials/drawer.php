@@ -183,7 +183,7 @@
 			
 			
 							
-				<a href="https://twitter.com/stmijakarta?lang=en" data-network="twitter" aria-label="X (Twitter)" target="_blank" rel="noopener noreferrer">
+				<a href="<?= html_escape($contacts['social_twitter']) ?>" data-network="twitter" aria-label="X (Twitter)" target="_blank" rel="noopener noreferrer">
 					<span class="ct-icon-container">
 					<svg
 					width="20px"
@@ -194,7 +194,7 @@
 					</svg>
 				</span>				</a>
 							
-				<a href="https://www.instagram.com/stmijakarta/?hl=en" data-network="instagram" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
+				<a href="<?= html_escape($contacts['social_instagram']) ?>" data-network="instagram" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
 					<span class="ct-icon-container">
 					<svg
 					width="20"
@@ -206,7 +206,7 @@
 					</svg>
 				</span>				</a>
 							
-				<a href="https://www.facebook.com/PoliteknikSTMIJakarta" data-network="facebook" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
+				<a href="<?= html_escape($contacts['social_facebook']) ?>" data-network="facebook" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
 					<span class="ct-icon-container">
 					<svg
 					width="20px"
@@ -217,7 +217,7 @@
 					</svg>
 				</span>				</a>
 							
-				<a href="https://www.youtube.com/channel/UCFalakPYmXniFeqHapt1k8w" data-network="youtube" aria-label="YouTube" target="_blank" rel="noopener noreferrer">
+				<a href="<?= html_escape($contacts['social_youtube']) ?>" data-network="youtube" aria-label="YouTube" target="_blank" rel="noopener noreferrer">
 					<span class="ct-icon-container">
 					<svg
 					width="20"
