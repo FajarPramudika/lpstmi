@@ -325,6 +325,13 @@ class Tools extends CI_Controller {
 		$active = array();
 		$hints = array();
 		$params = array();
+		foreach (array('drawer', 'header', 'footer', 'foot') as $name)
+		{
+			if (isset($parts[$name])) {
+				$parts[$name] = $clone->neutralize_contacts($parts[$name]);
+			}
+		}
+
 		foreach (array('drawer', 'header', 'footer') as $name)
 		{
 			$parts[$name] = $clone->neutralize_menu($parts[$name], $active);

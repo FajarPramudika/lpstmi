@@ -22,6 +22,7 @@ class MY_Controller extends CI_Controller {
 		$uri = $this->uri->uri_string();
 
 		$this->load->model('footer_link_model');
+		$this->load->model('contact_model');
 
 		$data = array_merge(array(
 			'canonical'              => current_url(),
@@ -30,6 +31,7 @@ class MY_Controller extends CI_Controller {
 			'img_hints'              => array(),
 			'footer_logo_post_image' => FALSE,
 			'footer_links'           => $this->footer_link_model->all(),
+			'contacts'               => $this->contact_model->get_all(),
 		), $page, $data);
 
 		$html = $this->load->view('layouts/main', $data, TRUE);

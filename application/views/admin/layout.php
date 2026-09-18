@@ -36,6 +36,10 @@ $flash = $this->session->flashdata('flash');
 			<li class="sep"></li>
 			<li><a href="<?= site_url('admin/users/profile') ?>" class="<?= $current === 'profile' ? 'active' : '' ?>">Profil saya</a></li>
 			<li><a href="<?= site_url() ?>" target="_blank" rel="noopener">Lihat situs &nearr;</a></li>
+			<li class="sep"></li>
+			<li><a href="<?= site_url('admin/pages') ?>" <?= isset($menu_pages) ? 'class="active"' : '' ?>>Halaman</a></li>
+			<li><a href="<?= site_url('admin/footer_links') ?>" <?= isset($menu_footer_links) ? 'class="active"' : '' ?>>Link Footer</a></li>
+			<li><a href="<?= site_url('admin/contacts') ?>" <?= isset($menu_contacts) ? 'class="active"' : '' ?>>Kontak</a></li>
 		</ul>
 		<div class="sidebar-foot">
 			<div><?= html_escape($user['display_name']) ?> <span class="muted">(<?= $user['role'] ?>)</span></div>

@@ -143,7 +143,7 @@
 							
 															<span class="contact-text">
 									
-									humas@stmi.ac.id
+									<?= html_escape($contacts['email']) ?>
 																	</span>
 													</div>
 									</li>
@@ -155,7 +155,7 @@
 							
 															<span class="contact-text">
 									
-									021-42888206
+									<?= html_escape($contacts['phone']) ?>
 																	</span>
 													</div>
 									</li>
@@ -167,7 +167,7 @@
 							
 															<span class="contact-text">
 									
-									0851-552-44455 
+									<?= html_escape($contacts['whatsapp']) ?> 
 																	</span>
 													</div>
 									</li>

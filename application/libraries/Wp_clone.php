@@ -484,4 +484,14 @@ class Wp_clone {
 			$html
 		);
 	}
+
+	public function neutralize_contacts($html)
+	{
+		$html = str_replace('humas@stmi.ac.id', '<?= html_escape($contacts[\'email\']) ?>', $html);
+		$html = str_replace('021-42888206', '<?= html_escape($contacts[\'phone\']) ?>', $html);
+		$html = str_replace('0851-552-44455', '<?= html_escape($contacts[\'whatsapp\']) ?>', $html);
+		$html = str_replace('https:\/\/web.whatsapp.com\/send?phone=6285155244455', '<?= str_replace(\'/\', \'\\/\', html_escape($contacts[\'whatsapp_url\'])) ?>', $html);
+		$html = str_replace('"value":"6285155244455"', '"value":"<?= html_escape(preg_replace(\'/[^0-9]/\', \'\', strpos($contacts[\'whatsapp\'], \'0\') === 0 ? \'62\' . substr($contacts[\'whatsapp\'], 1) : $contacts[\'whatsapp\'])) ?>"', $html);
+		return $html;
+	}
 }
