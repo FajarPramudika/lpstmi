@@ -162,7 +162,8 @@ $config['composer_autoload'] = FALSE;
 | DO NOT CHANGE THIS UNLESS YOU FULLY UNDERSTAND THE REPERCUSSIONS!!
 |
 */
-$config['permitted_uri_chars'] = 'a-z 0-9~%.:_\-';
+// "+" diizinkan untuk URL pencarian /search/<kata>/ (tautan "Show more" live search Blocksy memakai teks ketikan apa adanya).
+$config['permitted_uri_chars'] = 'a-z 0-9~%.:_\-+';
 
 /*
 |--------------------------------------------------------------------------

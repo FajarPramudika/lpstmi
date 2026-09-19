@@ -349,10 +349,11 @@ if ( ! function_exists('wp_paginate_links'))
 	 * Paginasi seperti paginate_links() (end_size 1, mid_size 3) dengan markup Blocksy.
 	 * Halaman 1 = $base_path, halaman N = $base_path/page/N.
 	 */
-	function wp_paginate_links($base_path, $current, $total)
+	function wp_paginate_links($base_path, $current, $total, $query = '')
 	{
-		$url = function ($n) use ($base_path) {
-			return site_url($n === 1 ? $base_path : $base_path.'/page/'.$n);
+		// $query: query string yang ditambahkan ke setiap link (mis. "?s=wisuda" untuk hasil pencarian).
+		$url = function ($n) use ($base_path, $query) {
+			return site_url($n === 1 ? $base_path : ($base_path === '' ? '' : $base_path.'/').'page/'.$n).$query;
 		};
 
 		$links = array();
@@ -577,5 +578,45 @@ if ( ! function_exists('wp_nav_menu_items'))
 		}
 
 		return $html;
+	}
+}
+
+if ( ! function_exists('wp_excerpt_from_html'))
+{
+	/**
+	 * Excerpt otomatis seperti Blocksy (wp_trim_excerpt, 40 kata + "…") dari HTML konten yang sudah dirender:
+	 * tag dibuang, entitas dibiarkan, dibungkus <p> seperti wpautop.
+	 */
+	function wp_excerpt_from_html($html, $length = 40)
+	{
+		$text = preg_replace('@<(script|style)[^>]*?>.*?</\\1>@si', '', $html);
+		$text = trim(strip_tags($text));
+		$words = preg_split('/[\n\r\t ]+/', $text, $length + 1, PREG_SPLIT_NO_EMPTY);
+		if (count($words) > $length)
+		{
+			array_pop($words);
+			$text = implode(' ', $words).'…';
+		}
+		else
+		{
+			$text = implode(' ', $words);
+		}
+
+		return ($text === '') ? '' : '<p>'.$text.'</p>'."\n";
+	}
+}
+
+if ( ! function_exists('wp_js_string'))
+{
+	/**
+	 * Isi string JavaScript berkutip tunggal yang aman di dalam <script> (tidak bisa menutup tag script).
+	 */
+	function wp_js_string($str)
+	{
+		return str_replace(
+			array('\\', "'", '"', "\r", "\n", '<', '>', '&', "\u{2028}", "\u{2029}"),
+			array('\\\\', "\\'", '\\"', '\\r', '\\n', '\\x3C', '\\x3E', '\\x26', '\\u2028', '\\u2029'),
+			(string) $str
+		);
 	}
 }

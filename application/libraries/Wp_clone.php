@@ -61,6 +61,8 @@ class Wp_clone {
 	 */
 	public function clean($html)
 	{
+		// HTTrack menyisipkan "\r\n<!-- Mirrored from ... -->\r\n" di atas dan bawah dokumen; buang beserta baris sisipannya.
+		$html = preg_replace('/\r\n<!-- Mirrored from [^>]*-->\r?\n?/', '', $html);
 		$html = preg_replace('/<!-- Mirrored from [^>]*-->\r?\n?/', '', $html);
 		$html = preg_replace('/<!-- Added by HTTrack -->.*?<!-- \/Added by HTTrack -->\r?\n?/s', '', $html);
 
@@ -69,10 +71,16 @@ class Wp_clone {
 		$html = preg_replace('/<link rel=\'shortlink\'[^>]*\/>\r?\n?/', '', $html);
 		$html = preg_replace('/<link rel="alternate" title="oEmbed \((?:JSON|XML)\)"[^>]*\/>\r?\n?/', '', $html);
 
+		// Link ke domain tanpa path diberi "/" seperti yang dilakukan HTTrack pada halaman yang ia proses,
+		// supaya halaman yang tidak diproses HTTrack (mis. js15_as.html) sama dengan layout bersama.
+		$html = preg_replace('#(\shref=")(https?://[a-z0-9.-]+)(")#i', '$1$2/$3', $html);
+
 		// URL eksternal yang dirusak HTTrack menjadi path relatif: kembalikan ke bentuk aslinya.
 		$html = preg_replace('#(?:\.\./)+((?:s10|sstatic1)\.histats\.com)/#', '//$1/', $html);
 		$html = preg_replace('#(?:\.\./)+(public\.tableau\.com)/#', 'https://$1/', $html);
 		$html = str_replace('//sstatic1.histats.com/0dd88.gif?', '//sstatic1.histats.com/0.gif?', $html);
+		// Halaman yang tidak diproses HTTrack: "&" di URL piksel Histats belum di-escape seperti di halaman lain.
+		$html = str_replace('//sstatic1.histats.com/0.gif?2578358&101"', '//sstatic1.histats.com/0.gif?2578358&amp;101"', $html);
 
 		preg_match_all('/gt-wrapper-(\d+)/', $html, $m);
 		$map = array();
@@ -332,6 +340,13 @@ class Wp_clone {
 		if ($path === '')
 		{
 			return ($rest !== '' && $rest[0] === '?') ? NULL : $this->emit('site', $rest, $mode, $json);
+		}
+
+		// Endpoint yang sekarang ada di CI: dasar REST API (live search Blocksy memanggil wp-json/wp/v2/search)
+		// dan search_url Blocksy (/search/QUERY_STRING/). Bentuk dengan trailing slash dipertahankan.
+		if (($path === 'wp-json' OR $path === 'search/QUERY_STRING') && $rest === '' && substr($original, -1) === '/')
+		{
+			return $this->emit('site', $path.'/', $mode, $json);
 		}
 
 		if (preg_match($this->wp_only, $path) OR ( ! is_file($this->root.$path.'/index.html') && ! in_array($path, $this->truncated(), TRUE)))

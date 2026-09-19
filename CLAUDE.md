@@ -280,10 +280,51 @@ Semua aturan ini sudah diverifikasi byte-per-byte terhadap 186 post + 152 halama
 - **Pengguna:** tambah/ubah/nonaktifkan/hapus (hanya jika tidak punya post), profil sendiri + ganti password (min. 10 karakter).
 - Halaman statis (`config/pages.php` + `views/pages/`) **tidak** diedit lewat admin.
 
+## Halaman 404
+
+- Diambil dari `stmi.ac.id-clone/js15_as.html` (keputusan user): halaman 404 WordPress/Blocksy ("Oops! That page can't be found."
+  + form pencarian) yang tersimpan saat HTTrack meminta `/js15_as.js`. Dikonversi sebagai halaman `error-404` di `config/pages.php`
+  (`verify_url` = `js15_as.js`; `tools verify error-404` OK). `09/30/index.html` adalah duplikat halaman 404 yang sama.
+- Dipakai untuk **semua** 404 publik dengan status HTTP 404: URL tak dikenal (`$route['404_override'] = 'pages/not_found'`) dan
+  setiap `show_404()` di controller turunan `MY_Controller` (`core/MY_Exceptions.php` → `MY_Controller::render_not_found()`).
+  `show_404()` di controller admin dan CLI tetap memakai halaman 404 bawaan CodeIgniter. `/error-404` sendiri juga 404.
+- `data-gt-orig-url` di halaman 404 = `REQUEST_URI` apa adanya (seperti WordPress), bukan `/<uri>/`.
+- `js15_as.html` tidak diproses HTTrack, jadi `Wp_clone::clean()` menormalkan dua hal seperti HTTrack agar sama dengan layout
+  bersama: link ke domain tanpa path diberi `/` (`http://jarvis.stmi.ac.id` → `.../`), dan `&` di URL piksel Histats → `&amp;`.
+- Pembersihan HTTrack sekarang juga membuang baris sisipan `\r\n` sebelum komentar "Mirrored from" (atas & bawah dokumen),
+  sehingga semua halaman berakhir `</body>\n</html>\n` dan diawali `<html lang="en-US">\n<head>` seperti output WordPress asli.
+
+## Pencarian (`MY_Controller::render_search()`, `controllers/Search.php`, `models/Search_model.php`, `views/search/`)
+
+- URL: `/?s=<kata>` (Pages::index), `/page/N?s=<kata>`, `/search/<kata>[/page/N]` (format `search_url` Blocksy; `+` = spasi,
+  `permitted_uri_chars` ditambah `+`). 5 hasil per halaman; halaman di luar jumlah → 404; `/page/N` tanpa `?s` → 404.
+- Yang dicari: post, paket download, dan halaman statis (tabel `page_index`, migrasi 014, diisi
+  `php index.php tools import_page_index` dari `wp-json/wp/v2/pages` clone + cache API live untuk 2 halaman; **jalankan lagi setelah
+  mengonversi halaman statis baru**). Port `WP_Query::parse_search()` & `parse_search_order()`: kata dipecah (frasa dalam kutip,
+  kata tunggal a-z & stopword Inggris dibuang, `-kata` = pengecualian), tiap kata harus ada di judul atau konten; urutan 1 kata =
+  judul memuat kata lalu tanggal; banyak kata = CASE frasa/semua kata/salah satu kata di judul, frasa di konten; lalu tanggal.
+- Markup mengikuti halaman hasil pencarian situs live (acuan disimpan di `application/cache/wp-search/`, diambil 2026-09-19):
+  hero "Search Results for …", kartu grid (`posts/_card_grid` untuk post, `search/_card_page` dengan excerpt otomatis
+  `wp_excerpt_from_html()` 40 kata, `search/_card_download` tanpa excerpt), tanpa hasil = `search-no-results` + form pencarian.
+  Varian head `search` (robots `noindex, follow, …`, feed "Search Results for …") dan foot `search` (Matomo `trackSiteSearch`
+  dengan kata kunci ter-escape `wp_js_string()` dan jumlah hasil). **Diverifikasi identik** dengan acuan live untuk 5 kueri
+  (hasil, urutan, markup; hanya URL paginasi live yang masih `https://stmi.ac.id/page/N/?s=`).
+- Live search Blocksy (modal & sidebar): `rest_url` dan `search_url` di konfigurasi JS sekarang diarahkan ke situs ini
+  (`Wp_clone::map_absolute()` khusus `wp-json/` dan `search/QUERY_STRING/`). Endpoint `wp-json/wp/v2/search` (Search::rest)
+  meniru REST API WordPress: hanya post & halaman (paket download tidak ikut, sama seperti WordPress), field `id`, `title`, `url`,
+  `type`, `subtype`, `ct_featured_media.media_details.sizes`, header `X-WP-Total`/`X-WP-TotalPages`. Hasilnya sama dengan live.
+- Data live lebih baru dari clone (post/paket baru), jadi hasil pencarian CI bisa berbeda isi dengan live; logikanya sama.
+
 ## Fitur dinamis WordPress (belum dimigrasi)
 
-Pencarian, form (pixel-formbuilder), Download Manager, feed RSS, `wp-json`, `xmlrpc`, komentar, widget Chaty/GTranslate.
-`09/30/index.html` di clone adalah halaman **404 WordPress** ("Page not found"), yang bisa dipakai untuk `404_override`.
+**pixel-formbuilder tidak dipakai di situs** (dicek 2026-09-19): tidak ada form plugin ini di halaman, post, paket download,
+JSON WordPress, maupun database (satu-satunya `<form>` di 555 halaman clone adalah form pencarian; `pixelform_form_render`
+= 0). Plugin hanya memuat aset global (CSS/JS, `ajax_obj` ke `admin-ajax.php`) dan `<p class="pixelform_form-alert"></p>`
+yang tersembunyi. Semua itu sudah ikut tersalin apa adanya, jadi tidak ada yang perlu dimigrasi. Jangan dicari lagi; form baru
+(kontak, survei, form builder) adalah fitur baru yang harus disepakati dulu dengan user.
+
+Feed RSS (link feed tetap ada di `<head>` tapi 404), `wp-json` selain pencarian, `xmlrpc`, komentar,
+widget Chaty/GTranslate.
 
 ## Perintah CLI (`php index.php tools …`, controller `Tools`, hanya bisa dari terminal)
 
@@ -297,6 +338,7 @@ Pencarian, form (pixel-formbuilder), Download Manager, feed RSS, `wp-json`, `xml
 | `layout <nama> <path>` | simpan head/foot halaman clone sebagai varian layout bernama |
 | `verify [slug\|all]` | bandingkan halaman statis dengan clone |
 | `import_downloads [ulang]` | impor 131 paket Download Manager dari clone |
+| `import_page_index` | isi data halaman statis untuk pencarian (tabel `page_index`) |
 | `verify_db [single-post\|single-wpdmpro\|archive] [detail]` | bandingkan semua post, paket download & arsip (dari database) dengan clone |
 
 ## Alur kerja per halaman statis

@@ -1,7 +1,6 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 <!doctype html>
 <html lang="en-US">
-
 <head>
 	
 	<meta charset="UTF-8">

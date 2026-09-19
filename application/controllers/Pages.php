@@ -9,6 +9,12 @@ class Pages extends MY_Controller {
 
 	public function index()
 	{
+		// Pencarian WordPress: /?s=<kata>
+		if ($this->input->get('s') !== NULL)
+		{
+			return $this->render_search((string) $this->input->get('s'));
+		}
+
 		// Shortlink WordPress lama: /?p=<ID> -> permalink post.
 		$id = $this->input->get('p');
 		if ($id !== NULL && ctype_digit((string) $id))
@@ -25,6 +31,14 @@ class Pages extends MY_Controller {
 		$this->show('home');
 	}
 
+	/**
+	 * 404_override: URL yang tidak cocok dengan route mana pun.
+	 */
+	public function not_found()
+	{
+		$this->render_not_found();
+	}
+
 	public function show($slug)
 	{
 		$this->config->load('pages');
@@ -35,7 +49,7 @@ class Pages extends MY_Controller {
 			redirect('', 'location', 301);
 		}
 
-		if ( ! isset($pages[$slug]))
+		if ( ! isset($pages[$slug]) OR $slug === 'error-404')
 		{
 			show_404();
 		}

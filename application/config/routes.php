@@ -50,7 +50,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 |		my-controller/my-method	-> my_controller/my_method
 */
 $route['default_controller'] = 'pages';
-$route['404_override'] = '';
+$route['404_override'] = 'pages/not_found';
 $route['translate_uri_dashes'] = FALSE;
 
 // Panel admin (controllers/admin/).
@@ -66,6 +66,12 @@ $route['tag/(:any)'] = 'posts/tag/$1';
 $route['author/(:any)/page/(:num)'] = 'posts/author/$1/$2';
 $route['author/(:any)'] = 'posts/author/$1';
 
+// Pencarian: /?s= (Pages::index), /page/N?s=, /search/<kata>[/page/N], dan live search Blocksy (REST).
+$route['page/(:num)'] = 'search/index/$1';
+$route['search/(:any)/page/(:num)'] = 'search/term/$1/$2';
+$route['search/(:any)'] = 'search/term/$1';
+$route['wp-json/wp/v2/search'] = 'search/rest';
+
 // Paket Download Manager: /download/<slug>, unduh lewat ?wpdmdl=<ID>. Bentuk dua segmen = link lama
 // HTTrack (/download/<slug>/index<hash>.html?wpdmdl=ID), tetap dilayani selama ada ?wpdmdl.
 $route['download/(:any)/(:any)'] = 'downloads/single/$1';
@@ -77,7 +83,8 @@ foreach (call_user_func(function () {
 	return array_keys($config['pages']);
 }) as $slug)
 {
-	if ($slug !== 'home')
+	// home = default_controller; error-404 = halaman 404 (404_override / show_404), bukan URL biasa.
+	if ($slug !== 'home' && $slug !== 'error-404')
 	{
 		$route[$slug] = 'pages/show/'.$slug;
 	}

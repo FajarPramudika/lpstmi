@@ -23,6 +23,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  *   php index.php tools import_downloads [ulang]
  *       Impor paket Download Manager dari clone ke tabel downloads.
  *
+ *   php index.php tools import_page_index
+ *       Isi data halaman statis untuk pencarian (tabel page_index).
+ *
  *   php index.php tools set_login <slug-author> <username> [admin|editor]
  *       Beri akses login panel admin ke author; password acak ditampilkan sekali.
  *
@@ -117,6 +120,83 @@ class Tools extends CI_Controller {
 	}
 
 	/**
+	 * Isi tabel page_index (data halaman statis untuk pencarian) dari wp-json/wp/v2/pages di clone,
+	 * atau REST API live (di-cache di application/cache/wp-api/pages/) untuk halaman yang JSON-nya tidak ter-clone.
+	 * Aman diulang; jalankan lagi setelah mengonversi halaman statis baru.
+	 *   php index.php tools import_page_index
+	 */
+	public function import_page_index()
+	{
+		$this->config->load('pages');
+		$pages = $this->config->item('pages');
+		$rows = array();
+
+		foreach ($pages as $key => $page)
+		{
+			if ($key === 'error-404' OR ! preg_match('/\bpage-id-(\d+)\b/', $page['body_attrs'], $m))
+			{
+				continue;
+			}
+			$id = (int) $m[1];
+			$file = $this->wp_clone->root().'wp-json/wp/v2/pages/'.$id.'.json';
+			$cache = APPPATH.'cache/wp-api/pages/'.$id.'.json';
+			if ( ! is_file($file))
+			{
+				if ( ! is_file($cache))
+				{
+					$body = @file_get_contents('https://stmi.ac.id/wp-json/wp/v2/pages/'.$id);
+					if ($body === FALSE OR json_decode($body) === NULL)
+					{
+						$this->fail('Gagal mengambil data page '.$id.' ('.$key.') dari API live.');
+					}
+					if ( ! is_dir(dirname($cache)))
+					{
+						mkdir(dirname($cache), 0775, TRUE);
+					}
+					file_put_contents($cache, $body);
+					echo "  ambil dari live: pages/{$id}\n";
+				}
+				$file = $cache;
+			}
+			$json = json_decode(file_get_contents($file), TRUE);
+
+			// Judul mentah: dibalik dari hasil wptexturize dan dipastikan sama persis setelah wp_texturize().
+			$rendered = $json['title']['rendered'];
+			$raw = html_entity_decode(strtr(preg_replace('/(?<=^| )&#8211;(?=$| )/', '-', $rendered), array(
+				'&#8211;' => '--', '&#8212;' => '---', '&#8220;' => '"', '&#8221;' => '"', '&#8216;' => "'",
+				'&#8217;' => "'", '&#8230;' => '...', '&#038;' => '&', '&#215;' => 'x',
+			)), ENT_QUOTES, 'UTF-8');
+			if (wp_texturize($raw) !== $rendered)
+			{
+				$this->fail('Judul mentah tidak cocok untuk page '.$id.': '.$rendered);
+			}
+
+			$featured = (int) $json['featured_media'];
+			if ($featured && ! $this->db->where('id', $featured)->count_all_results('media'))
+			{
+				$this->fail('Gambar unggulan page '.$id.' (media '.$featured.') belum ada di tabel media.');
+			}
+
+			$rows[] = array(
+				'id'                => $id,
+				'page_key'          => $key,
+				'title'             => $raw,
+				'content'           => $this->wp_clone->rewrite_urls($json['content']['rendered'], 'page/index.html', 'token'),
+				'author_id'         => (int) $json['author'],
+				'featured_media_id' => $featured ? $featured : NULL,
+				'published_at'      => str_replace('T', ' ', $json['date']),
+				'modified_at'       => str_replace('T', ' ', $json['modified']),
+			);
+		}
+
+		$this->db->trans_start();
+		$this->db->query('DELETE FROM page_index');
+		$this->db->insert_batch('page_index', $rows);
+		$this->db->trans_complete();
+		echo 'page_index: '.count($rows)." halaman.\n";
+	}
+
+	/**
 	 * Beri akses login admin ke author (password acak ditampilkan sekali).
 	 *   php index.php tools set_login <slug-author> <username> [admin|editor]
 	 */
@@ -204,6 +284,12 @@ class Tools extends CI_Controller {
 			'img_hints'              => $hints,
 			'footer_logo_post_image' => $params['footer_logo_post_image'],
 		);
+
+		// URL asli halaman di clone (mis. halaman 404 yang tersimpan dari /js15_as.js), untuk tools verify.
+		if (preg_match('/data-gt-orig-url="([^"<]*)"/', $parts['foot'], $gt) && $gt[1] !== ($slug === 'home' ? '/' : '/'.$slug.'/'))
+		{
+			$page['verify_url'] = ltrim($gt[1], '/');
+		}
 
 		file_put_contents($view_file, $this->guard.$parts['content']);
 		$this->save_page($slug, $page);
@@ -321,7 +407,7 @@ class Tools extends CI_Controller {
 				$this->fail('Halaman "'.$s.'" belum ada di config/pages.php.');
 			}
 
-			$url = site_url($s === 'home' ? '' : $s);
+			$url = site_url(isset($pages[$s]['verify_url']) ? $pages[$s]['verify_url'] : ($s === 'home' ? '' : $s));
 			$actual = @file_get_contents($url, FALSE, stream_context_create(array('http' => array('ignore_errors' => TRUE))));
 			if ($actual === FALSE)
 			{

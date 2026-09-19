@@ -219,6 +219,10 @@ class Menu extends Admin_Controller {
 
 		foreach ((array) $this->config->item('pages', 'pages') as $key => $page)
 		{
+			if ($key === 'error-404')
+			{
+				continue;
+			}
 			$slug = ($key === 'home') ? '' : $key;
 			preg_match('/\bpage-id-(\d+)\b/', $page['body_attrs'], $m);
 			$title = preg_replace('/ &#8211; Politeknik STMI Jakarta$/', '', $page['title']);
