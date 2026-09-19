@@ -140,6 +140,16 @@ lpstmi/
   9 `awsm_team`, dll.) + 5 file utama (`-scaled`, `8-2-500x500.jpg`, `professional-networking-illustration-1.png`).
   Semua file di `media.file`/`media.sizes` sekarang ada di lokal; setelah impor media baru, cek lagi dengan skrip yang sama
   (bandingkan `sizes` dengan file di `wp-content/uploads/`), unduh yang hilang dengan nama & path asli.
+- **Audit aset & konten 2026-09-19** (crawler seluruh situs + Chrome headless 18 jenis halaman desktop/mobile, termasuk lazy load,
+  modal pencarian, menu mobile, PDF): 541 halaman 200, 828 aset lokal ada, 308 `url()` di 67 CSS ada (`wpdm-icons.svg` nama asli
+  diunduh), 0 request lokal gagal, 0 error JS, 0 `href/src` ke domain utama. Yang **sengaja dibiarkan** (sama dengan situs live):
+  - CSS Elementor 13 halaman/post (`uploads/elementor/css/post-<ID>*.html`) = halaman 404 yang disimpan HTTrack; di live juga 404.
+  - Gambar survei 2023–2024 di `hasil-survey-kepuasan` (`uploads/2025/05/*.html`, 8 gambar + ukurannya): di live `.png`-nya 404.
+    Bisa diganti admin lewat editor blok bila file aslinya tersedia.
+  - Link mati di konten: 7 dokumen situs lama `assets/uploads/...` (daftar-informasi, materi-workshop, zona-integritas) dan
+    `berita/tentang/berita_kampus/38/...` (post 2041 & 2044); semuanya 404 di live.
+  - Request ke live yang gagal di lokal: `admin-ajax.php` (hitung tampilan WPDM, endpoint WordPress), Matomo `analytics.` (ORB),
+    iframe `karir.stmi.ac.id/loker` (404 di sumbernya).
 
 ## Arsitektur CI3
 
