@@ -135,6 +135,11 @@ lpstmi/
     Pola yang sama berlaku untuk skrip lain yang menurunkan path dari nama filenya sendiri: sediakan file dengan nama
     turunan tersebut, jangan ubah markup.
   Kalau ada tema/plugin baru yang memuat chunk dari live, unduh dengan cara yang sama (nama asli, jangan menimpa file yang ada).
+- **Ukuran gambar di metadata media yang tidak ter-clone** (tidak dipakai di HTML mana pun, tetapi dipakai dinamis, mis. `thumbnail`
+  150x150 di live search Blocksy lewat `ct_featured_media`) diunduh dari live pada 2026-09-19: 49 file ukuran (38 `thumbnail`,
+  9 `awsm_team`, dll.) + 5 file utama (`-scaled`, `8-2-500x500.jpg`, `professional-networking-illustration-1.png`).
+  Semua file di `media.file`/`media.sizes` sekarang ada di lokal; setelah impor media baru, cek lagi dengan skrip yang sama
+  (bandingkan `sizes` dengan file di `wp-content/uploads/`), unduh yang hilang dengan nama & path asli.
 
 ## Arsitektur CI3
 
