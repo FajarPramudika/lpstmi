@@ -31,7 +31,6 @@ class Contacts extends Admin_Controller {
 
 		$this->view('admin/contacts/index', array(
 			'title'         => 'Pengaturan Kontak',
-			'menu_contacts' => TRUE,
 			'contacts'      => $this->contact_model->get_all(),
 		));
 	}

@@ -21,11 +21,20 @@
 		}
 	});
 
-	// Menu samping di layar kecil.
+	// Menu samping di layar kecil: tombol menu membuka, area gelap / Esc menutup.
 	var toggle = document.querySelector('.menu-toggle');
-	if (toggle) {
-		toggle.addEventListener('click', function () {
-			document.querySelector('.sidebar').classList.toggle('open');
+	var sidebar = document.querySelector('.sidebar');
+	var backdrop = document.querySelector('[data-sidebar-close]');
+	function setSidebar(open) {
+		sidebar.classList.toggle('open', open);
+		if (backdrop) { backdrop.hidden = !open; }
+		if (toggle) { toggle.setAttribute('aria-expanded', open ? 'true' : 'false'); }
+	}
+	if (toggle && sidebar) {
+		toggle.addEventListener('click', function () { setSidebar(!sidebar.classList.contains('open')); });
+		if (backdrop) { backdrop.addEventListener('click', function () { setSidebar(false); }); }
+		document.addEventListener('keydown', function (e) {
+			if (e.key === 'Escape' && sidebar.classList.contains('open')) { setSidebar(false); }
 		});
 	}
 
