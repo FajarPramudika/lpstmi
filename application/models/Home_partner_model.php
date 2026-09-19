@@ -3,11 +3,17 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Home_partner_model extends CI_Model {
 
+	/**
+	 * Semua logo mitra, dengan media_id dari pustaka media (untuk kelas wp-image-<ID> seperti WordPress).
+	 */
 	public function all()
 	{
-		$this->db->order_by('order_num', 'ASC');
-		$this->db->order_by('id', 'ASC');
-		return $this->db->get('home_partners')->result_array();
+		return $this->db->select('p.*, m.id AS media_id')
+			->from('home_partners p')
+			->join('media m', "CONCAT('wp-content/uploads/', m.file) = p.image_path", 'left')
+			->order_by('p.order_num', 'ASC')
+			->order_by('p.id', 'ASC')
+			->get()->result_array();
 	}
 
 	public function find($id)

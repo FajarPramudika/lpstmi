@@ -9,9 +9,7 @@
 				<div class="elementor-widget-container">
 							<div class="elementor-image-carousel-wrapper swiper" role="region" aria-roledescription="carousel" aria-label="Image Carousel" dir="ltr">
 			<div class="elementor-image-carousel swiper-wrapper swiper-image-stretch" aria-live="off">
-								<?php $i = 1; foreach($home_banners as $banner): ?>
-								<div class="swiper-slide" role="group" aria-roledescription="slide" aria-label="<?= $i++ ?> of <?= count($home_banners) ?>"><?php if($banner['url']): ?><a href="<?= html_escape($banner['url']) ?>"><?php endif; ?><figure class="swiper-slide-inner"><img decoding="async" class="<?= html_escape($banner['image_class']) ?>" src="<?= base_url(html_escape($banner['image_path'])) ?>" alt="Header Politeknik STMI"<?= $banner['image_srcset'] ? ' srcset="' . html_escape($banner['image_srcset']) . '"' : '' ?> /></figure><?php if($banner['url']): ?></a><?php endif; ?></div>
-<?php endforeach; ?>			</div>
+								<?php $i = 1; foreach($home_banners as $banner): ?><div class="swiper-slide" role="group" aria-roledescription="slide" aria-label="<?= $i++ ?> of <?= count($home_banners) ?>"><?php if($banner['url']): ?><a href="<?= html_escape($banner['url']) ?>"><?php endif; ?><figure class="swiper-slide-inner"><img decoding="async" class="<?= html_escape($banner['image_class']) ?>" src="<?= base_url(html_escape($banner['image_path'])) ?>" alt="Header Politeknik STMI"<?= $banner['image_srcset'] ? ' srcset="' . html_escape($banner['image_srcset']) . '"' : '' ?> /></figure><?php if($banner['url']): ?></a><?php endif; ?></div><?php endforeach; ?>			</div>
 					</div>
 						</div>
 				</div>
@@ -19,10 +17,13 @@
 				</div>
 		<div class="elementor-element elementor-element-c0f24ab e-flex e-con-boxed e-con e-parent" data-id="c0f24ab" data-element_type="container">
 					<div class="e-con-inner">
-		<?php foreach ($featured_links_grouped as $row_num => $links_row): ?>
-<div class="elementor-element elementor-element-<?= $row_num == 1 ? '6516bd0' : '48f0e4c' ?> e-con-full animated-slow e-flex elementor-invisible e-con e-child" data-id="<?= $row_num == 1 ? '6516bd0' : '48f0e4c' ?>" data-element_type="container" data-settings="{&quot;animation&quot;:&quot;fadeIn&quot;}" style="justify-content: center; gap: 10px;">
-<?php foreach($links_row as $link): ?>
-		<div class="elementor-element elementor-element-<?= $link['container_id'] ?> e-con-full e-flex e-con e-child" data-id="<?= $link['container_id'] ?>" data-element_type="container" style="flex: 1 1 0%; max-width: 220px; min-width: 150px;">
+<?php foreach ($featured_links_grouped as $row_num => $links_row): ?>
+		<div class="elementor-element elementor-element-<?= $row_num == 1 ? '6516bd0' : '48f0e4c' ?> e-con-full animated-slow e-flex elementor-invisible e-con e-child" data-id="<?= $row_num == 1 ? '6516bd0' : '48f0e4c' ?>" data-element_type="container" data-settings="{&quot;animation&quot;:&quot;fadeIn&quot;}">
+<?php foreach($links_row as $link):
+	// Tile baru dari admin belum punya ID Elementor: pakai ID tile pertama (aturan CSS post-490 semua tile sama).
+	$link['container_id'] = $link['container_id'] ? $link['container_id'] : '5fda677';
+	$link['widget_id'] = $link['widget_id'] ? $link['widget_id'] : 'e1a2c9b'; ?>
+		<div class="elementor-element elementor-element-<?= $link['container_id'] ?> e-con-full e-flex e-con e-child" data-id="<?= $link['container_id'] ?>" data-element_type="container">
 				<div class="elementor-element elementor-element-<?= $link['widget_id'] ?> e-transform elementor-widget elementor-widget-image" data-id="<?= $link['widget_id'] ?>" data-element_type="widget" data-settings="{&quot;_animation&quot;:&quot;none&quot;,&quot;_transform_scale_effect_hover&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:0.9,&quot;sizes&quot;:[]},&quot;_transform_scale_effect_hover_tablet&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:&quot;&quot;,&quot;sizes&quot;:[]},&quot;_transform_scale_effect_hover_mobile&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:&quot;&quot;,&quot;sizes&quot;:[]}}" data-widget_type="image.default">
 				<div class="elementor-widget-container">
 																<a href="<?= html_escape($link['url']) ?>"<?= strpos($link['url'], 'ppid.stmi.ac.id') !== false ? '' : ' target="_blank"' ?>>
@@ -31,7 +32,7 @@
 				</div>
 				</div>
 <?php endforeach; ?>
-</div>
+				</div>
 <?php endforeach; ?>
 					</div>
 				</div>
@@ -199,17 +200,20 @@ foreach($chunks as $i => $chunk):
         $c_id = isset($partner_css_map[$idx]) ? $partner_css_map[$idx]['container_id'] : 'e45c5fc';
         $w_id = isset($partner_css_map[$idx]) ? $partner_css_map[$idx]['widget_id'] : 'd96a3ce';
 ?>
-				<div class="elementor-element elementor-element-<?= $c_id ?> e-con-full e-flex e-con e-child" data-id="<?= $c_id ?>" data-element_type="container">
+		<div class="elementor-element elementor-element-<?= $c_id ?> e-con-full e-flex e-con e-child" data-id="<?= $c_id ?>" data-element_type="container">
 				<div class="elementor-element elementor-element-<?= $w_id ?> elementor-widget elementor-widget-image" data-id="<?= $w_id ?>" data-element_type="widget" data-widget_type="image.default">
 				<div class="elementor-widget-container">
-					<?php if($partner['url']): ?><a href="<?= html_escape($partner['url']) ?>" target="_blank"><?php endif; ?>
-					<img loading="lazy" decoding="async" width="150" height="150" src="<?= base_url(html_escape($partner['image_path'])) ?>" class="attachment-full size-full" alt="<?= html_escape($partner['name']) ?>" />
-					<?php if($partner['url']): ?></a><?php endif; ?>
-				</div>
+<?php if ($partner['url']): // seperti widget gambar Elementor yang ber-link ?>
+																<a href="<?= html_escape($partner['url']) ?>" target="_blank">
+							<img loading="lazy" decoding="async" width="150" height="150" src="<?= base_url(html_escape($partner['image_path'])) ?>" class="attachment-full size-full<?= $partner['media_id'] ? ' wp-image-'.(int) $partner['media_id'] : '' ?>" alt="<?= html_escape($partner['name']) ?>" />								</a>
+															</div>
+<?php else: ?>
+															<img loading="lazy" decoding="async" width="150" height="150" src="<?= base_url(html_escape($partner['image_path'])) ?>" class="attachment-full size-full<?= $partner['media_id'] ? ' wp-image-'.(int) $partner['media_id'] : '' ?>" alt="<?= html_escape($partner['name']) ?>" />															</div>
+<?php endif; ?>
 				</div>
 				</div>
 <?php endforeach; ?>
-		</div>
+				</div>
 <?php endforeach; ?>
 		<div class="elementor-element elementor-element-37c411f e-flex e-con-boxed e-con e-child" data-id="37c411f" data-element_type="container">
 					<div class="e-con-inner">

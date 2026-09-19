@@ -437,7 +437,7 @@ widget Chaty/GTranslate.
 | `check [folder]` | uji semua halaman clone terhadap layout bersama (tanpa menulis file) |
 | `convert <slug> [path]` / `reconvert` | halaman statis clone → view + `config/pages.php` |
 | `layout <nama> <path>` | simpan head/foot halaman clone sebagai varian layout bernama |
-| `verify [slug\|all]` | bandingkan halaman statis dengan clone |
+| `verify [slug\|all] [dump]` | bandingkan halaman berupa view (home, error-404) dengan clone; `dump` = simpan keduanya untuk diff |
 | `import_downloads [ulang]` | impor 131 paket Download Manager dari clone |
 | `import_pages` | pindahkan halaman dari `config/pages.php` ke tabel `pages` (aman diulang; lihat "Halaman statis dari database") |
 | `import_media` | daftarkan file `wp-content/uploads/YYYY/MM/` yang belum ada ke pustaka media (aman diulang) |
@@ -466,8 +466,13 @@ php index.php tools verify_db page
 5. Cek sintaks PHP 7.3: `php -l <file>`.
 
 Status per 2026-09-19: **semua 33 halaman statis** (Page WordPress) sudah dikonversi. 32 halaman dirender dari tabel `pages`
-(`verify_db page` OK 32); view `error-404` `verify` OK, `home` sengaja berbeda sejak commit konten beranda dinamis
-(blok `<style>` "Override Elementor animation visibility").
+(`verify_db page` OK 32); view `error-404` dan `home` `verify` OK. Beranda (dinamis dari tabel `home_*`) identik dengan clone
+kecuali data yang diubah lewat admin (per 2026-09-19 hanya `alt="United Tractors"` dari nama mitra). Aturan view beranda:
+tanpa style inline tambahan (merusak ukuran tile & layout mobile), tanpa blok "Override Elementor animation visibility"
+(JS Elementor frontend sudah dimuat; animasi fade-in harus tetap jalan), tile/mitra baru tanpa ID Elementor memakai ID
+tile/mitra pertama (aturan CSS `post-490` semuanya sama), kelas `wp-image-<ID>` logo mitra dari tabel `media`, dan whitespace
+loop (slide carousel satu baris, indentasi baris tile & mitra) sama persis dengan output Elementor.
+`tools verify <slug> dump` menyimpan HTML seharusnya & hasil render ke `application/cache/verify/` untuk di-diff.
 Semua 186 post, 152 halaman arsip (kategori, tag, author, dengan paginasi), 131 paket download, dan 32 halaman dirender dari
 database; `verify_db` = `OK 501, BEDA 0`.
 Setelah mengubah template/helper post atau halaman, **wajib** jalankan `php index.php tools verify_db` (harus `BEDA 0`).

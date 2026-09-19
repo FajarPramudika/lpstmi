@@ -35,7 +35,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  *   php index.php tools set_login <slug-author> <username> [admin|editor]
  *       Beri akses login panel admin ke author; password acak ditampilkan sekali.
  *
- *   php index.php tools verify [slug|all]
+ *   php index.php tools verify [slug|all] [dump]
  *       Bandingkan hasil render CI (server harus jalan di base_url) dengan clone, byte per byte.
  */
 class Tools extends CI_Controller {
@@ -733,7 +733,7 @@ class Tools extends CI_Controller {
 		}
 	}
 
-	public function verify($slug = 'all')
+	public function verify($slug = 'all', $dump = NULL)
 	{
 		$this->config->load('pages');
 		$pages = $this->config->item('pages');
@@ -756,6 +756,13 @@ class Tools extends CI_Controller {
 
 			$expected = $this->wp_clone->expected($pages[$s]['source']);
 			$missing = $this->missing_assets($expected);
+			if ($dump === 'dump')
+			{
+				// Simpan keduanya untuk dibandingkan (diff/difflib): application/cache/verify/<slug>.{expected,actual}.html
+				@mkdir(APPPATH.'cache/verify', 0775, TRUE);
+				file_put_contents(APPPATH.'cache/verify/'.$s.'.expected.html', $expected);
+				file_put_contents(APPPATH.'cache/verify/'.$s.'.actual.html', $actual);
+			}
 
 			if ($actual === $expected)
 			{
