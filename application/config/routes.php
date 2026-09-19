@@ -66,6 +66,11 @@ $route['tag/(:any)'] = 'posts/tag/$1';
 $route['author/(:any)/page/(:num)'] = 'posts/author/$1/$2';
 $route['author/(:any)'] = 'posts/author/$1';
 
+// Paket Download Manager: /download/<slug>, unduh lewat ?wpdmdl=<ID>. Bentuk dua segmen = link lama
+// HTTrack (/download/<slug>/index<hash>.html?wpdmdl=ID), tetap dilayani selama ada ?wpdmdl.
+$route['download/(:any)/(:any)'] = 'downloads/single/$1';
+$route['download/(:any)'] = 'downloads/single/$1';
+
 // Halaman statis dari config/pages.php (dibuat oleh tools convert).
 foreach (call_user_func(function () {
 	include APPPATH.'config/pages.php';

@@ -43,7 +43,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 405.11 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-perjanjian-kinerja-perkin-tahun-2026/index3452.html?wpdmdl=2983&amp;refresh=6aa7aba62c1fe1789373350">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-perjanjian-kinerja-perkin-tahun-2026?wpdmdl=2983&amp;refresh=6aa7aba62c1fe1789373350') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -61,7 +61,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 694.74 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-perjanjian-kinerja-perkin-tahun-2025/index0c1c.html?wpdmdl=2700&amp;refresh=6aa7aba63b2901789373350">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-perjanjian-kinerja-perkin-tahun-2025?wpdmdl=2700&amp;refresh=6aa7aba63b2901789373350') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -79,7 +79,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 1.60 MB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-perjanjian-kinerja-perkin-tahun-2024/index6191.html?wpdmdl=2399&amp;refresh=6aa7aba6496b11789373350">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-perjanjian-kinerja-perkin-tahun-2024?wpdmdl=2399&amp;refresh=6aa7aba6496b11789373350') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -97,7 +97,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 4 MB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-perjanjian-kinerja-perkin-tahun-2023/index9fc8.html?wpdmdl=1232&amp;refresh=6aa7aba6568071789373350">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-perjanjian-kinerja-perkin-tahun-2023?wpdmdl=1232&amp;refresh=6aa7aba6568071789373350') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -115,7 +115,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 1 MB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-perjanjian-kinerja-perkin-tahun-2022/index0a5f.html?wpdmdl=1231&amp;refresh=6aa7aba66210b1789373350">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-perjanjian-kinerja-perkin-tahun-2022?wpdmdl=1231&amp;refresh=6aa7aba66210b1789373350') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -133,7 +133,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 895 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-perjanjian-kinerja-perkin-tahun-2021/indexed35.html?wpdmdl=1230&amp;refresh=6aa7aba66df891789373350">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-perjanjian-kinerja-perkin-tahun-2021?wpdmdl=1230&amp;refresh=6aa7aba66df891789373350') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -151,7 +151,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 748 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-perjanjian-kinerja-perkin-tahun-2020/indexc0d3.html?wpdmdl=1229&amp;refresh=6aa7aba67a53e1789373350">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-perjanjian-kinerja-perkin-tahun-2020?wpdmdl=1229&amp;refresh=6aa7aba67a53e1789373350') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -169,7 +169,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 728 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-perjanjian-kinerja-perkin-tahun-2019/index0c4f.html?wpdmdl=1228&amp;refresh=6aa7aba684d601789373350">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-perjanjian-kinerja-perkin-tahun-2019?wpdmdl=1228&amp;refresh=6aa7aba684d601789373350') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -187,7 +187,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 159 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-perjanjian-kinerja-perkin-tahun-2018/index9ad7.html?wpdmdl=1220&amp;refresh=6aa7aba690d321789373350">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-perjanjian-kinerja-perkin-tahun-2018?wpdmdl=1220&amp;refresh=6aa7aba690d321789373350') ?>">Download</a>
             </div>
         </div>
     </div>

@@ -5,6 +5,7 @@ $nav = array(
 	array('dashboard', 'admin', 'Dasbor', TRUE),
 	array('posts', 'admin/posts', 'Post', TRUE),
 	array('media', 'admin/media', 'Media', TRUE),
+	array('downloads', 'admin/downloads', 'Download', TRUE),
 	array('terms:category', 'admin/terms/index/category', 'Kategori', TRUE),
 	array('terms:tag', 'admin/terms/index/tag', 'Tag', TRUE),
 	array('home_settings', 'admin/home_settings', 'Pengaturan Beranda', TRUE),

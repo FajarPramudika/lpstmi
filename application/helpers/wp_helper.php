@@ -256,7 +256,33 @@ if ( ! function_exists('wp_post_thumbnail'))
 			$src = array('file' => $media['file'], 'width' => (int) $media['width'], 'height' => (int) $media['height']);
 		}
 
-		// wp_calculate_image_srcset(): semua ukuran dengan rasio sama (maks. lebar 2048), urut metadata; src di depan.
+		$sources = wp_image_srcset($media, $src);
+
+		$html = '<img loading="lazy" width="'.$src['width'].'" height="'.$src['height'].'"'
+			.' src="'.base_url('wp-content/uploads/'.$src['file']).'"'
+			.' class="attachment-'.$size.' size-'.$size.' wp-post-image" alt="'.html_escape($media['alt']).'" loading="lazy" decoding="async"';
+
+		if ($sources)
+		{
+			$html .= ' srcset="'.implode(', ', $sources).'" sizes="auto, (max-width: '.$src['width'].'px) 100vw, '.$src['width'].'px"';
+		}
+
+		return $html.' itemprop="image" style="aspect-ratio: '.$ratio.';" />';
+	}
+}
+
+if ( ! function_exists('wp_image_srcset'))
+{
+	/**
+	 * Port wp_calculate_image_srcset(): semua ukuran dengan rasio sama (maks. lebar 2048), urut metadata;
+	 * src di depan. Mengembalikan daftar "url 300w", atau array kosong jika kurang dari 2 sumber.
+	 */
+	function wp_image_srcset(array $media, array $src)
+	{
+		$sizes = (array) json_decode($media['sizes'], TRUE);
+		$dir = dirname($media['file']);
+		$dir = ($dir === '.') ? '' : $dir.'/';
+
 		$candidates = array();
 		foreach ($sizes as $s)
 		{
@@ -291,16 +317,29 @@ if ( ! function_exists('wp_post_thumbnail'))
 			}
 		}
 
-		$html = '<img loading="lazy" width="'.$src['width'].'" height="'.$src['height'].'"'
-			.' src="'.base_url('wp-content/uploads/'.$src['file']).'"'
-			.' class="attachment-'.$size.' size-'.$size.' wp-post-image" alt="'.html_escape($media['alt']).'" loading="lazy" decoding="async"';
+		return ($src_matched && count($sources) > 1) ? array_values($sources) : array();
+	}
+}
 
-		if ($src_matched && count($sources) > 1)
+if ( ! function_exists('wpdm_featured_image'))
+{
+	/**
+	 * Gambar unggulan paket di template WPDM "Default" ([featured_image]): ukuran penuh, fetchpriority
+	 * (WordPress menulisnya dua kali), tanpa lazy.
+	 */
+	function wpdm_featured_image(array $media)
+	{
+		$src = array('file' => $media['file'], 'width' => (int) $media['width'], 'height' => (int) $media['height']);
+		$sources = wp_image_srcset($media, $src);
+
+		$html = '<img fetchpriority="high" fetchpriority="high" decoding="async" width="'.$src['width'].'" height="'.$src['height'].'"'
+			.' src="'.base_url('wp-content/uploads/'.$src['file']).'" class="attachment-full size-full wp-post-image" alt="'.html_escape($media['alt']).'"';
+		if ($sources)
 		{
-			$html .= ' srcset="'.implode(', ', $sources).'" sizes="auto, (max-width: '.$src['width'].'px) 100vw, '.$src['width'].'px"';
+			$html .= ' srcset="'.implode(', ', $sources).'" sizes="(max-width: '.$src['width'].'px) 100vw, '.$src['width'].'px"';
 		}
 
-		return $html.' itemprop="image" style="aspect-ratio: '.$ratio.';" />';
+		return $html.' />';
 	}
 }
 
@@ -381,13 +420,15 @@ if ( ! function_exists('wp_texturize'))
 				continue;
 			}
 
-			$part = str_replace(
-				array('---', ' -- ', '--', ' - ', 'xn&#8211;', '...', '``', '\'\'', ' (tm)'),
-				array('&#8212;', ' &#8212; ', '&#8211;', ' &#8211; ', 'xn--', '&#8230;', '&#8220;', '&#8221;', ' &#8482;'),
-				$part
-			);
+			$part = str_replace(array('...', '``', '\'\'', ' (tm)'), array('&#8230;', '&#8220;', '&#8221;', ' &#8482;'), $part);
 
 			$spaces = '[\r\n\t ]|\xC2\xA0|&nbsp;';
+			// Dash seperti $dynamic_characters['dash'] WordPress.
+			$part = preg_replace(
+				array('/---/', "/(?<=^|$spaces)--(?=$|$spaces)/", '/(?<!xn)--/', "/(?<=^|$spaces)-(?=$|$spaces)/"),
+				array('&#8212;', '&#8212;', '&#8211;', '&#8211;'),
+				$part
+			);
 			// Kutip tunggal & ganda pembuka / penutup, apostrof.
 			$part = preg_replace("/'(?=\\d\\d(?:\\Z|(?![%\\d]|[.,]\\d)))/", '&#8217;', $part);
 			$part = preg_replace("/(?<=\\A|[([{\"\\-]|&lt;|$spaces)'/", '&#8216;', $part);

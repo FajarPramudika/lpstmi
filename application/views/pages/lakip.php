@@ -43,7 +43,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 1.18 MB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-akuntabilitas-kinerja-instansi-pemerintah-lakip-tahun-2025/index5554.html?wpdmdl=2986&amp;refresh=6aa7aba6934e41789373350">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-akuntabilitas-kinerja-instansi-pemerintah-lakip-tahun-2025?wpdmdl=2986&amp;refresh=6aa7aba6934e41789373350') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -61,7 +61,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 1.13 MB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-akuntabilitas-kinerja-instansi-pemerintah-lakip-tahun-2024/indexb43a.html?wpdmdl=2690&amp;refresh=6aa7aba6a434e1789373350">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-akuntabilitas-kinerja-instansi-pemerintah-lakip-tahun-2024?wpdmdl=2690&amp;refresh=6aa7aba6a434e1789373350') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -79,7 +79,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 916.45 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/lakip-2023-politeknik-stmi-jakarta/index28f8.html?wpdmdl=2687&amp;refresh=6aa7aba6b02771789373350">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/lakip-2023-politeknik-stmi-jakarta?wpdmdl=2687&amp;refresh=6aa7aba6b02771789373350') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -97,7 +97,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 506 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-akuntabilitas-kinerja-instansi-pemerintah-lakip-tahun-2022/index03be.html?wpdmdl=1251&amp;refresh=6aa7aba6bab8b1789373350">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-akuntabilitas-kinerja-instansi-pemerintah-lakip-tahun-2022?wpdmdl=1251&amp;refresh=6aa7aba6bab8b1789373350') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -115,7 +115,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 1 MB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-akuntabilitas-kinerja-instansi-pemerintah-lakip-tahun-2021/indexe08c.html?wpdmdl=1250&amp;refresh=6aa7aba6c3fd81789373350">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-akuntabilitas-kinerja-instansi-pemerintah-lakip-tahun-2021?wpdmdl=1250&amp;refresh=6aa7aba6c3fd81789373350') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -133,7 +133,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 1 MB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-akuntabilitas-kinerja-instansi-pemerintah-lakip-tahun-2020/indexa984.html?wpdmdl=1248&amp;refresh=6aa7aba6cdaff1789373350">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-akuntabilitas-kinerja-instansi-pemerintah-lakip-tahun-2020?wpdmdl=1248&amp;refresh=6aa7aba6cdaff1789373350') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -151,7 +151,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 968 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-akuntabilitas-kinerja-instansi-pemerintah-lakip-tahun-2019/indexb4e8.html?wpdmdl=1246&amp;refresh=6aa7aba6db5f51789373350">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-akuntabilitas-kinerja-instansi-pemerintah-lakip-tahun-2019?wpdmdl=1246&amp;refresh=6aa7aba6db5f51789373350') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -169,7 +169,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 763 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-akuntabilitas-kinerja-instansi-pemerintah-lakip-tahun-2018/index7bfe.html?wpdmdl=1245&amp;refresh=6aa7aba6e4cc31789373350">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-akuntabilitas-kinerja-instansi-pemerintah-lakip-tahun-2018?wpdmdl=1245&amp;refresh=6aa7aba6e4cc31789373350') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -187,7 +187,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 1 MB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-akuntabilitas-kinerja-instansi-pemerintah-lakip-tahun-2017/indexa0e2.html?wpdmdl=1243&amp;refresh=6aa7aba6eecf91789373350">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-akuntabilitas-kinerja-instansi-pemerintah-lakip-tahun-2017?wpdmdl=1243&amp;refresh=6aa7aba6eecf91789373350') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -205,7 +205,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 933 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-akuntabilitas-kinerja-instansi-pemerintah-lakip-tahun-2016/index70ed.html?wpdmdl=1235&amp;refresh=6aa7aba7043221789373351">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-akuntabilitas-kinerja-instansi-pemerintah-lakip-tahun-2016?wpdmdl=1235&amp;refresh=6aa7aba7043221789373351') ?>">Download</a>
             </div>
         </div>
     </div>

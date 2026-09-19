@@ -103,7 +103,7 @@ class Wp_clone {
 
 		// Atribut berisi URL
 		$html = preg_replace_callback(
-			'/(\s(?:href|src|data-src|poster|action)=|\scontent=(?=["\'](?:\.\.\/)*wp-(?:content|includes)\/))(["\'])([^"\']*)\2/',
+			'/(\s(?:href|src|data-src|data-downloadurl|poster|action)=|\scontent=(?=["\'](?:\.\.\/)*wp-(?:content|includes)\/))(["\'])([^"\']*)\2/',
 			function ($m) use ($self, $dir, $mode) {
 				return $m[1].$m[2].$self->map_url($m[3], $dir, $mode).$m[2];
 			},
@@ -205,10 +205,12 @@ class Wp_clone {
 			return $this->emit('base', $path.$rest, $mode);
 		}
 
-		// Varian HTTrack untuk URL ber-query (?p=ID): ikuti link canonical di file tersebut.
+		// Varian HTTrack untuk URL ber-query (?p=ID, ?wpdmdl=ID): ikuti link canonical di file tersebut,
+		// atau (jika tidak ada, mis. respons download) path asli dari komentar "Mirrored from"; query dari link dipertahankan.
 		if (preg_match('#(^|/)index[0-9a-f]{4}(-\d+)?\.html$#', $path) && is_file($this->root.$path))
 		{
-			if (preg_match('/<link rel="canonical" href="([^"]*)"/', file_get_contents($this->root.$path), $c))
+			$variant = file_get_contents($this->root.$path);
+			if (preg_match('/<link rel="canonical" href="([^"]*)"/', $variant, $c))
 			{
 				$target = $this->resolve(dirname($path) === '.' ? $c[1] : dirname($path).'/'.$c[1]);
 				if ($target !== NULL)
@@ -217,6 +219,30 @@ class Wp_clone {
 					$rest = preg_replace('/^\?[^#]*/', '', $rest);
 				}
 			}
+			elseif (ltrim($variant) === '' OR ltrim($variant)[0] !== '<')
+			{
+				// Isi file hasil download (mis. PDF) disimpan HTTrack dengan nama index<hash>.html: URL-nya = folder paket.
+				$path = dirname($path);
+			}
+			elseif (preg_match('#<META HTTP-EQUIV="Refresh" CONTENT="0; URL=(?![a-z]+:|//)([^"]+)"#i', $variant, $r)
+				&& ($target = $this->resolve(dirname($path) === '.' ? $r[1] : dirname($path).'/'.$r[1])) !== NULL
+				&& ! preg_match('#^wp-(content|includes)/#', $target))
+			{
+				// Halaman "Page has moved" HTTrack yang menunjuk ke halaman internal: ikuti redirect-nya.
+				$path = $target;
+				$rest = preg_replace('/^\?[^#]*/', '', $rest);
+			}
+			elseif (preg_match('#<!-- Mirrored from https?://(?:www\.)?stmi\.ac\.id/([^ ?]*?)/?(?:\?[^ ]*)? by HTTrack#', $variant, $mir))
+			{
+				// Redirect ke luar (mis. respons download): pakai URL asli halaman; query dari link dipertahankan.
+				$path = $mir[1];
+			}
+		}
+
+		// Link unduh Download Manager ke varian yang tidak tersimpan HTTrack: URL-nya = folder paket.
+		if (preg_match('#^download/[^/]+/index[0-9a-f]{4}(-\d+)?\.html$#', $path) && ! is_file($this->root.$path) && strpos($rest, 'wpdmdl=') !== FALSE)
+		{
+			$path = dirname($path);
 		}
 
 		$path = preg_replace('#(^|/)index\.html$#', '', $path);

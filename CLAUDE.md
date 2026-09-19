@@ -173,7 +173,8 @@ application/
 
 1. **Berita, pengumuman, dan artikel (post WordPress) disimpan di database** `lpstmi_db`. Halaman statis (Page WordPress)
    tetap berupa view. Admin panel (CMS) untuk mengelola post, media, kategori, tag, dan pengguna.
-2. Fitur dinamis (pencarian, form, Download Manager, feed): **nanti**. Markup tetap disalin agar tampilan sama.
+2. Fitur dinamis (pencarian, form, feed): **nanti**. Markup tetap disalin agar tampilan sama.
+   Download Manager **sudah dimigrasi** (lihat bagian "Download Manager").
 3. Link absolut ke `https://stmi.ac.id/...`: **diubah** ke `site_url()`/`base_url()` dengan cakupan di aturan 5
    (subdomain lain, endpoint WordPress, dan path yang tidak ada di clone tetap dibiarkan). Termasuk bentuk
    url-encoded di link share (`https%3A%2F%2Fstmi.ac.id%2F...`).
@@ -222,6 +223,30 @@ Semua aturan ini sudah diverifikasi byte-per-byte terhadap 186 post + 152 halama
   Induk langsung item current: `current-menu-ancestor current-menu-parent`, induk di atasnya: `current-menu-ancestor`.
 - Body class post Elementor mendapat `elementor-page elementor-page-<ID>`.
 
+## Download Manager (`controllers/Downloads.php`, `views/downloads/single.php`)
+
+- 131 paket (tipe `wpdmpro`) di tabel `downloads` (migrasi 012): `id` (ID WordPress; `?wpdmdl=<ID>`, kelas `post-<ID>`), `slug`
+  (`/download/<slug>`), `title` (mentah), `description` (HTML, token `{base_url}`), `template` (`simplified` = "Default Template
+  ( Simplified )" / `default` = "Default Template": kartu `[featured_image]` + judul mentah di kolom deskripsi), `button_label`
+  (NULL = "Download"), `file` (relatif `wp-content/uploads/` **atau** URL luar), `file_size` (label, mis. "473 KB"),
+  `download_count`, `author_id`, `featured_media_id`, `status`, `published_at` (Create Date), `modified_at` (Last Updated).
+- Unduh: `/download/<slug>?wpdmdl=<ID>` (juga link lama `/download/<slug>/index<hash>.html?wpdmdl=ID`) → hitungan +1, lalu file lokal
+  dikirim (`Content-Disposition: attachment`, path dicek tetap di dalam `wp-content/uploads/`) atau redirect 302 ke URL luar.
+  Paket draft / ID tidak ada → 404. Parameter `refresh` hanya anti-cache (acak per halaman, `uniqid().time()`, sama seperti WPDM).
+- Impor: `php index.php tools import_downloads [ulang]` (`libraries/Wpdm_import.php`; menolak jika tabel sudah berisi, kecuali `ulang`).
+  Sumber file: 64 redirect ke `tro.stmi.ac.id/wp-content/uploads/...` yang file-nya ada di lokal; 5 Google Drive (URL luar);
+  7 file yang hanya ada di clone disalin ke `wp-content/uploads/download-manager-files/<slug>.<ext>`; 41 tanpa respons di clone
+  **diasumsikan = PDF di deskripsi** (keputusan user; terbukti pada semua paket lain); 2 paket (1298, 1392) redirect-nya rusak
+  di situs asli (`...pd` → 404) sehingga dipakai PDF deskripsi.
+- Render (diverifikasi 131/131 `verify_db`): head `download`; foot `download-pdf` jika deskripsi berisi `class="pdfemb-viewer"`,
+  selain itu `download` (ID paket di skrip view-count WPDM adalah variabel); logo header `fetchpriority` kecuali paket bergambar
+  unggulan (maka gambar unggulan yang `fetchpriority` dan avatar author `loading="lazy"`); logo footer tanpa `wp-post-image`.
+- Tombol Download yang disematkan di 12 halaman statis & 20 post (kartu "WPDM Link Template") adalah salinan statis: judul/ukuran
+  di kartu tidak ikut berubah bila paketnya diedit. Link-nya sudah `download/<slug>?wpdmdl=ID` (migrasi 013 untuk post).
+- Converter: atribut `data-downloadurl` ikut diubah. Varian HTTrack `index<hash>.html` dipetakan: link `canonical` → halaman itu;
+  isi file biner (PDF) → folder paketnya; redirect "Page has moved" ke **halaman** internal → ikuti; selain itu → path asli dari
+  komentar "Mirrored from"; varian download yang tidak tersimpan + `?wpdmdl=` → folder paketnya. Query link dipertahankan.
+
 ## Panel admin (`/admin`)
 
 - Login: `/admin/login` (username + password, `password_hash`, maks 5 gagal per sesi lalu kunci 5 menit, session
@@ -248,6 +273,10 @@ Semua aturan ini sudah diverifikasi byte-per-byte terhadap 186 post + 152 halama
   `object_id` (page: ID page WordPress untuk `page-item-<ID>`; category: `terms.id`), `slug` (page; '' = beranda),
   `url` (custom; token `{base_url}`, NULL = tanpa link). Pilihan halaman = halaman di `config/pages.php` + halaman yang sudah
   ada di menu tapi belum dimigrasi (ditandai "belum ada"; link 404 sampai halamannya dikonversi).
+- **Download** (`/admin/downloads`, admin & editor): daftar (status, cari), buat/edit (judul, slug, file dari pustaka media
+  atau URL luar, deskripsi TinyMCE, teks tombol, template, gambar unggulan, status, tanggal dibuat, author), hapus. Ukuran file
+  dihitung ulang hanya saat file diganti (label hasil impor dipertahankan). Paket baru berisi PDF dengan deskripsi kosong otomatis
+  diberi embed PDF Embedder. "Last Updated" diisi saat disimpan.
 - **Pengguna:** tambah/ubah/nonaktifkan/hapus (hanya jika tidak punya post), profil sendiri + ganti password (min. 10 karakter).
 - Halaman statis (`config/pages.php` + `views/pages/`) **tidak** diedit lewat admin.
 
@@ -267,7 +296,8 @@ Pencarian, form (pixel-formbuilder), Download Manager, feed RSS, `wp-json`, `xml
 | `convert <slug> [path]` / `reconvert` | halaman statis clone → view + `config/pages.php` |
 | `layout <nama> <path>` | simpan head/foot halaman clone sebagai varian layout bernama |
 | `verify [slug\|all]` | bandingkan halaman statis dengan clone |
-| `verify_db [single-post\|archive] [detail]` | bandingkan semua post & arsip (dari database) dengan clone |
+| `import_downloads [ulang]` | impor 131 paket Download Manager dari clone |
+| `verify_db [single-post\|single-wpdmpro\|archive] [detail]` | bandingkan semua post, paket download & arsip (dari database) dengan clone |
 
 ## Alur kerja per halaman statis
 
@@ -290,7 +320,8 @@ php index.php tools verify all
 
 Status per 2026-09-19: **semua 33 halaman statis** (Page WordPress) sudah dikonversi dan `verify` OK, kecuali `home` yang
 sengaja berbeda sejak commit konten beranda dinamis (blok `<style>` "Override Elementor animation visibility").
-Semua 186 post dan 152 halaman arsip (kategori, tag, author, dengan paginasi) dirender dari database dan `verify_db` OK.
+Semua 186 post, 152 halaman arsip (kategori, tag, author, dengan paginasi), dan 131 paket download dirender dari database;
+`verify_db` = `OK 469, BEDA 0`.
 Setelah mengubah template/helper post, **wajib** jalankan `php index.php tools verify_db` (harus `BEDA 0`).
 Catatan: varian foot `archive` juga dipakai halaman `sejarah-kampus` (isinya kebetulan identik).
 `tools check`: 502 dari 504 halaman clone cocok dengan layout bersama (pengecualian: `feed/` yang berisi XML, dan `09/30` yang merupakan halaman 404).

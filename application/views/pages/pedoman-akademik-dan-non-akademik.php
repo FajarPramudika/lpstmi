@@ -48,7 +48,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 3 MB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/peraturan-akademik-tahun-2021/index47b9.html?wpdmdl=1194&amp;refresh=6aa7aba3844271789373347">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/peraturan-akademik-tahun-2021?wpdmdl=1194&amp;refresh=6aa7aba3844271789373347') ?>">Download</a>
             </div>
         </div>
     </div>

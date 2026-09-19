@@ -43,7 +43,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 88 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/daftar-isian-penggunaan-anggaran-2026/index3b7b.html?wpdmdl=3067&amp;refresh=6aa7af6422f8e1789374308">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/daftar-isian-penggunaan-anggaran-2026?wpdmdl=3067&amp;refresh=6aa7af6422f8e1789374308') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -61,7 +61,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 84 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/daftar-isian-penggunaan-anggaran-2025/indexe451.html?wpdmdl=3066&amp;refresh=6aa7af643080b1789374308">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/daftar-isian-penggunaan-anggaran-2025?wpdmdl=3066&amp;refresh=6aa7af643080b1789374308') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -79,7 +79,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 79 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/daftar-isian-penggunaan-anggaran-2024/indexce9c.html?wpdmdl=3065&amp;refresh=6aa7af643db731789374308">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/daftar-isian-penggunaan-anggaran-2024?wpdmdl=3065&amp;refresh=6aa7af643db731789374308') ?>">Download</a>
             </div>
         </div>
     </div>

@@ -43,7 +43,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 454.97 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/rencana-kinerja-2026_politeknik-stmi-jakarta/index779e.html?wpdmdl=2980&amp;refresh=6aa7aba5c7ae91789373349">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/rencana-kinerja-2026_politeknik-stmi-jakarta?wpdmdl=2980&amp;refresh=6aa7aba5c7ae91789373349') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -61,7 +61,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 426.95 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/rencana-kinerja-2025_politeknik-stmi-jakarta/index52a8.html?wpdmdl=2978&amp;refresh=6aa7aba5d9b431789373349">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/rencana-kinerja-2025_politeknik-stmi-jakarta?wpdmdl=2978&amp;refresh=6aa7aba5d9b431789373349') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -79,7 +79,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 532 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/rencana-kinerja-2024/index60bf.html?wpdmdl=2695&amp;refresh=6aa7aba5e3afa1789373349">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/rencana-kinerja-2024?wpdmdl=2695&amp;refresh=6aa7aba5e3afa1789373349') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -97,7 +97,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 592.18 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/rencana-kinerja-2023/indexdb1d.html?wpdmdl=2693&amp;refresh=6aa7aba5eeaaf1789373349">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/rencana-kinerja-2023?wpdmdl=2693&amp;refresh=6aa7aba5eeaaf1789373349') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -115,7 +115,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 409 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/rencana-kinerja-2022/index295b.html?wpdmdl=1216&amp;refresh=6aa7aba605c3e1789373350">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/rencana-kinerja-2022?wpdmdl=1216&amp;refresh=6aa7aba605c3e1789373350') ?>">Download</a>
             </div>
         </div>
     </div>

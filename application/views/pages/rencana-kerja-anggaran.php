@@ -43,7 +43,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 15 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/rencana-kerja-anggaran-2026/index4a71.html?wpdmdl=3060&amp;refresh=6aa7af642d0b81789374308">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/rencana-kerja-anggaran-2026?wpdmdl=3060&amp;refresh=6aa7af642d0b81789374308') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -61,7 +61,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 13 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/rencana-kerja-anggaran-2025/index93d8.html?wpdmdl=3059&amp;refresh=6aa7af643ccae1789374308">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/rencana-kerja-anggaran-2025?wpdmdl=3059&amp;refresh=6aa7af643ccae1789374308') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -79,7 +79,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 13 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/rencana-kerja-anggaran-2024/index154c.html?wpdmdl=3058&amp;refresh=6aa7af644a9261789374308">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/rencana-kerja-anggaran-2024?wpdmdl=3058&amp;refresh=6aa7af644a9261789374308') ?>">Download</a>
             </div>
         </div>
     </div>

@@ -43,7 +43,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 734.35 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/1-1-2-1-pendaftaran-peserta-jalur-prestasi-dan-mandiri/index1b2f.html?wpdmdl=2750&amp;refresh=6aa7ab9f781121789373343">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/1-1-2-1-pendaftaran-peserta-jalur-prestasi-dan-mandiri?wpdmdl=2750&amp;refresh=6aa7ab9f781121789373343') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -61,7 +61,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 722.97 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/1-1-2-2-pendaftaran-peserta-jalur-bersama/index70e8.html?wpdmdl=2752&amp;refresh=6aa7ab9f870771789373343">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/1-1-2-2-pendaftaran-peserta-jalur-bersama?wpdmdl=2752&amp;refresh=6aa7ab9f870771789373343') ?>">Download</a>
             </div>
         </div>
     </div>

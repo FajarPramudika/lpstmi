@@ -48,7 +48,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 1.07 MB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-triwulan-ii-2026/index1a65.html?wpdmdl=3101&amp;refresh=6aa7aba75d58b1789373351">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-triwulan-ii-2026?wpdmdl=3101&amp;refresh=6aa7aba75d58b1789373351') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -65,7 +65,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 927.78 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-triwulan-i-2026/index3fcb.html?wpdmdl=3097&amp;refresh=6aa7aba76c66e1789373351">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-triwulan-i-2026?wpdmdl=3097&amp;refresh=6aa7aba76c66e1789373351') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -82,7 +82,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 674 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-triwulan-iv-2025-2/index4a11.html?wpdmdl=2963&amp;refresh=6aa7aba779ac01789373351">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-triwulan-iv-2025-2?wpdmdl=2963&amp;refresh=6aa7aba779ac01789373351') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -99,7 +99,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 0.00 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-triwulan-iii-2025/indexf560.html?wpdmdl=2950&amp;refresh=6aa7aba78680f1789373351">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-triwulan-iii-2025?wpdmdl=2950&amp;refresh=6aa7aba78680f1789373351') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -116,7 +116,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 0.00 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-triwulan-i-2025/index161a.html?wpdmdl=2949&amp;refresh=6aa7aba7941b61789373351">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-triwulan-i-2025?wpdmdl=2949&amp;refresh=6aa7aba7941b61789373351') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -133,7 +133,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 4.00 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-triwulan-iv-2025/index516f.html?wpdmdl=2944&amp;refresh=6aa7aba7a45ce1789373351">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-triwulan-iv-2025?wpdmdl=2944&amp;refresh=6aa7aba7a45ce1789373351') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -150,7 +150,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 0.00 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-triwulan-i-2025-2/indexfc6d.html?wpdmdl=2971&amp;refresh=6aa7aba7b22d31789373351">Laporan Triwulan I 2025 (PDF)</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-triwulan-i-2025-2?wpdmdl=2971&amp;refresh=6aa7aba7b22d31789373351') ?>">Laporan Triwulan I 2025 (PDF)</a>
             </div>
         </div>
     </div>
@@ -167,7 +167,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 674 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-tri-wulan-iv-2024/index34cc.html?wpdmdl=2768&amp;refresh=6aa7aba7c04981789373351">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-tri-wulan-iv-2024?wpdmdl=2768&amp;refresh=6aa7aba7c04981789373351') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -184,7 +184,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 520 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-tri-wulan-iii-2024/index50ba.html?wpdmdl=2766&amp;refresh=6aa7aba7cb07b1789373351">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-tri-wulan-iii-2024?wpdmdl=2766&amp;refresh=6aa7aba7cb07b1789373351') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -201,7 +201,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 11 MB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-tri-wulan-ii-2024/indexcec6.html?wpdmdl=2764&amp;refresh=6aa7aba7d50dd1789373351">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-tri-wulan-ii-2024?wpdmdl=2764&amp;refresh=6aa7aba7d50dd1789373351') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -218,7 +218,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 552 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-tri-wulan-i-2024/index886c.html?wpdmdl=2762&amp;refresh=6aa7aba7dfeb81789373351">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-tri-wulan-i-2024?wpdmdl=2762&amp;refresh=6aa7aba7dfeb81789373351') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -235,7 +235,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 541 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-tri-wulan-iv-2023/index2665.html?wpdmdl=2760&amp;refresh=6aa7aba7e9cf51789373351">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-tri-wulan-iv-2023?wpdmdl=2760&amp;refresh=6aa7aba7e9cf51789373351') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -252,7 +252,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 534 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-tri-wulan-iii-2023/index7fe7.html?wpdmdl=2758&amp;refresh=6aa7aba8044ad1789373352">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-tri-wulan-iii-2023?wpdmdl=2758&amp;refresh=6aa7aba8044ad1789373352') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -269,7 +269,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 534 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-tri-wulan-ii-2023/index1d29.html?wpdmdl=2756&amp;refresh=6aa7aba8168ec1789373352">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-tri-wulan-ii-2023?wpdmdl=2756&amp;refresh=6aa7aba8168ec1789373352') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -286,7 +286,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 529 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-tri-wulan-i-2023/index001d.html?wpdmdl=2754&amp;refresh=6aa7aba82332a1789373352">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-tri-wulan-i-2023?wpdmdl=2754&amp;refresh=6aa7aba82332a1789373352') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -303,7 +303,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 6 MB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-tri-wulan-i-2018/index7b3e.html?wpdmdl=1259&amp;refresh=6aa7aba8319c51789373352">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-tri-wulan-i-2018?wpdmdl=1259&amp;refresh=6aa7aba8319c51789373352') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -320,7 +320,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 1 MB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-tri-wulan-ii-2018/indexed7e.html?wpdmdl=1276&amp;refresh=6aa7aba8400711789373352">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-tri-wulan-ii-2018?wpdmdl=1276&amp;refresh=6aa7aba8400711789373352') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -337,7 +337,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 514 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-tri-wulan-i-2019/index5e58.html?wpdmdl=1277&amp;refresh=6aa7aba84d8641789373352">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-tri-wulan-i-2019?wpdmdl=1277&amp;refresh=6aa7aba84d8641789373352') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -354,7 +354,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 5 MB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-tri-wulan-iv-2019/index7e5e.html?wpdmdl=1278&amp;refresh=6aa7aba85ae791789373352">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-tri-wulan-iv-2019?wpdmdl=1278&amp;refresh=6aa7aba85ae791789373352') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -371,7 +371,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 4 MB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-tri-wulan-i-2020/index56d4.html?wpdmdl=1279&amp;refresh=6aa7aba8685db1789373352">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-tri-wulan-i-2020?wpdmdl=1279&amp;refresh=6aa7aba8685db1789373352') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -388,7 +388,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 3 MB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-tri-wulan-ii-2020/index72c7.html?wpdmdl=1280&amp;refresh=6aa7aba875da91789373352">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-tri-wulan-ii-2020?wpdmdl=1280&amp;refresh=6aa7aba875da91789373352') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -405,7 +405,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 3 MB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-tri-wulan-iii-2020/index96a5.html?wpdmdl=1281&amp;refresh=6aa7aba881cd21789373352">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-tri-wulan-iii-2020?wpdmdl=1281&amp;refresh=6aa7aba881cd21789373352') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -422,7 +422,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 716 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-tri-wulan-iv-2020/indexee77.html?wpdmdl=1282&amp;refresh=6aa7aba88bac21789373352">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-tri-wulan-iv-2020?wpdmdl=1282&amp;refresh=6aa7aba88bac21789373352') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -439,7 +439,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 1,000 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-tri-wulan-i-2021/indexf23d.html?wpdmdl=1283&amp;refresh=6aa7aba89580f1789373352">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-tri-wulan-i-2021?wpdmdl=1283&amp;refresh=6aa7aba89580f1789373352') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -456,7 +456,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 993 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-tri-wulan-ii-2021/indexad00.html?wpdmdl=1284&amp;refresh=6aa7aba8a00011789373352">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-tri-wulan-ii-2021?wpdmdl=1284&amp;refresh=6aa7aba8a00011789373352') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -473,7 +473,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 994 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-tri-wulan-iii-2021/index3fc6.html?wpdmdl=1285&amp;refresh=6aa7aba8aa1881789373352">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-tri-wulan-iii-2021?wpdmdl=1285&amp;refresh=6aa7aba8aa1881789373352') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -490,7 +490,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 1,000 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-tri-wulan-iv-2021/index960e.html?wpdmdl=1286&amp;refresh=6aa7aba8b4b731789373352">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-tri-wulan-iv-2021?wpdmdl=1286&amp;refresh=6aa7aba8b4b731789373352') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -507,7 +507,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 369 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-tri-wulan-i-2022/index6ed3.html?wpdmdl=1288&amp;refresh=6aa7aba8c395b1789373352">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-tri-wulan-i-2022?wpdmdl=1288&amp;refresh=6aa7aba8c395b1789373352') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -524,7 +524,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 370 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-tri-wulan-ii-2022/index7965.html?wpdmdl=1290&amp;refresh=6aa7aba8ce3301789373352">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-tri-wulan-ii-2022?wpdmdl=1290&amp;refresh=6aa7aba8ce3301789373352') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -541,7 +541,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 370 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-tri-wulan-iii-2022/index5cc3.html?wpdmdl=1292&amp;refresh=6aa7aba8db4c91789373352">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-tri-wulan-iii-2022?wpdmdl=1292&amp;refresh=6aa7aba8db4c91789373352') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -558,7 +558,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 378 KB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/laporan-tri-wulan-iv-2022/indexc46e.html?wpdmdl=1294&amp;refresh=6aa7aba8e56b31789373352">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/laporan-tri-wulan-iv-2022?wpdmdl=1294&amp;refresh=6aa7aba8e56b31789373352') ?>">Download</a>
             </div>
         </div>
     </div>

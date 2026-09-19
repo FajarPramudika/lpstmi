@@ -43,7 +43,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 1.82 MB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/rencana-strategis-politeknik-stmi-jakarta-periode-2025-2029/indexd877.html?wpdmdl=2975&amp;refresh=6aa7aba5452991789373349">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/rencana-strategis-politeknik-stmi-jakarta-periode-2025-2029?wpdmdl=2975&amp;refresh=6aa7aba5452991789373349') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -61,7 +61,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 4 MB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/dokumen-rencana-strategi-politeknik-stmi-jakarta-2020-2024-revisi-2024/index4c99.html?wpdmdl=2784&amp;refresh=6aa7aba5534121789373349">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/dokumen-rencana-strategi-politeknik-stmi-jakarta-2020-2024-revisi-2024?wpdmdl=2784&amp;refresh=6aa7aba5534121789373349') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -79,7 +79,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 5.54 MB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/dokumen-rencana-strategi-politeknik-stmi-jakarta-2020-2024-revisi-2023/indexf88e.html?wpdmdl=2133&amp;refresh=6aa7aba560d421789373349">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/dokumen-rencana-strategi-politeknik-stmi-jakarta-2020-2024-revisi-2023?wpdmdl=2133&amp;refresh=6aa7aba560d421789373349') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -97,7 +97,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 3 MB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/dokumen-rencana-strategi-politeknik-stmi-jakarta-2020-2024-revisi/index7d29.html?wpdmdl=1208&amp;refresh=6aa7aba56da1c1789373349">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/dokumen-rencana-strategi-politeknik-stmi-jakarta-2020-2024-revisi?wpdmdl=1208&amp;refresh=6aa7aba56da1c1789373349') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -115,7 +115,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 7 MB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/dokumen-rencana-strategi-politeknik-stmi-jakarta-2020-2024/indexe27e.html?wpdmdl=1213&amp;refresh=6aa7aba57af271789373349">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/dokumen-rencana-strategi-politeknik-stmi-jakarta-2020-2024?wpdmdl=1213&amp;refresh=6aa7aba57af271789373349') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -133,7 +133,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 2 MB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/dokumen-rencana-strategi-politeknik-stmi-jakarta-2015-2019/index520d.html?wpdmdl=1211&amp;refresh=6aa7aba5885db1789373349">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/dokumen-rencana-strategi-politeknik-stmi-jakarta-2015-2019?wpdmdl=1211&amp;refresh=6aa7aba5885db1789373349') ?>">Download</a>
             </div>
         </div>
     </div>

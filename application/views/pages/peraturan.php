@@ -43,7 +43,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 1 MB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/skkni-nomer-128-tahun-2015-bidang-sistem-manufaktur/indexac81.html?wpdmdl=1172&amp;refresh=6aa7aba5427021789373349">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/skkni-nomer-128-tahun-2015-bidang-sistem-manufaktur?wpdmdl=1172&amp;refresh=6aa7aba5427021789373349') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -61,7 +61,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 1 MB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/skkni-nomer-125-tahun-2016-bidang-industri-produk-polimer/indexbc72.html?wpdmdl=1188&amp;refresh=6aa7aba5508f91789373349">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/skkni-nomer-125-tahun-2016-bidang-industri-produk-polimer?wpdmdl=1188&amp;refresh=6aa7aba5508f91789373349') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -79,7 +79,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 1 MB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/skkni-nomer-136-tahun-2016-bidang-sistem-manufaktur/index976e.html?wpdmdl=1189&amp;refresh=6aa7aba55b8091789373349">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/skkni-nomer-136-tahun-2016-bidang-sistem-manufaktur?wpdmdl=1189&amp;refresh=6aa7aba55b8091789373349') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -97,7 +97,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 1 MB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/skkni-nomer-139-tahun-2016-bidang-sistem-perencanaan-sumber-daya-perusahaan-erp/indexed44.html?wpdmdl=1190&amp;refresh=6aa7aba5707261789373349">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/skkni-nomer-139-tahun-2016-bidang-sistem-perencanaan-sumber-daya-perusahaan-erp?wpdmdl=1190&amp;refresh=6aa7aba5707261789373349') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -115,7 +115,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 1 MB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/skkni-nomer-170-tahun-2016-bidang-manajemen-hubungan-pelanggan-crm/index540c.html?wpdmdl=1191&amp;refresh=6aa7aba57df5a1789373349">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/skkni-nomer-170-tahun-2016-bidang-manajemen-hubungan-pelanggan-crm?wpdmdl=1191&amp;refresh=6aa7aba57df5a1789373349') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -133,7 +133,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 1 MB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/statuta-politeknik-stmi-jakarta/index20f9.html?wpdmdl=1192&amp;refresh=6aa7aba58b9f11789373349">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/statuta-politeknik-stmi-jakarta?wpdmdl=1192&amp;refresh=6aa7aba58b9f11789373349') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -151,7 +151,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 3 MB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/peraturan-akademik-tahun-2021/index8ec6.html?wpdmdl=1194&amp;refresh=6aa7aba5996b21789373349">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/peraturan-akademik-tahun-2021?wpdmdl=1194&amp;refresh=6aa7aba5996b21789373349') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -169,7 +169,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 2 MB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/pedoman-prakerin-2021/index206b.html?wpdmdl=1205&amp;refresh=6aa7aba5a63dc1789373349">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/pedoman-prakerin-2021?wpdmdl=1205&amp;refresh=6aa7aba5a63dc1789373349') ?>">Download</a>
             </div>
         </div>
     </div>

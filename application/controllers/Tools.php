@@ -20,6 +20,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  *   php index.php tools import_posts
  *       Impor post WordPress (clone + cache REST API) ke database. Aman diulang.
  *
+ *   php index.php tools import_downloads [ulang]
+ *       Impor paket Download Manager dari clone ke tabel downloads.
+ *
  *   php index.php tools set_login <slug-author> <username> [admin|editor]
  *       Beri akses login panel admin ke author; password acak ditampilkan sekali.
  *
@@ -75,6 +78,42 @@ class Tools extends CI_Controller {
 			echo '  '.$line."\n";
 		}
 		echo 'Impor selesai: '.count($pages)." post.\n";
+	}
+
+	/**
+	 * Impor paket Download Manager dari clone. Menolak jika tabel downloads sudah berisi,
+	 * kecuali dengan argumen "ulang" (data yang diubah lewat admin akan hilang).
+	 *   php index.php tools import_downloads [ulang]
+	 */
+	public function import_downloads($force = NULL)
+	{
+		if ($force !== 'ulang' && $this->db->count_all('downloads') > 0)
+		{
+			$this->fail('Tabel downloads sudah berisi. Pakai "import_downloads ulang" untuk menimpa (perubahan dari admin hilang).');
+		}
+
+		$this->load->library('wpdm_import');
+		try
+		{
+			$rows = $this->wpdm_import->run();
+		}
+		catch (RuntimeException $e)
+		{
+			$this->fail($e->getMessage());
+		}
+
+		$assumed = 0;
+		foreach ($this->wpdm_import->log() as $line)
+		{
+			if (strpos($line, 'diasumsikan') !== FALSE)
+			{
+				$assumed++;
+				continue;
+			}
+			echo '  '.$line."\n";
+		}
+		$external = count(array_filter($rows, function ($r) { return preg_match('#^https?://#', $r['file']); }));
+		echo 'Impor selesai: '.count($rows).' paket ('.$external.' file di situs luar, '.$assumed." diasumsikan = PDF deskripsi).\n";
 	}
 
 	/**
@@ -343,7 +382,7 @@ class Tools extends CI_Controller {
 
 	/**
 	 * Bandingkan semua halaman post & arsip (dari database) dengan clone.
-	 *   php index.php tools verify_db [single-post|archive] [detail]
+	 *   php index.php tools verify_db [single-post|single-wpdmpro|archive] [detail]
 	 */
 	public function verify_db($type = NULL, $detail = NULL)
 	{
@@ -364,7 +403,8 @@ class Tools extends CI_Controller {
 			{
 				continue;
 			}
-			$kind = (strpos($m[1], 'single-post') !== FALSE) ? 'single-post' : ((strpos($m[1], 'archive') !== FALSE) ? 'archive' : NULL);
+			$kind = (strpos($m[1], 'single-post') !== FALSE) ? 'single-post'
+				: ((strpos($m[1], 'single-wpdmpro') !== FALSE) ? 'single-wpdmpro' : ((strpos($m[1], 'archive') !== FALSE) ? 'archive' : NULL));
 			if ($kind === NULL OR ($type !== NULL && $type !== $kind))
 			{
 				continue;
@@ -378,6 +418,12 @@ class Tools extends CI_Controller {
 			}
 
 			$expected = $this->wp_clone->expected($rel);
+			if ($kind === 'single-wpdmpro')
+			{
+				// Parameter refresh tombol Download dibuat acak tiap halaman dimuat (uniqid + time), juga di WordPress.
+				$expected = preg_replace('/(data-downloadurl="[^"]*refresh=)[0-9a-f]{13}\d{10}/', '$1R', $expected);
+				$actual = preg_replace('/(data-downloadurl="[^"]*refresh=)[0-9a-f]{13}\d{10}/', '$1R', $actual);
+			}
 			if ($actual === $expected)
 			{
 				$ok++;

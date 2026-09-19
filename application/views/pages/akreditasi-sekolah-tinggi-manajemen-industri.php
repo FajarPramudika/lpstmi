@@ -71,7 +71,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 1 MB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/sk-akreditasi-prodi-tmi-2011-2016/indexb1fb.html?wpdmdl=1321&amp;refresh=6aa7ab9850c381789373336">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/sk-akreditasi-prodi-tmi-2011-2016?wpdmdl=1321&amp;refresh=6aa7ab9850c381789373336') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -95,7 +95,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 2 MB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/sk-akreditasi-prodi-tmi-2006-2011/index9a12.html?wpdmdl=1318&amp;refresh=6aa7ab986ccb41789373336">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/sk-akreditasi-prodi-tmi-2006-2011?wpdmdl=1318&amp;refresh=6aa7ab986ccb41789373336') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -153,7 +153,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 1 MB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/sertifikat-akreditasi-prodi-tki-2013-2018/index787e.html?wpdmdl=1365&amp;refresh=6aa7ab98828f51789373336">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/sertifikat-akreditasi-prodi-tki-2013-2018?wpdmdl=1365&amp;refresh=6aa7ab98828f51789373336') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -211,7 +211,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 1 MB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/sertifikat-akreditasi-prodi-si-2013-2018/index213f.html?wpdmdl=1382&amp;refresh=6aa7ab989559a1789373336">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/sertifikat-akreditasi-prodi-si-2013-2018?wpdmdl=1382&amp;refresh=6aa7ab989559a1789373336') ?>">Download</a>
             </div>
         </div>
     </div>
@@ -270,7 +270,7 @@
                 <div class="text-muted text-small"><i class="fas fa-copy"></i> 1 file(s) <i class="fas fa-hdd ml-3"></i> 1 MB</div>
             </div>
             <div class="ml-3">
-                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="../download/sertifikat-akreditasi-prodi-mbi-2013-2018/index2c5b.html?wpdmdl=1420&amp;refresh=6aa7ab98a6f521789373336">Download</a>
+                <a class='wpdm-download-link download-on-click btn btn-primary btn-sm' rel='nofollow' href='#' data-downloadurl="<?= site_url('download/sertifikat-akreditasi-prodi-mbi-2013-2018?wpdmdl=1420&amp;refresh=6aa7ab98a6f521789373336') ?>">Download</a>
             </div>
         </div>
     </div>
