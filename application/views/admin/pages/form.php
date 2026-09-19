@@ -17,24 +17,7 @@ $published_at = ! empty($page['published_at']) ? date('Y-m-d\TH:i:s', strtotime(
 				<?php if ($menu_usage): ?><div class="hint">Dipakai <?= $menu_usage ?> item menu; link menu ikut diperbarui jika slug diubah.</div><?php endif; ?>
 			</div>
 			<?php if ($blocks !== NULL): ?>
-			<div class="field">
-				<label>Isi halaman</label>
-				<input type="hidden" name="editor_mode" value="blocks" data-editor-mode>
-				<input type="hidden" name="content_hash" value="<?= $content_hash ?>">
-				<div class="tabs editor-tabs" role="tablist">
-					<a href="#" class="active" data-editor-tab="blocks" role="tab">Editor blok</a>
-					<a href="#" data-editor-tab="raw" role="tab">HTML mentah</a>
-				</div>
-				<div data-editor-panel="blocks">
-					<p class="hint">Halaman ini dibuat dengan Elementor. Ubah teks, judul, gambar, tab, dan item langsung di sini; struktur dan
-						tampilannya tetap. Tombol &uarr; &darr; &#x29C9; &times; memindah, menduplikat, atau menghapus blok (perubahan lain ikut disimpan).</p>
-					<div class="blk-editor"><?php $this->load->view('admin/pages/_blocks', array('blocks' => $blocks)); ?></div>
-				</div>
-				<div data-editor-panel="raw" hidden>
-					<p class="hint">HTML mentah seluruh isi halaman (untuk pengguna yang paham struktur Elementor).</p>
-					<textarea id="content" name="content" class="code" rows="24" data-shortcodes data-raw><?= html_escape($content) ?></textarea>
-				</div>
-			</div>
+			<?php $this->load->view('admin/_block_editor', array('label' => 'Isi halaman')); ?>
 			<?php else: ?>
 			<div class="field">
 				<label for="content">Isi halaman</label>
@@ -55,6 +38,15 @@ $published_at = ! empty($page['published_at']) ? date('Y-m-d\TH:i:s', strtotime(
 					<option value="publish" <?= (isset($page['status']) && $page['status'] === 'publish') ? 'selected' : '' ?>>Terbit</option>
 					<option value="draft" <?= ( ! isset($page['status']) OR $page['status'] === 'draft') ? 'selected' : '' ?>>Draft</option>
 				</select>
+			</div>
+			<div class="field">
+				<label for="template">Template</label>
+				<?php $tpl = isset($page['template']) ? $page['template'] : 'default'; ?>
+				<select id="template" name="template">
+					<option value="default" <?= $tpl === 'default' ? 'selected' : '' ?>>Standar (hero, judul, sidebar)</option>
+					<option value="full-width" <?= $tpl === 'full-width' ? 'selected' : '' ?>>Lebar penuh (isi saja)</option>
+				</select>
+				<div class="hint">Lebar penuh untuk halaman Elementor yang punya tata letak sendiri (mis. Statistik).</div>
 			</div>
 			<div class="field">
 				<label for="published_at">Tanggal terbit</label>

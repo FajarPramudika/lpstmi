@@ -63,6 +63,69 @@ class Media_model extends CI_Model {
 	}
 
 	/**
+	 * Tempat file media ini (asli atau ukuran mana pun) masih dipakai di konten: post, halaman, paket download,
+	 * beranda, atau view situs. Mengembalikan daftar keterangan; kosong = aman dihapus.
+	 */
+	public function content_usage(array $media)
+	{
+		$base = FCPATH.'wp-content/uploads/';
+		$needles = array();
+		foreach ($this->files($media) as $f)
+		{
+			$needles[] = substr($f, strlen($base));
+		}
+
+		$found = array();
+		$tables = array(
+			'posts'               => array(array('content', 'excerpt'), 'title', 'post'),
+			'pages'               => array(array('content'), 'title', 'halaman'),
+			'downloads'           => array(array('description', 'file'), 'title', 'paket download'),
+			'home_banners'        => array(array('image_path', 'image_srcset'), NULL, 'banner beranda'),
+			'home_partners'       => array(array('image_path', 'image_srcset'), 'name', 'mitra beranda'),
+			'home_featured_links' => array(array('image_path', 'image_srcset'), NULL, 'link unggulan beranda'),
+			'home_study_programs' => array(array('description', 'icon_svg'), 'title', 'program studi beranda'),
+			'home_options'        => array(array('value'), 'key', 'pengaturan beranda'),
+		);
+		foreach ($tables as $table => $t)
+		{
+			$this->db->group_start();
+			foreach ($t[0] as $col)
+			{
+				foreach ($needles as $n)
+				{
+					$this->db->or_like($col, $n);
+				}
+			}
+			$this->db->group_end();
+			foreach ($this->db->select($t[1] !== NULL ? '`'.$t[1].'` AS label' : '1 AS label', FALSE)->get($table)->result_array() as $r)
+			{
+				$found[] = $t[2].($t[1] !== NULL ? ' "'.$r['label'].'"' : '');
+			}
+		}
+
+		// View situs (layout, beranda, 404): markup hasil migrasi yang menyebut file ini.
+		foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator(APPPATH.'views', FilesystemIterator::SKIP_DOTS)) as $f)
+		{
+			$rel = substr($f->getPathname(), strlen(APPPATH.'views/'));
+			if (strpos($rel, 'admin/') === 0)
+			{
+				continue;
+			}
+			$src = file_get_contents($f->getPathname());
+			foreach ($needles as $n)
+			{
+				if (strpos($src, $n) !== FALSE)
+				{
+					$found[] = 'view '.$rel;
+					break;
+				}
+			}
+		}
+
+		return array_values(array_unique($found));
+	}
+
+	/**
 	 * Hapus baris dan semua file (asli + ukuran turunan).
 	 */
 	public function delete($id)

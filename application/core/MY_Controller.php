@@ -160,12 +160,25 @@ class MY_Controller extends CI_Controller {
 		// peraturan & perkin: konten biasa, tetapi WordPress tetap memuat Elementor (varian head-nya) dan kelas elementor-page.
 		$elementor = (Page_model::is_elementor($page['content']) || $this->page_model->variant_has('head', $head, 'elementor-frontend-css'));
 		$id = (int) $page['id'];
+		$full = ($page['template'] === 'full-width');
+
+		if ($full)
+		{
+			// Template "Elementor Full Width": tanpa hero/judul/sidebar; logo header tetap fetchpriority, tanpa avatar.
+			$body = 'wp-singular page-template page-template-elementor_header_footer page page-id-'.$id.' wp-custom-logo wp-embed-responsive'
+				.' wp-theme-blocksy elementor-default elementor-template-full-width elementor-kit-9'.($elementor ? ' elementor-page elementor-page-'.$id : '');
+			$img_hints = array('header:0' => 'fetchpriority="high" ', 'header:2' => 'fetchpriority="high" ');
+		}
+		else
+		{
+			$body = 'wp-singular page-template-default page page-id-'.$id.' wp-custom-logo wp-embed-responsive wp-theme-blocksy'
+				.' elementor-default elementor-kit-9 '.($elementor ? 'elementor-page elementor-page-'.$id.' ' : '').'ct-elementor-default-template';
+		}
 
 		$this->render(array(
-			'view'       => 'pages/_page',
+			'view'       => $full ? 'pages/_page_full' : 'pages/_page',
 			'title'      => wp_document_title(array($page['title'], $this->config->item('site_title'))),
-			'body_attrs' => ' class="wp-singular page-template-default page page-id-'.$id.' wp-custom-logo wp-embed-responsive wp-theme-blocksy'
-				.' elementor-default elementor-kit-9 '.($elementor ? 'elementor-page elementor-page-'.$id.' ' : '').'ct-elementor-default-template"'
+			'body_attrs' => ' class="'.$body.'"'
 				.' data-link="type-2" data-prefix="single_page" data-header="type-1:sticky" data-footer="type-1" itemscope="itemscope" itemtype="https://schema.org/WebPage"',
 			'head'       => $head,
 			'foot'       => $foot,
@@ -248,6 +261,127 @@ class Admin_Controller extends CI_Controller {
 	protected function flash($type, $message)
 	{
 		$this->session->set_flashdata('flash', array('type' => $type, 'message' => $message));
+	}
+
+	/* ------------------------------------------------------------------
+	 * Editor blok Elementor (form halaman & post; lihat libraries/Elementor_doc.php)
+	 * ------------------------------------------------------------------ */
+
+	/** Pesan & anchor setelah operasi blok (duplikat/hapus/naik/turun). */
+	protected $op_message = NULL;
+	protected $op_anchor = NULL;
+
+	/**
+	 * Terapkan isi editor blok ke konten Elementor tersimpan. Mengembalikan [konten baru, error].
+	 */
+	protected function apply_blocks($stored)
+	{
+		$this->load->library('elementor_doc');
+		$this->load->model('media_model');
+		if ((string) $this->input->post('content_hash') !== Elementor_doc::hash($stored))
+		{
+			return array($stored, array('Isi halaman sudah berubah sejak editor dibuka (mungkin disimpan dari tab lain). Muat ulang halaman ini, lalu ulangi perubahannya.'));
+		}
+
+		$doc = Elementor_doc::from($stored);
+		$values = array();
+		foreach ((array) $this->input->post('blocks') as $key => $value)
+		{
+			if (is_string($value))
+			{
+				$values[$key] = content_to_tokens($value);
+			}
+		}
+		$doc->apply_fields($values, function (array $field, $media_id) {
+			return $this->image_html($field, $media_id);
+		});
+
+		$op = explode('|', (string) $this->input->post('block_op'), 2);
+		if (count($op) === 2)
+		{
+			$error = $doc->operate($op[0], $op[1]);
+			if ($error !== NULL)
+			{
+				return array($stored, array($error));
+			}
+			$labels = array('dup' => 'Blok diduplikat', 'del' => 'Blok dihapus', 'up' => 'Blok dipindah ke atas', 'down' => 'Blok dipindah ke bawah');
+			$this->op_message = (isset($labels[$op[0]]) ? $labels[$op[0]] : 'Blok diubah').'; halaman disimpan.';
+			$this->op_anchor = 'blk-'.str_replace(':', '-', $op[1]);
+		}
+
+		return array($doc->html(), array());
+	}
+
+	/**
+	 * Isi baru widget gambar Elementor: tag <img> diganti gambar dari pustaka media (ukuran sama dengan kelas size-*
+	 * aslinya bila ada, srcset dihitung ulang bila aslinya punya srcset). Link lightbox ke file gambar lama ikut diganti.
+	 */
+	protected function image_html(array $field, $media_id)
+	{
+		$media = $this->media_model->find($media_id);
+		if ( ! $media OR strpos($media['mime_type'], 'image/') !== 0 OR ! preg_match('/<img\b[^>]*>/', $field['value'], $m))
+		{
+			return NULL;
+		}
+		$img = $m[0];
+		$sizes = (array) json_decode($media['sizes'], TRUE);
+		$dir = dirname($media['file']);
+		$dir = ($dir === '.') ? '' : $dir.'/';
+		$size = preg_match('/\bsize-([a-z0-9_-]+)\b/', $img, $s) ? $s[1] : 'full';
+		$src = ($size !== 'full' && isset($sizes[$size]))
+			? array('file' => $dir.$sizes[$size]['file'], 'width' => (int) $sizes[$size]['width'], 'height' => (int) $sizes[$size]['height'])
+			: array('file' => $media['file'], 'width' => (int) $media['width'], 'height' => (int) $media['height']);
+		$url = '{base_url}wp-content/uploads/'.$src['file'];
+
+		$set = function ($tag, $name, $value) {
+			$attr = $name.'="'.htmlspecialchars($value, ENT_QUOTES, 'UTF-8').'"';
+			$replace = function () use ($attr) { return ' '.$attr; };
+			return preg_match('/\s'.$name.'="[^"]*"/', $tag)
+				? preg_replace_callback('/\s'.$name.'="[^"]*"/', $replace, $tag, 1)
+				: preg_replace_callback('/\s*\/?>$/', function () use ($attr) { return ' '.$attr.' />'; }, $tag, 1);
+		};
+		$new = $set($img, 'src', $url);
+		$new = $set($new, 'width', (string) $src['width']);
+		$new = $set($new, 'height', (string) $src['height']);
+		$new = $set($new, 'alt', (string) $media['alt']);
+		$new = preg_replace('/\bwp-image-\d+\b/', 'wp-image-'.(int) $media['id'], $new, 1);
+		if (strpos($new, 'srcset=') !== FALSE)
+		{
+			$srcset = wp_image_srcset($media, $src);
+			if ($srcset)
+			{
+				$new = $set($new, 'srcset', content_to_tokens(implode(', ', $srcset)));
+				$new = $set($new, 'sizes', '(max-width: '.$src['width'].'px) 100vw, '.$src['width'].'px');
+			}
+			else
+			{
+				$new = preg_replace('/\s(?:srcset|sizes)="[^"]*"/', '', $new);
+			}
+		}
+
+		$html = str_replace($img, $new, $field['value']);
+		// Link lightbox yang menunjuk file gambar lama -> file gambar baru (ukuran penuh).
+		$old_file = preg_replace('/-\d+x\d+(?=\.[a-z]+$)/i', '', (string) $field['src']);
+		if ($old_file !== '')
+		{
+			$html = str_replace('href="'.$old_file.'"', 'href="{base_url}wp-content/uploads/'.$media['file'].'"', $html);
+		}
+
+		return $html;
+	}
+
+	/**
+	 * Data view editor blok untuk konten Elementor tersimpan (NULL jika bukan Elementor / belum tersimpan).
+	 */
+	protected function block_editor_data($content, $saved)
+	{
+		if ( ! $saved OR strpos((string) $content, 'data-elementor-type=') === FALSE)
+		{
+			return array('blocks' => NULL, 'content_hash' => '');
+		}
+		$this->load->library('elementor_doc');
+
+		return array('blocks' => Elementor_doc::from($content)->outline(), 'content_hash' => Elementor_doc::hash($content));
 	}
 
 	/**

@@ -15,6 +15,9 @@ $published_at = ! empty($post['published_at']) ? date('Y-m-d\TH:i:s', strtotime(
 				<input type="text" id="slug" name="slug" data-slug-target value="<?= html_escape(isset($post['slug']) ? $post['slug'] : '') ?>" placeholder="otomatis dari judul">
 				<div class="permalink"><?= site_url('') ?><strong><?= html_escape(isset($post['slug']) ? $post['slug'] : '…') ?></strong></div>
 			</div>
+			<?php if ($blocks !== NULL): ?>
+			<?php $this->load->view('admin/_block_editor', array('label' => 'Konten')); ?>
+			<?php else: ?>
 			<div class="field">
 				<label for="content">Konten</label>
 				<?php if ($raw_editor): ?>
@@ -22,6 +25,7 @@ $published_at = ! empty($post['published_at']) ? date('Y-m-d\TH:i:s', strtotime(
 				<?php endif; ?>
 				<textarea id="content" name="content" class="code" rows="24" data-shortcodes <?= $raw_editor ? 'data-raw' : '' ?>><?= html_escape($content) ?></textarea>
 			</div>
+			<?php endif; ?>
 			<div class="field">
 				<label for="excerpt">Ringkasan</label>
 				<textarea id="excerpt" name="excerpt" rows="3"><?= html_escape($excerpt_text) ?></textarea>

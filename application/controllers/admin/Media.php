@@ -117,6 +117,13 @@ class Media extends Admin_Controller {
 		{
 			show_404();
 		}
+		$used = $this->media_model->content_usage($media);
+		if ($used)
+		{
+			$this->flash('error', basename($media['file']).' tidak dihapus karena masih dipakai di: '.implode(', ', array_slice($used, 0, 5))
+				.(count($used) > 5 ? ', dan '.(count($used) - 5).' lainnya' : '').'. Ganti atau hapus pemakaiannya dulu.');
+			redirect($this->back_url());
+		}
 		$usage = $this->media_model->usage($media['id']);
 		$this->media_model->delete($media['id']);
 		$this->flash('success', basename($media['file']).' dihapus.'.($usage ? ' Gambar unggulan dilepas dari '.$usage.' post.' : ''));

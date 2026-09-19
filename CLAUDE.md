@@ -153,7 +153,7 @@ application/
 ├── helpers/admin_helper.php           # slugify, unique_slug, auto_excerpt, content_to_tokens, paginasi admin
 ├── models/Menu_model.php               # menu utama (tabel menu_items): pohon, URL, menu aktif otomatis
 ├── config/site.php                    # judul situs
-├── config/pages.php                   # DIHASILKAN tools: halaman berkerangka khusus (home, statistik, lowongan-kerja, error-404)
+├── config/pages.php                   # DIHASILKAN tools: halaman yang masih berupa view (home, error-404)
 └── views/
     ├── layouts/main.php               # susunan: document_open, title, head/<varian>, <body>, drawer, header, isi, footer, foot/<varian>
     ├── layouts/partials/document_open.php  # <!doctype> s.d. <title>          (sama di semua halaman)
@@ -192,8 +192,8 @@ application/
 ## Keputusan user
 
 1. **Berita, pengumuman, dan artikel (post WordPress) disimpan di database** `lpstmi_db`. Halaman statis (Page WordPress)
-   juga di database (tabel `pages`, dikelola admin & editor; keputusan 2026-09-19), kecuali 3 halaman berkerangka khusus
-   yang tetap berupa view. Admin panel (CMS) untuk mengelola post, halaman, media, kategori, tag, dan pengguna.
+   juga di database (tabel `pages`, dikelola admin & editor; keputusan 2026-09-19), kecuali beranda (view + menu Beranda)
+   dan halaman 404. Admin panel (CMS) untuk mengelola post, halaman, media, kategori, tag, dan pengguna.
 2. Fitur dinamis (pencarian, form, feed): **nanti**. Markup tetap disalin agar tampilan sama.
    Download Manager **sudah dimigrasi** (lihat bagian "Download Manager").
 3. Link absolut ke `https://stmi.ac.id/...`: **diubah** ke `site_url()`/`base_url()` dengan cakupan di aturan 5
@@ -291,13 +291,19 @@ Semua aturan ini sudah diverifikasi byte-per-byte terhadap 186 post + 152 halama
 - **Post:** daftar (filter status/kategori/cari), buat/edit (judul mentah, slug unik & tidak bentrok dengan halaman statis
   atau path sistem, konten TinyMCE, excerpt kosong = otomatis 40 kata + "…", kategori wajib ≥1, tag dipisah koma dan
   dibuat otomatis, gambar unggulan dari pustaka media, status, tanggal terbit dengan detik, author), hapus.
-  Post Elementor diedit sebagai HTML mentah (tanpa TinyMCE) agar strukturnya tidak rusak.
+  Post Elementor diedit lewat editor blok (atau tab HTML mentah), sama seperti halaman Elementor.
   Menyimpan post hasil impor **tanpa perubahan** menghasilkan tampilan yang tetap identik (sudah diuji). Konten yang
   diedit lewat TinyMCE bisa dinormalisasi oleh editor (atribut/whitespace), itu wajar.
 - **Media:** upload (form multi-file, AJAX dari editor & pemilih), maks 20 MB, tipe: gambar (jpg/png/gif/webp) dan dokumen
   (pdf/doc/docx/xls/xlsx/ppt/pptx/zip), file disimpan di `wp-content/uploads/YYYY/MM/`. Gambar dibuatkan ukuran seperti
   WordPress (`libraries/Media_uploader.php`): medium 300, large 1024, thumbnail 150 crop, medium_large 768, 1536, 2048,
-  dan `-scaled` jika > 2560 px. Alt text bisa diubah. Hapus media menghapus semua file ukurannya.
+  dan `-scaled` jika > 2560 px. Alt text bisa diubah. Hapus media menghapus semua file ukurannya, **kecuali** file-nya (asli
+  atau ukuran mana pun) masih dipakai di post, halaman, paket download, tabel beranda, atau view situs
+  (`Media_model::content_usage()`): penghapusan ditolak dengan daftar pemakaiannya.
+  - Pustaka berisi semua file `wp-content/uploads/YYYY/MM/` (395 item per 2026-09-19): `php index.php tools import_media`
+    (aman diulang) mendaftarkan file yang belum ada; ukuran turunan (`-WxH`, `-scaled`) dikelompokkan ke file asli dan diberi
+    nama ukuran WordPress (toleransi 1px; lainnya `WxH`), ID & alt diambil dari `<img class="wp-image-N">` di konten/view
+    (84 file), sisanya ID baru; `created_at` = awal bulan folder. File `.html` (gambar 404 yang disimpan HTTrack) dilewati.
 - **Kategori & tag:** tambah/ubah/hapus (`/admin/terms/index/category|tag`). Kategori baru tidak otomatis masuk menu.
 - **Menu** (`/admin/menu`, **khusus admin**): pohon menu utama, tambah/edit item (label, tipe halaman/kategori/URL bebas/label
   tanpa link, induk), naik/turun, tambah sub-item, hapus (sub-item ikut terhapus). **Kedalaman tidak dibatasi** (keputusan user).
@@ -319,7 +325,11 @@ Semua aturan ini sudah diverifikasi byte-per-byte terhadap 186 post + 152 halama
   20000 agar tidak bentrok dengan ID WordPress), `slug`, `title` (mentah, tampil lewat `wp_texturize()`), `content`, `view`,
   `author_id`, `featured_media_id` (hanya kelas `has-post-thumbnail` + kartu pencarian; hero semua halaman sama), `status`,
   `layout_head`/`layout_foot`, `published_at`, `modified_at`.
-- **`view` NULL** (30 halaman, admin & editor mengelola di `/admin/pages`): `content` = isi `entry-content` persis (termasuk
+- **`view` NULL** (32 halaman, admin & editor mengelola di `/admin/pages`), kolom `template` (migrasi 017):
+  - `full-width` (statistik, lowongan-kerja; template WordPress "Elementor Full Width" / `elementor_header_footer`): isi langsung
+    di dalam `<main>` (`views/pages/_page_full.php`), tanpa hero/judul/sidebar/share; body class
+    `page-template page-template-elementor_header_footer … elementor-template-full-width`, logo header `fetchpriority`.
+  - `default`: `content` = isi `entry-content` persis (termasuk
   whitespace sebelum `</div>` penutup), dirender `MY_Controller::render_page()` dengan template `views/pages/_page.php`. Ke-30
   halaman lama (Page WordPress `page-template-default`) memakai kerangka byte-identik yang sama, jadi hanya isi, judul, ID, slug,
   author, dan gambar unggulan yang berbeda. `body_attrs`, `<title>`, link share, dan `img_hints` diturunkan otomatis:
@@ -331,14 +341,15 @@ Semua aturan ini sudah diverifikasi byte-per-byte terhadap 186 post + 152 halama
     tidak, dipilih otomatis: `pdfemb-viewer` → foot `daftar-isian-penggunaan-anggaran`, video → foot `maklumat-pelayanan`,
     Elementor → head `peraturan` + foot `daftar-informasi`, selain itu head `sejarah-kampus` + foot `akademik`. Halaman Elementor
     hasil impor punya varian head/foot sendiri (CSS `post-<ID>.css`).
-- **`view` terisi** (home, statistik, lowongan-kerja): kerangka khusus (Elementor full width, tanpa hero/sidebar), tetap file view
-  + `config/pages.php`; baris `pages` hanya untuk pencarian & pilihan menu, tidak tampil di admin.
+- **`view` terisi** (hanya home): tetap file view + `config/pages.php` (dikelola lewat menu Beranda); baris `pages` hanya untuk
+  pencarian & pilihan menu, tidak tampil di admin Halaman.
 - Admin: judul, slug (unik; tidak boleh sama dengan post, halaman khusus, atau URL sistem, lihat `root_slug_conflict()`; slug
   berubah → item menu ikut diperbarui), isi (TinyMCE; halaman Elementor lewat editor blok atau HTML mentah), status, tanggal, author, gambar
   unggulan. Isi yang tidak diubah disimpan apa adanya (simpan ulang tetap identik, sudah diuji); isi baru diakhiri `"\n\t\t"`
   seperti output WordPress. Hapus ditolak jika halaman masih dipakai item menu. Draft → URL 404.
-- **Editor blok Elementor** (`libraries/Elementor_doc.php`, `views/admin/pages/_blocks.php`; tab "Editor blok" / "HTML mentah"
-  di form halaman Elementor). Generik untuk semua halaman Elementor (tidak ada modul per halaman). HTML **tidak pernah
+- **Editor blok Elementor** (`libraries/Elementor_doc.php`, `views/admin/_block_editor.php` + `views/admin/_blocks.php`,
+  logika simpan di `Admin_Controller::apply_blocks()`/`image_html()`; tab "Editor blok" / "HTML mentah" di form halaman **dan
+  post** Elementor). Generik untuk semua halaman Elementor (tidak ada modul per halaman). HTML **tidak pernah
   diserialisasi ulang**: parser mencatat posisi byte tiap tag, lalu hanya potongan yang berubah yang diganti (simpan tanpa
   perubahan = byte-identik; whitespace tepi isi asli dipertahankan).
   - Field: Teks (`text-editor`, TinyMCE saat tombol "Editor visual" diklik + sisip kartu download), Judul (`heading`), Gambar
@@ -414,6 +425,7 @@ widget Chaty/GTranslate.
 | `verify [slug\|all]` | bandingkan halaman statis dengan clone |
 | `import_downloads [ulang]` | impor 131 paket Download Manager dari clone |
 | `import_pages` | pindahkan halaman dari `config/pages.php` ke tabel `pages` (aman diulang; lihat "Halaman statis dari database") |
+| `import_media` | daftarkan file `wp-content/uploads/YYYY/MM/` yang belum ada ke pustaka media (aman diulang) |
 | `download_shortcodes` | ganti salinan kartu Download Manager di halaman & post dengan `[wpdm_package id='N']` (aman diulang) |
 | `verify_db [single-post\|single-wpdmpro\|archive\|page] [detail]` | bandingkan semua post, paket download, arsip & halaman (dari database) dengan clone |
 
@@ -438,11 +450,11 @@ php index.php tools verify_db page
 4. Satu halaman selesai dan terverifikasi dulu, baru lanjut ke halaman berikutnya.
 5. Cek sintaks PHP 7.3: `php -l <file>`.
 
-Status per 2026-09-19: **semua 33 halaman statis** (Page WordPress) sudah dikonversi. 30 halaman dirender dari tabel `pages`
-(`verify_db page` OK 30); 4 view khusus `verify` OK, kecuali `home` yang sengaja berbeda sejak commit konten beranda dinamis
+Status per 2026-09-19: **semua 33 halaman statis** (Page WordPress) sudah dikonversi. 32 halaman dirender dari tabel `pages`
+(`verify_db page` OK 32); view `error-404` `verify` OK, `home` sengaja berbeda sejak commit konten beranda dinamis
 (blok `<style>` "Override Elementor animation visibility").
-Semua 186 post, 152 halaman arsip (kategori, tag, author, dengan paginasi), 131 paket download, dan 30 halaman dirender dari
-database; `verify_db` = `OK 499, BEDA 0`.
+Semua 186 post, 152 halaman arsip (kategori, tag, author, dengan paginasi), 131 paket download, dan 32 halaman dirender dari
+database; `verify_db` = `OK 501, BEDA 0`.
 Setelah mengubah template/helper post atau halaman, **wajib** jalankan `php index.php tools verify_db` (harus `BEDA 0`).
 Catatan: varian foot `archive` juga dipakai halaman `sejarah-kampus` (isinya kebetulan identik).
 `tools check`: 502 dari 504 halaman clone cocok dengan layout bersama (pengecualian: `feed/` yang berisi XML, dan `09/30` yang merupakan halaman 404).

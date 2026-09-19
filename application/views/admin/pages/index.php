@@ -37,7 +37,7 @@
 	</table>
 	</div>
 </div>
-<p class="hint">Beranda, Statistik, dan Lowongan Kerja memakai kerangka khusus sehingga tidak diedit di sini (Beranda lewat menu <a href="<?= site_url('admin/home_settings') ?>">Beranda</a>).</p>
+<p class="hint">Beranda tidak diedit di sini, tetapi lewat menu <a href="<?= site_url('admin/home_settings') ?>">Beranda</a>.</p>
 <?= admin_pagination($page, $total_pages, function ($n) use ($filter) {
 	return admin_url_query('admin/pages', array_merge($filter, array('page' => $n > 1 ? $n : NULL)));
 }) ?>

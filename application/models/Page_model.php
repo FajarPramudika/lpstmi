@@ -4,9 +4,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 /**
  * Halaman statis (Page WordPress) di tabel pages.
  *
- * view NULL   : dikelola dari admin, dirender dengan template standar views/pages/_page.php.
- * view terisi : halaman berkerangka khusus (beranda, statistik, lowongan kerja) yang tetap berupa file view
- *               (config/pages.php); content hanya untuk pencarian.
+ * view NULL   : dikelola dari admin; template default (views/pages/_page.php) atau full-width (views/pages/_page_full.php).
+ * view terisi : beranda, yang tetap berupa file view (config/pages.php); content hanya untuk pencarian.
  */
 class Page_model extends CI_Model {
 

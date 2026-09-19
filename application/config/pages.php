@@ -37,34 +37,4 @@ $config['pages'] = array (
     ),
     'footer_logo_post_image' => false,
   ),
-  'lowongan-kerja' => 
-  array (
-    'source' => 'lowongan-kerja/index.html',
-    'view' => 'pages/lowongan-kerja',
-    'title' => 'Lowongan Kerja &#8211; Politeknik STMI Jakarta',
-    'body_attrs' => ' class="wp-singular page-template page-template-elementor_header_footer page page-id-2703 wp-custom-logo wp-embed-responsive wp-theme-blocksy elementor-default elementor-template-full-width elementor-kit-9 elementor-page elementor-page-2703" data-link="type-2" data-prefix="single_page" data-header="type-1:sticky" data-footer="type-1" itemscope="itemscope" itemtype="https://schema.org/WebPage"',
-    'head' => 'lowongan-kerja',
-    'foot' => 'lowongan-kerja',
-    'img_hints' => 
-    array (
-      'header:0' => 'fetchpriority="high" ',
-      'header:2' => 'fetchpriority="high" ',
-    ),
-    'footer_logo_post_image' => false,
-  ),
-  'statistik' => 
-  array (
-    'source' => 'statistik/index.html',
-    'view' => 'pages/statistik',
-    'title' => 'Statistik &#8211; Politeknik STMI Jakarta',
-    'body_attrs' => ' class="wp-singular page-template page-template-elementor_header_footer page page-id-907 wp-custom-logo wp-embed-responsive wp-theme-blocksy elementor-default elementor-template-full-width elementor-kit-9 elementor-page elementor-page-907" data-link="type-2" data-prefix="single_page" data-header="type-1:sticky" data-footer="type-1" itemscope="itemscope" itemtype="https://schema.org/WebPage"',
-    'head' => 'statistik',
-    'foot' => 'statistik',
-    'img_hints' => 
-    array (
-      'header:0' => 'fetchpriority="high" ',
-      'header:2' => 'fetchpriority="high" ',
-    ),
-    'footer_logo_post_image' => false,
-  ),
 );

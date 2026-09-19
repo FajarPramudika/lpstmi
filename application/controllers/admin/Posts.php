@@ -77,14 +77,19 @@ class Posts extends Admin_Controller {
 				$id = $this->post_model->save($post ? $post['id'] : NULL, $data, $category_ids, $tag_ids);
 				if ($id)
 				{
-					$this->flash('success', 'Post disimpan.');
-					redirect('admin/posts/edit/'.$id);
+					$this->flash('success', $this->op_message !== NULL ? $this->op_message : 'Post disimpan.');
+					redirect('admin/posts/edit/'.$id.($this->op_anchor !== NULL ? '#'.$this->op_anchor : ''));
 				}
 				$errors[] = 'Gagal menyimpan ke database.';
 			}
 
-			// Isi ulang form dengan input yang dikirim.
+			// Isi ulang form dengan input yang dikirim. Editor blok memakai posisi byte konten tersimpan.
+			$stored_content = ($post && $this->input->post('editor_mode') === 'blocks') ? $post['content'] : NULL;
 			$post = array_merge($post ? $post : array(), $data, array('id' => $post ? $post['id'] : NULL));
+			if ($stored_content !== NULL)
+			{
+				$post['content'] = $stored_content;
+			}
 			$terms = array(
 				'category' => array_map(function ($id) { return array('id' => $id); }, $category_ids),
 				'post_tag' => array_map(function ($n) { return array('name' => $n); }, $tag_names),
@@ -93,7 +98,7 @@ class Posts extends Admin_Controller {
 
 		$featured = ( ! empty($post['featured_media_id'])) ? $this->media_model->find($post['featured_media_id']) : NULL;
 
-		$this->view('admin/posts/form', array(
+		$this->view('admin/posts/form', $this->block_editor_data($post ? $post['content'] : '', $post && ! empty($post['id'])) + array(
 			'title'        => $post && ! empty($post['id']) ? 'Edit post' : 'Post baru',
 			'post'         => $post,
 			'errors'       => $errors,
@@ -119,6 +124,12 @@ class Posts extends Admin_Controller {
 
 		$title = trim((string) $in->post('title'));
 		$content = content_to_tokens((string) $in->post('content'));
+		if ($post && $in->post('editor_mode') === 'blocks' && strpos($post['content'], 'data-elementor-type=') !== FALSE)
+		{
+			// Editor blok (post Elementor): hanya field yang berubah + satu operasi blok yang diterapkan.
+			list($content, $block_errors) = $this->apply_blocks($post['content']);
+			$errors = array_merge($errors, $block_errors);
+		}
 		$status = ($in->post('status') === 'publish') ? 'publish' : 'draft';
 
 		if ($title === '')

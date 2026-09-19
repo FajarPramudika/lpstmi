@@ -66,13 +66,13 @@ foreach ($blocks as $b):
 				<?= $actions($it['key'], 'Hapus '.($b['widget'] === 'nested-tabs' ? 'tab' : 'item').' ini beserta isinya?') ?>
 			</summary>
 			<div class="field"><label><?= html_escape($t['label']) ?></label><input type="text" name="<?= html_escape('blocks['.$t['key'].']') ?>" value="<?= html_escape(wp_content($t['value'])) ?>"></div>
-			<?php $this->load->view('admin/pages/_blocks', array('blocks' => $it['children'])); ?>
+			<?php $this->load->view('admin/_blocks', array('blocks' => $it['children'])); ?>
 		</details>
 		<?php endforeach; ?>
 	</div>
 	<?php endif; ?>
 	<?php if ($b['children']): ?>
-	<div class="blk-children"><?php $this->load->view('admin/pages/_blocks', array('blocks' => $b['children'])); ?></div>
+	<div class="blk-children"><?php $this->load->view('admin/_blocks', array('blocks' => $b['children'])); ?></div>
 	<?php endif; ?>
 </div>
 <?php endforeach; ?>

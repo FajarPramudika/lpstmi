@@ -26,6 +26,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  *   php index.php tools import_pages
  *       Pindahkan halaman statis dari config/pages.php ke tabel pages (aman diulang).
  *
+ *   php index.php tools import_media
+ *       Daftarkan file di wp-content/uploads ke pustaka media (aman diulang).
+ *
  *   php index.php tools download_shortcodes
  *       Ganti salinan kartu Download Manager di halaman & post dengan [wpdm_package id='N'].
  *
@@ -129,7 +132,8 @@ class Tools extends CI_Controller {
 	 * - Halaman berkerangka standar (hero + entry-content + share + sidebar): isi entry-content diambil dari
 	 *   view-nya, disimpan dengan view NULL (dikelola dari /admin/pages), lalu dihapus dari config/pages.php.
 	 *   File view lamanya tidak dipakai lagi.
-	 * - Halaman berkerangka khusus (beranda, statistik, lowongan kerja): tetap berupa view; baris pages hanya
+	 * - Template "Elementor Full Width" (<main> + konten Elementor saja, mis. statistik): juga ke database, template full-width.
+	 * - Beranda: tetap berupa view; baris pages hanya
 	 *   untuk pencarian & pilihan menu (content dari wp-json/wp/v2/pages, clone atau cache REST API live).
 	 *
 	 *   php index.php tools import_pages
@@ -175,6 +179,7 @@ class Tools extends CI_Controller {
 				'title'             => $raw,
 				'content'           => $this->wp_clone->rewrite_urls($json['content']['rendered'], 'page/index.html', 'token'),
 				'view'              => $page['view'],
+				'template'          => 'default',
 				'author_id'         => (int) $json['author'],
 				'featured_media_id' => $featured ? $featured : NULL,
 				'status'            => 'publish',
@@ -186,6 +191,8 @@ class Tools extends CI_Controller {
 
 			// Kerangka standar: isi entry-content dari view (sudah terverifikasi identik dengan clone).
 			$html = $this->load->view($page['view'], array(), TRUE);
+			$full_open = "\n\t<main id=\"main\" class=\"site-main hfeed\">\n\n\t\t\t\t";
+			$full_close = "\n\t\t\t</main>\n\n\t";
 			$a = strpos($html, $open);
 			$e = strpos($html, '<div class="ct-share-box');
 			if ($a !== FALSE && $e !== FALSE && strpos($html, '<div class="hero-section" data-type="type-2">') !== FALSE)
@@ -202,6 +209,17 @@ class Tools extends CI_Controller {
 				}
 				$row['content'] = content_to_tokens(substr($region, 0, $cut));
 				$row['view'] = NULL;
+				$row['layout_head'] = $page['head'];
+				$row['layout_foot'] = $page['foot'];
+				$managed[] = $key;
+			}
+			// Template "Elementor Full Width" (elementor_header_footer): <main> berisi konten Elementor saja.
+			elseif ($key !== 'home' && strpos($page['body_attrs'], 'page-template-elementor_header_footer') !== FALSE
+				&& strpos($html, $full_open) === 0 && substr($html, -strlen($full_close)) === $full_close)
+			{
+				$row['content'] = content_to_tokens(substr($html, strlen($full_open), -strlen($full_close)));
+				$row['view'] = NULL;
+				$row['template'] = 'full-width';
 				$row['layout_head'] = $page['head'];
 				$row['layout_foot'] = $page['foot'];
 				$managed[] = $key;
@@ -282,6 +300,211 @@ class Tools extends CI_Controller {
 		{
 			echo '  dibiarkan: '.$k."\n";
 		}
+	}
+
+	/**
+	 * Daftarkan file di wp-content/uploads/YYYY/MM/ yang belum ada di pustaka media (tabel media), supaya bisa dipilih
+	 * ulang dari admin. Ukuran turunan (-WxH, -scaled) dikelompokkan ke file aslinya dan diberi nama ukuran WordPress;
+	 * ID & alt diambil dari <img class="wp-image-N"> di konten/view bila ada. File yang sudah terdaftar tidak disentuh,
+	 * jadi aman diulang. File 404 hasil HTTrack (.html) dan folder plugin (elementor, blocksy, download-manager-files) dilewati.
+	 *
+	 *   php index.php tools import_media
+	 */
+	public function import_media()
+	{
+		$this->load->model('media_model');
+		$base = FCPATH.'wp-content/uploads/';
+		$mimes = array('jpg' => 'image/jpeg', 'jpeg' => 'image/jpeg', 'png' => 'image/png', 'gif' => 'image/gif', 'webp' => 'image/webp',
+			'pdf' => 'application/pdf', 'doc' => 'application/msword', 'xls' => 'application/vnd.ms-excel', 'ppt' => 'application/vnd.ms-powerpoint',
+			'docx' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+			'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+			'pptx' => 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+			'zip' => 'application/zip', 'mp4' => 'video/mp4');
+
+		// File yang sudah terdaftar (asli + semua ukuran).
+		$known = array();
+		$used_ids = array();
+		foreach ($this->db->get('media')->result_array() as $m)
+		{
+			$used_ids[(int) $m['id']] = TRUE;
+			foreach ($this->media_model->files($m) as $f)
+			{
+				$known[substr($f, strlen($base))] = TRUE;
+			}
+		}
+
+		// ID attachment WordPress & alt dari <img class="wp-image-N"> di konten dan view.
+		$html = '';
+		foreach (array('posts' => 'content', 'pages' => 'content', 'downloads' => 'description') as $table => $col)
+		{
+			foreach ($this->db->select($col)->get($table)->result_array() as $r)
+			{
+				$html .= $r[$col];
+			}
+		}
+		foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator(APPPATH.'views', FilesystemIterator::SKIP_DOTS)) as $f)
+		{
+			$html .= file_get_contents($f->getPathname());
+		}
+		$refs = array();
+		preg_match_all('/<img\b[^>]*>/i', $html, $imgs);
+		foreach ($imgs[0] as $img)
+		{
+			if ( ! preg_match('#wp-content/uploads/(\d{4}/\d{2}/[^"\'\s?]+)#', $img, $src))
+			{
+				continue;
+			}
+			$orig = preg_replace('/-(?:\d+x\d+|scaled)(?=\.[a-z0-9]+$)/i', '', $src[1]);
+			$id = preg_match('/\bwp-image-(\d+)\b/', $img, $x) ? (int) $x[1] : NULL;
+			$alt = preg_match('/\salt="([^"]*)"/', $img, $a) ? html_entity_decode($a[1], ENT_QUOTES, 'UTF-8') : '';
+			if ( ! isset($refs[$orig]))
+			{
+				$refs[$orig] = array('id' => NULL, 'alt' => '');
+			}
+			if ($refs[$orig]['id'] === NULL && $id)
+			{
+				$refs[$orig]['id'] = $id;
+			}
+			if ($refs[$orig]['alt'] === '' && $alt !== '')
+			{
+				$refs[$orig]['alt'] = $alt;
+			}
+		}
+
+		// Kelompokkan file per folder: asli + ukuran turunan.
+		$files = array();
+		foreach (glob($base.'[0-9][0-9][0-9][0-9]/[0-9][0-9]/*') as $path)
+		{
+			$rel = substr($path, strlen($base));
+			$ext = strtolower(pathinfo($rel, PATHINFO_EXTENSION));
+			if (is_file($path) && isset($mimes[$ext]))
+			{
+				$files[$rel] = TRUE;
+			}
+		}
+		$groups = array();
+		foreach (array_keys($files) as $rel)
+		{
+			if (preg_match('/^(.*)-(\d+)x(\d+)(\.[a-z0-9]+)$/i', $rel, $m) && (isset($files[$m[1].$m[4]]) OR isset($files[$m[1].'-scaled'.$m[4]])))
+			{
+				continue;
+			}
+			if (preg_match('/^(.*)-scaled(\.[a-z0-9]+)$/i', $rel) === 0 && preg_match('/^(.*)(\.[a-z0-9]+)$/i', $rel, $m) && isset($files[$m[1].'-scaled'.$m[2]]))
+			{
+				continue; // file asli sebelum di-scale ikut kelompok "-scaled"
+			}
+			$stem = preg_replace('/(-scaled)?(\.[a-z0-9]+)$/i', '', $rel);
+			$ext = pathinfo($rel, PATHINFO_EXTENSION);
+			$variants = array();
+			foreach (array_keys($files) as $other)
+			{
+				if (preg_match('/^'.preg_quote($stem, '/').'-(\d+)x(\d+)\.'.preg_quote($ext, '/').'$/i', $other, $v))
+				{
+					$variants[$other] = array((int) $v[1], (int) $v[2]);
+				}
+			}
+			$groups[$rel] = $variants;
+		}
+
+		$added = 0;
+		$skipped = 0;
+		$rows = array();
+		foreach ($groups as $rel => $variants)
+		{
+			$all = array_merge(array($rel), array_keys($variants));
+			$registered = FALSE;
+			foreach ($all as $f)
+			{
+				$registered = $registered || isset($known[$f]);
+			}
+			if ($registered)
+			{
+				$skipped++;
+				continue;
+			}
+
+			$ext = strtolower(pathinfo($rel, PATHINFO_EXTENSION));
+			$mime = $mimes[$ext];
+			$width = $height = 0;
+			$sizes = array();
+			if (strpos($mime, 'image/') === 0 && ($info = @getimagesize($base.$rel)))
+			{
+				list($width, $height) = $info;
+				$sizes = $this->wp_size_names($width, $height, $variants);
+			}
+			$orig = preg_replace('/-scaled(?=\.[a-z0-9]+$)/i', '', $rel);
+			$ref = isset($refs[$orig]) ? $refs[$orig] : array('id' => NULL, 'alt' => '');
+			$row = array(
+				'file'       => $rel,
+				'width'      => $width,
+				'height'     => $height,
+				'alt'        => mb_substr($ref['alt'], 0, 255),
+				'mime_type'  => $mime,
+				'sizes'      => json_encode($sizes, JSON_UNESCAPED_SLASHES),
+				'created_at' => substr($rel, 0, 4).'-'.substr($rel, 5, 2).'-01 00:00:00',
+			);
+			if ($ref['id'] && ! isset($used_ids[$ref['id']]))
+			{
+				$row['id'] = $ref['id'];
+				$used_ids[$ref['id']] = TRUE;
+			}
+			$rows[] = $row;
+		}
+
+		// ID WordPress lebih dulu, lalu sisanya mendapat ID baru setelah ID terbesar.
+		usort($rows, function ($a, $b) { return isset($b['id']) - isset($a['id']); });
+		$this->db->trans_start();
+		foreach ($rows as $row)
+		{
+			$this->db->insert('media', $row);
+			$added++;
+		}
+		$this->db->trans_complete();
+
+		$with_id = count(array_filter($rows, function ($r) { return isset($r['id']); }));
+		echo "Media ditambahkan: {$added} ({$with_id} dengan ID WordPress dari konten). Sudah terdaftar: {$skipped}.\n";
+	}
+
+	/**
+	 * Nama ukuran WordPress untuk file turunan: thumbnail 150x150 (crop), medium 300, large 1024, medium_large 768 (lebar),
+	 * 1536x1536, 2048x2048 (proporsional, toleransi 1px). Lainnya memakai nama "WxH". Urutan seperti metadata WordPress.
+	 */
+	protected function wp_size_names($w, $h, array $variants)
+	{
+		$boxes = array('medium' => array(300, 300), 'large' => array(1024, 1024), 'thumbnail' => NULL, 'medium_large' => array(768, 0),
+			'1536x1536' => array(1536, 1536), '2048x2048' => array(2048, 2048));
+		$sizes = array();
+		$named = array();
+		foreach ($boxes as $name => $box)
+		{
+			foreach ($variants as $file => $dim)
+			{
+				if ($box === NULL)
+				{
+					$match = ($dim[0] === 150 && $dim[1] === 150);
+				}
+				else
+				{
+					$ratio = min($box[0] / $w, $box[1] ? $box[1] / $h : INF);
+					$match = ($ratio < 1 && abs(round($w * $ratio) - $dim[0]) <= 1 && abs(round($h * $ratio) - $dim[1]) <= 1);
+				}
+				if ($match)
+				{
+					$sizes[$name] = array('file' => basename($file), 'width' => $dim[0], 'height' => $dim[1]);
+					$named[$file] = TRUE;
+					break;
+				}
+			}
+		}
+		foreach ($variants as $file => $dim)
+		{
+			if ( ! isset($named[$file]))
+			{
+				$sizes[$dim[0].'x'.$dim[1]] = array('file' => basename($file), 'width' => $dim[0], 'height' => $dim[1]);
+			}
+		}
+
+		return $sizes;
 	}
 
 	/**
@@ -614,7 +837,7 @@ class Tools extends CI_Controller {
 			$kind = (strpos($m[1], 'single-post') !== FALSE) ? 'single-post'
 				: ((strpos($m[1], 'single-wpdmpro') !== FALSE) ? 'single-wpdmpro' : ((strpos($m[1], 'archive') !== FALSE) ? 'archive' : NULL));
 			// Halaman statis yang dikelola dari database (tabel pages, view NULL).
-			if ($kind === NULL && preg_match('/\bpage-template-default page page-id-(\d+)\b/', $m[1], $pm) && isset($db_pages[(int) $pm[1]]))
+			if ($kind === NULL && preg_match('/\bpage-template(?:-default| page-template-elementor_header_footer) page page-id-(\d+)\b/', $m[1], $pm) && isset($db_pages[(int) $pm[1]]))
 			{
 				$kind = 'page';
 				$db_pages[(int) $pm[1]] = TRUE;
