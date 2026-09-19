@@ -131,4 +131,63 @@ class Download_model extends CI_Model {
 
 		return ($kb < 1024) ? number_format($kb, 2, '.', '').' KB' : number_format($kb / 1024, 2, '.', '').' MB';
 	}
+
+	/** Kode pendek kartu download di konten post/halaman, sama dengan shortcode Download Manager. */
+	const SHORTCODE = '/\[wpdm_package\s+id=["\']?(\d+)["\']?\s*\]/';
+
+	/**
+	 * Ikon kartu: kolom icon, atau otomatis dari ekstensi file (file-type-icons/<ext>.svg); URL luar = web.
+	 */
+	public static function icon(array $download)
+	{
+		if ( ! empty($download['icon']))
+		{
+			return $download['icon'];
+		}
+		if (self::is_external($download))
+		{
+			return 'web';
+		}
+		$ext = strtolower(pathinfo($download['file'], PATHINFO_EXTENSION));
+
+		return is_file(FCPATH.'wp-content/plugins/download-manager/assets/file-type-icons/'.$ext.'.svg') ? $ext : 'web';
+	}
+
+	/**
+	 * Kartu "WPDM Link Template: Default Template" untuk satu paket (views/downloads/_card.php).
+	 * refresh = parameter anti-cache acak seperti WPDM (uniqid + time).
+	 * Judul: di konten biasa WordPress menjalankan wptexturize sebelum shortcode, jadi judul kartu tampil mentah;
+	 * di konten Elementor shortcode dirender di dalam widget lebih dulu, jadi judulnya ikut di-texturize.
+	 */
+	public function card(array $download, $refresh = NULL, $texturize = FALSE)
+	{
+		return $this->load->view('downloads/_card', array(
+			'download' => $download,
+			'title'    => $texturize ? wp_texturize($download['title']) : wp_nav_title($download['title']),
+			'icon'     => self::icon($download),
+			'refresh'  => ($refresh !== NULL) ? $refresh : uniqid().time(),
+		), TRUE);
+	}
+
+	/**
+	 * Ganti [wpdm_package id='N'] dengan kartu paketnya. Paket yang tidak ada / draft tidak menampilkan apa pun.
+	 */
+	public function render_shortcodes($html)
+	{
+		$texturize = (strpos($html, 'data-elementor-type=') !== FALSE);
+		if (strpos($html, '[wpdm_package') === FALSE OR ! preg_match_all(self::SHORTCODE, $html, $m))
+		{
+			return $html;
+		}
+
+		$packages = array();
+		foreach ($this->db->where_in('id', array_map('intval', $m[1]))->where('status', 'publish')->get('downloads')->result_array() as $d)
+		{
+			$packages[$d['id']] = $d;
+		}
+
+		return preg_replace_callback(self::SHORTCODE, function ($x) use ($packages, $texturize) {
+			return isset($packages[$x[1]]) ? $this->card($packages[$x[1]], NULL, $texturize) : '';
+		}, $html);
+	}
 }

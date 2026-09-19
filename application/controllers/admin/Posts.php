@@ -6,10 +6,6 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 class Posts extends Admin_Controller {
 
-	/** Slug yang tidak boleh dipakai post karena bentrok dengan URL lain. */
-	protected $reserved = array('admin', 'assets', 'author', 'category', 'download', 'feed', 'home', 'page', 'search', 'tag',
-		'tools', 'wp-admin', 'wp-content', 'wp-includes', 'wp-json');
-
 	public function __construct()
 	{
 		parent::__construct();
@@ -136,13 +132,11 @@ class Posts extends Admin_Controller {
 
 		$slug = slugify(trim((string) $in->post('slug')) !== '' ? $in->post('slug') : $title);
 		$except = $post ? $post['id'] : NULL;
-		$this->config->load('pages', TRUE);
-		$pages = (array) $this->config->item('pages', 'pages');
 		if ($slug === '')
 		{
 			$errors[] = 'Slug tidak valid.';
 		}
-		elseif (in_array($slug, $this->reserved, TRUE) OR isset($pages[$slug]))
+		elseif (root_slug_conflict($slug, 'pages'))
 		{
 			$errors[] = 'Slug "'.$slug.'" sudah dipakai halaman lain di situs.';
 		}

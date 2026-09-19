@@ -25,7 +25,7 @@ class Contacts extends Admin_Controller {
 			);
 
 			$this->contact_model->update_all($data);
-			$this->session->set_flashdata('success', 'Kontak berhasil diperbarui.');
+			$this->flash('success', 'Kontak berhasil diperbarui.');
 			redirect('admin/contacts');
 		}
 

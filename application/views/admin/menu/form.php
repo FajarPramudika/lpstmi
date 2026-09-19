@@ -22,11 +22,11 @@ $type = isset($item['type']) ? $item['type'] : 'page';
 			<select id="page" name="page">
 				<?php foreach ($pages as $slug => $p): ?>
 				<option value="<?= html_escape($slug) ?>" <?= ($type === 'page' && isset($item['slug']) && $item['slug'] === (string) $slug) ? 'selected' : '' ?>>
-					<?= html_escape($p['title']) ?> (/<?= html_escape($slug) ?>)<?= $p['migrated'] ? '' : ' — belum dimigrasi' ?>
+					<?= html_escape($p['title']) ?> (/<?= html_escape($slug) ?>)<?= $p['migrated'] ? ($p['status'] === 'draft' ? ' — draft' : '') : ' — belum dimigrasi' ?>
 				</option>
 				<?php endforeach; ?>
 			</select>
-			<div class="hint">Halaman statis. Halaman yang belum dimigrasi tetap bisa dipakai, tetapi link-nya 404 sampai halamannya dikonversi.</div>
+			<div class="hint">Halaman dari menu <a href="<?= site_url('admin/pages') ?>">Halaman</a>. Link ke halaman draft atau yang belum dimigrasi 404 sampai halamannya diterbitkan/dibuat.</div>
 		</div>
 		<div class="field" data-for-type="category">
 			<label for="category">Kategori</label>

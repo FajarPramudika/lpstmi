@@ -20,7 +20,7 @@ $published_at = ! empty($post['published_at']) ? date('Y-m-d\TH:i:s', strtotime(
 				<?php if ($raw_editor): ?>
 				<p class="hint">Post ini dibuat dengan Elementor, jadi diedit sebagai HTML mentah supaya struktur dan tampilannya tidak rusak.</p>
 				<?php endif; ?>
-				<textarea id="content" name="content" class="code" rows="24" <?= $raw_editor ? 'data-raw' : '' ?>><?= html_escape($content) ?></textarea>
+				<textarea id="content" name="content" class="code" rows="24" data-shortcodes <?= $raw_editor ? 'data-raw' : '' ?>><?= html_escape($content) ?></textarea>
 			</div>
 			<div class="field">
 				<label for="excerpt">Ringkasan</label>

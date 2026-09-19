@@ -18,10 +18,17 @@ class Posts extends MY_Controller {
 	}
 
 	/**
-	 * /<slug> — satu post.
+	 * /<slug> — halaman statis dari database (tabel pages), atau satu post.
 	 */
 	public function single($slug)
 	{
+		$this->load->model('page_model');
+		$page = $this->page_model->find_published($slug);
+		if ($page)
+		{
+			return $this->render_page($page);
+		}
+
 		$post = $this->post_model->find_published($slug);
 		if ( ! $post)
 		{
@@ -31,7 +38,8 @@ class Posts extends MY_Controller {
 		$terms = $this->post_model->terms_for(array($post['id']));
 		$categories = $terms[$post['id']]['category'];
 		$tags = $terms[$post['id']]['post_tag'];
-		$content = wp_content($post['content']);
+		$this->load->model('download_model');
+		$content = $this->download_model->render_shortcodes(wp_content($post['content']));
 		$elementor = (strpos($content, 'data-elementor-type=') !== FALSE);
 
 		$prev = $this->post_model->adjacent($post, 'prev');

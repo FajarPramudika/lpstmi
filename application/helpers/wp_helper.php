@@ -590,6 +590,8 @@ if ( ! function_exists('wp_excerpt_from_html'))
 	function wp_excerpt_from_html($html, $length = 40)
 	{
 		$text = preg_replace('@<(script|style)[^>]*?>.*?</\\1>@si', '', $html);
+		// Seperti strip_shortcodes() di wp_trim_excerpt(): kartu [wpdm_package] tidak ikut excerpt.
+		$text = preg_replace('/\[wpdm_package\b[^\]]*\]/', '', $text);
 		$text = trim(strip_tags($text));
 		$words = preg_split('/[\n\r\t ]+/', $text, $length + 1, PREG_SPLIT_NO_EMPTY);
 		if (count($words) > $length)

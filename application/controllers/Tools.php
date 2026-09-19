@@ -23,8 +23,11 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  *   php index.php tools import_downloads [ulang]
  *       Impor paket Download Manager dari clone ke tabel downloads.
  *
- *   php index.php tools import_page_index
- *       Isi data halaman statis untuk pencarian (tabel page_index).
+ *   php index.php tools import_pages
+ *       Pindahkan halaman statis dari config/pages.php ke tabel pages (aman diulang).
+ *
+ *   php index.php tools download_shortcodes
+ *       Ganti salinan kartu Download Manager di halaman & post dengan [wpdm_package id='N'].
  *
  *   php index.php tools set_login <slug-author> <username> [admin|editor]
  *       Beri akses login panel admin ke author; password acak ditampilkan sekali.
@@ -120,16 +123,25 @@ class Tools extends CI_Controller {
 	}
 
 	/**
-	 * Isi tabel page_index (data halaman statis untuk pencarian) dari wp-json/wp/v2/pages di clone,
-	 * atau REST API live (di-cache di application/cache/wp-api/pages/) untuk halaman yang JSON-nya tidak ter-clone.
-	 * Aman diulang; jalankan lagi setelah mengonversi halaman statis baru.
-	 *   php index.php tools import_page_index
+	 * Masukkan halaman statis dari config/pages.php ke tabel pages. Aman diulang: hanya halaman yang masih
+	 * berupa file view (ada di config/pages.php) yang diproses; halaman yang sudah dikelola admin tidak disentuh.
+	 *
+	 * - Halaman berkerangka standar (hero + entry-content + share + sidebar): isi entry-content diambil dari
+	 *   view-nya, disimpan dengan view NULL (dikelola dari /admin/pages), lalu dihapus dari config/pages.php.
+	 *   File view lamanya tidak dipakai lagi.
+	 * - Halaman berkerangka khusus (beranda, statistik, lowongan kerja): tetap berupa view; baris pages hanya
+	 *   untuk pencarian & pilihan menu (content dari wp-json/wp/v2/pages, clone atau cache REST API live).
+	 *
+	 *   php index.php tools import_pages
 	 */
-	public function import_page_index()
+	public function import_pages()
 	{
+		$this->load->helper('admin');
 		$this->config->load('pages');
 		$pages = $this->config->item('pages');
-		$rows = array();
+		$open = '<div class="entry-content is-layout-flow">';
+		$tail = NULL;
+		$managed = array();
 
 		foreach ($pages as $key => $page)
 		{
@@ -138,27 +150,7 @@ class Tools extends CI_Controller {
 				continue;
 			}
 			$id = (int) $m[1];
-			$file = $this->wp_clone->root().'wp-json/wp/v2/pages/'.$id.'.json';
-			$cache = APPPATH.'cache/wp-api/pages/'.$id.'.json';
-			if ( ! is_file($file))
-			{
-				if ( ! is_file($cache))
-				{
-					$body = @file_get_contents('https://stmi.ac.id/wp-json/wp/v2/pages/'.$id);
-					if ($body === FALSE OR json_decode($body) === NULL)
-					{
-						$this->fail('Gagal mengambil data page '.$id.' ('.$key.') dari API live.');
-					}
-					if ( ! is_dir(dirname($cache)))
-					{
-						mkdir(dirname($cache), 0775, TRUE);
-					}
-					file_put_contents($cache, $body);
-					echo "  ambil dari live: pages/{$id}\n";
-				}
-				$file = $cache;
-			}
-			$json = json_decode(file_get_contents($file), TRUE);
+			$json = $this->page_json($id, $key);
 
 			// Judul mentah: dibalik dari hasil wptexturize dan dipastikan sama persis setelah wp_texturize().
 			$rendered = $json['title']['rendered'];
@@ -177,23 +169,148 @@ class Tools extends CI_Controller {
 				$this->fail('Gambar unggulan page '.$id.' (media '.$featured.') belum ada di tabel media.');
 			}
 
-			$rows[] = array(
+			$row = array(
 				'id'                => $id,
-				'page_key'          => $key,
+				'slug'              => $key,
 				'title'             => $raw,
 				'content'           => $this->wp_clone->rewrite_urls($json['content']['rendered'], 'page/index.html', 'token'),
+				'view'              => $page['view'],
 				'author_id'         => (int) $json['author'],
 				'featured_media_id' => $featured ? $featured : NULL,
+				'status'            => 'publish',
+				'layout_head'       => NULL,
+				'layout_foot'       => NULL,
 				'published_at'      => str_replace('T', ' ', $json['date']),
 				'modified_at'       => str_replace('T', ' ', $json['modified']),
 			);
+
+			// Kerangka standar: isi entry-content dari view (sudah terverifikasi identik dengan clone).
+			$html = $this->load->view($page['view'], array(), TRUE);
+			$a = strpos($html, $open);
+			$e = strpos($html, '<div class="ct-share-box');
+			if ($a !== FALSE && $e !== FALSE && strpos($html, '<div class="hero-section" data-type="type-2">') !== FALSE)
+			{
+				$region = substr($html, $a + strlen($open), $e - $a - strlen($open));
+				$cut = strrpos($region, '</div>');
+				if ($tail === NULL)
+				{
+					$tail = substr($region, $cut);
+				}
+				elseif (substr($region, $cut) !== $tail)
+				{
+					$this->fail('Penutup entry-content halaman '.$key.' berbeda dari halaman lain.');
+				}
+				$row['content'] = content_to_tokens(substr($region, 0, $cut));
+				$row['view'] = NULL;
+				$row['layout_head'] = $page['head'];
+				$row['layout_foot'] = $page['foot'];
+				$managed[] = $key;
+			}
+
+			$this->db->replace('pages', $row);
+			echo ($row['view'] === NULL ? 'DB    ' : 'VIEW  ').$key."\n";
 		}
 
-		$this->db->trans_start();
-		$this->db->query('DELETE FROM page_index');
-		$this->db->insert_batch('page_index', $rows);
-		$this->db->trans_complete();
-		echo 'page_index: '.count($rows)." halaman.\n";
+		// Halaman yang sudah pindah ke database tidak lagi dirender dari config/pages.php.
+		if ($managed)
+		{
+			$this->write_pages(array_diff_key($pages, array_flip($managed)));
+		}
+		echo 'pages: '.count($managed).' halaman dipindah ke database; view lamanya (views/pages/<slug>.php) tidak dipakai lagi.'."\n";
+	}
+
+	/**
+	 * Ganti salinan statis kartu Download Manager ("WPDM Link Template") di konten halaman & post dengan
+	 * [wpdm_package id='N'], hanya jika kartu hasil render dari tabel downloads sama persis dengan salinannya
+	 * (parameter refresh diabaikan). Ikon yang berbeda dari aturan otomatis disimpan ke downloads.icon.
+	 * Kartu yang tidak bisa dibuat ulang (mis. ikon dari situs lain) dibiarkan. Aman diulang.
+	 *
+	 *   php index.php tools download_shortcodes
+	 */
+	public function download_shortcodes()
+	{
+		$this->load->model('download_model');
+		$this->load->helper('admin');
+		$downloads = array();
+		foreach ($this->db->get('downloads')->result_array() as $d)
+		{
+			$downloads[$d['id']] = $d;
+		}
+
+		$converted = 0;
+		$kept = array();
+		foreach (array('pages' => 'view IS NULL', 'posts' => '1 = 1') as $table => $where)
+		{
+			foreach ($this->db->select('id, content')->where($where, NULL, FALSE)->get($table)->result_array() as $row)
+			{
+				$texturize = (strpos($row['content'], 'data-elementor-type=') !== FALSE);
+				$content = preg_replace_callback("#<div class='w3eden'><!-- WPDM Link Template: Default Template -->.*?\n</div>\n\n</div>#s",
+					function ($m) use (&$downloads, &$converted, &$kept, $table, $row, $texturize) {
+						$card = wp_content($m[0]);
+						if ( ! preg_match('/wpdmdl=(\d+)&amp;refresh=([0-9a-f]+)"/', $card, $x) OR ! isset($downloads[$x[1]])
+							OR $downloads[$x[1]]['status'] !== 'publish')
+						{
+							$kept[] = $table.' '.$row['id'].': paket tidak ditemukan / draft';
+							return $m[0];
+						}
+						$d = $downloads[$x[1]];
+						// Ikon WordPress berbeda dari aturan otomatis (mis. Google Drive berisi PDF): simpan ke downloads.icon.
+						if (preg_match('#file-type-icons/([a-z0-9]+)\.svg#', $card, $icon) && $icon[1] !== Download_model::icon($d)
+							&& $this->download_model->card(array_merge($d, array('icon' => $icon[1])), $x[2], $texturize) === $card)
+						{
+							$this->db->update('downloads', array('icon' => $icon[1]), array('id' => $d['id']));
+							$downloads[$d['id']]['icon'] = $d['icon'] = $icon[1];
+						}
+						if ($this->download_model->card($d, $x[2], $texturize) !== $card)
+						{
+							$kept[] = $table.' '.$row['id'].': paket '.$d['id'].' (kartu berbeda dari render database)';
+							return $m[0];
+						}
+						$converted++;
+						return "[wpdm_package id='".$d['id']."']";
+					}, $row['content']);
+
+				if ($content !== $row['content'])
+				{
+					$this->db->update($table, array('content' => $content), array('id' => $row['id']));
+				}
+			}
+		}
+
+		echo 'Kartu diganti kode pendek: '.$converted."\n";
+		foreach ($kept as $k)
+		{
+			echo '  dibiarkan: '.$k."\n";
+		}
+	}
+
+	/**
+	 * JSON page WordPress dari clone (wp-json/wp/v2/pages/<ID>.json) atau REST API live (di-cache).
+	 */
+	protected function page_json($id, $key)
+	{
+		$file = $this->wp_clone->root().'wp-json/wp/v2/pages/'.$id.'.json';
+		$cache = APPPATH.'cache/wp-api/pages/'.$id.'.json';
+		if ( ! is_file($file))
+		{
+			if ( ! is_file($cache))
+			{
+				$body = @file_get_contents('https://stmi.ac.id/wp-json/wp/v2/pages/'.$id);
+				if ($body === FALSE OR json_decode($body) === NULL)
+				{
+					$this->fail('Gagal mengambil data page '.$id.' ('.$key.') dari API live.');
+				}
+				if ( ! is_dir(dirname($cache)))
+				{
+					mkdir(dirname($cache), 0775, TRUE);
+				}
+				file_put_contents($cache, $body);
+				echo "  ambil dari live: pages/{$id}\n";
+			}
+			$file = $cache;
+		}
+
+		return json_decode(file_get_contents($file), TRUE);
 	}
 
 	/**
@@ -468,7 +585,7 @@ class Tools extends CI_Controller {
 
 	/**
 	 * Bandingkan semua halaman post & arsip (dari database) dengan clone.
-	 *   php index.php tools verify_db [single-post|single-wpdmpro|archive] [detail]
+	 *   php index.php tools verify_db [single-post|single-wpdmpro|archive|page] [detail]
 	 */
 	public function verify_db($type = NULL, $detail = NULL)
 	{
@@ -476,6 +593,11 @@ class Tools extends CI_Controller {
 		$it = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($base, FilesystemIterator::SKIP_DOTS));
 		$ok = 0;
 		$failed = array();
+		$db_pages = array();
+		foreach ($this->db->select('id')->where('view', NULL)->get('pages')->result_array() as $r)
+		{
+			$db_pages[(int) $r['id']] = FALSE;
+		}
 
 		foreach ($it as $file)
 		{
@@ -491,6 +613,12 @@ class Tools extends CI_Controller {
 			}
 			$kind = (strpos($m[1], 'single-post') !== FALSE) ? 'single-post'
 				: ((strpos($m[1], 'single-wpdmpro') !== FALSE) ? 'single-wpdmpro' : ((strpos($m[1], 'archive') !== FALSE) ? 'archive' : NULL));
+			// Halaman statis yang dikelola dari database (tabel pages, view NULL).
+			if ($kind === NULL && preg_match('/\bpage-template-default page page-id-(\d+)\b/', $m[1], $pm) && isset($db_pages[(int) $pm[1]]))
+			{
+				$kind = 'page';
+				$db_pages[(int) $pm[1]] = TRUE;
+			}
 			if ($kind === NULL OR ($type !== NULL && $type !== $kind))
 			{
 				continue;
@@ -504,7 +632,7 @@ class Tools extends CI_Controller {
 			}
 
 			$expected = $this->wp_clone->expected($rel);
-			if ($kind === 'single-wpdmpro')
+			if ($kind === 'single-wpdmpro' OR $kind === 'page' OR $kind === 'single-post')
 			{
 				// Parameter refresh tombol Download dibuat acak tiap halaman dimuat (uniqid + time), juga di WordPress.
 				$expected = preg_replace('/(data-downloadurl="[^"]*refresh=)[0-9a-f]{13}\d{10}/', '$1R', $expected);
@@ -521,6 +649,15 @@ class Tools extends CI_Controller {
 		}
 
 		echo "OK {$ok}, BEDA ".count($failed)."\n";
+		if ($type === NULL OR $type === 'page')
+		{
+			// Halaman baru dari admin tidak punya pembanding di clone.
+			$unchecked = array_keys(array_filter($db_pages, function ($seen) { return ! $seen; }));
+			if ($unchecked)
+			{
+				echo 'Halaman database tanpa pembanding di clone (ID): '.implode(', ', $unchecked)."\n";
+			}
+		}
 		foreach (array_slice($failed, 0, $detail === NULL ? 5 : 1000) as $f)
 		{
 			echo "BEDA  {$f[0]}\n{$f[1]}";
@@ -577,6 +714,11 @@ class Tools extends CI_Controller {
 		$this->config->load('pages');
 		$pages = $this->config->item('pages');
 		$pages[$slug] = $page;
+		$this->write_pages($pages);
+	}
+
+	protected function write_pages(array $pages)
+	{
 		ksort($pages);
 
 		$code = "<?php\ndefined('BASEPATH') OR exit('No direct script access allowed');\n\n"

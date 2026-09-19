@@ -3,7 +3,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 /**
  * Pencarian seperti WordPress (WP_Query::parse_search / parse_search_order) atas post, paket download,
- * dan halaman statis (tabel page_index).
+ * dan halaman statis (tabel pages).
  *
  * - Kata kunci dipecah per kata ("frasa dalam kutip" tetap satu), kata tunggal a-z dan stopword Inggris dibuang,
  *   kata berawalan "-" berarti "tidak mengandung".
@@ -28,7 +28,7 @@ class Search_model extends CI_Model {
 		$sources = array(
 			'post'     => "SELECT 'post' AS kind, id, slug, title, content AS body, published_at, author_id, featured_media_id FROM posts WHERE status = 'publish'",
 			'download' => "SELECT 'download' AS kind, id, slug, title, description AS body, published_at, author_id, featured_media_id FROM downloads WHERE status = 'publish'",
-			'page'     => "SELECT 'page' AS kind, id, page_key AS slug, title, content AS body, published_at, author_id, featured_media_id FROM page_index",
+			'page'     => "SELECT 'page' AS kind, id, slug, title, content AS body, published_at, author_id, featured_media_id FROM pages WHERE status = 'publish'",
 		);
 		$union = implode(' UNION ALL ', array_intersect_key($sources, array_flip($types)));
 

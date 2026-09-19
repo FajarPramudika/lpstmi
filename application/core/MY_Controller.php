@@ -146,6 +146,43 @@ class MY_Controller extends CI_Controller {
 	}
 
 	/**
+	 * Halaman statis dari tabel pages (view NULL) dengan template halaman standar Blocksy:
+	 * hero, judul, author, breadcrumb, isi, tombol share, sidebar (views/pages/_page.php).
+	 */
+	public function render_page(array $page)
+	{
+		$this->load->model(array('page_model', 'author_model', 'download_model'));
+		$this->config->load('site');
+
+		$content = $this->download_model->render_shortcodes(wp_content($page['content']));
+		list($head, $foot) = $this->page_model->layout_for($page['content'], $page['layout_head'], $page['layout_foot']);
+		list($img_hints, $avatar_hint) = $this->page_model->img_hints($content);
+		// peraturan & perkin: konten biasa, tetapi WordPress tetap memuat Elementor (varian head-nya) dan kelas elementor-page.
+		$elementor = (Page_model::is_elementor($page['content']) || $this->page_model->variant_has('head', $head, 'elementor-frontend-css'));
+		$id = (int) $page['id'];
+
+		$this->render(array(
+			'view'       => 'pages/_page',
+			'title'      => wp_document_title(array($page['title'], $this->config->item('site_title'))),
+			'body_attrs' => ' class="wp-singular page-template-default page page-id-'.$id.' wp-custom-logo wp-embed-responsive wp-theme-blocksy'
+				.' elementor-default elementor-kit-9 '.($elementor ? 'elementor-page elementor-page-'.$id.' ' : '').'ct-elementor-default-template"'
+				.' data-link="type-2" data-prefix="single_page" data-header="type-1:sticky" data-footer="type-1" itemscope="itemscope" itemtype="https://schema.org/WebPage"',
+			'head'       => $head,
+			'foot'       => $foot,
+			'img_hints'  => $img_hints,
+		), array(
+			'page'          => $page,
+			'content'       => $content,
+			'author'        => $this->author_model->find($page['author_id']),
+			'avatar_hint'   => $avatar_hint,
+			'has_thumbnail' => ! empty($page['featured_media_id']),
+			'share_url'     => wp_encode_uri_component(site_url($page['slug']).'/'),
+			'share_title'   => wp_encode_uri_component(wp_texturize($page['title'])),
+			'menu_context'  => array('page' => $page['slug']),
+		));
+	}
+
+	/**
 	 * Halaman 404 bergaya WordPress ("Oops! That page can't be found.", dari clone js15_as.html) dengan status 404.
 	 * Dipanggil lewat 404_override (Pages::not_found) dan MY_Exceptions::show_404().
 	 */

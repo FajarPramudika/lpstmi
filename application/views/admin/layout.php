@@ -11,6 +11,7 @@ if ($section === 'users' && $this->uri->segment(3) === 'profile') { $current = '
 $icons = array(
 	'dashboard' => '<rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>',
 	'post'      => '<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6M8 13h8M8 17h5"/>',
+	'page'      => '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M4 8h16M8 12h8M8 16h5"/>',
 	'download'  => '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5M12 15V3"/>',
 	'media'     => '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/>',
 	'category'  => '<path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>',
@@ -35,6 +36,7 @@ $nav = array(
 	),
 	'Konten' => array(
 		array('posts', 'admin/posts', 'Post', 'post', TRUE),
+		array('pages', 'admin/pages', 'Halaman', 'page', TRUE),
 		array('downloads', 'admin/downloads', 'Download', 'download', TRUE),
 		array('media', 'admin/media', 'Media', 'media', TRUE),
 		array('terms:category', 'admin/terms/index/category', 'Kategori', 'category', TRUE),

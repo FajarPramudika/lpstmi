@@ -209,35 +209,24 @@ class Menu extends Admin_Controller {
 	}
 
 	/**
-	 * Halaman yang bisa dipilih: halaman statis yang sudah dimigrasi (config/pages.php) dan halaman
-	 * yang sudah ada di menu tapi belum dimigrasi. slug => [title, object_id, migrated].
+	 * Halaman yang bisa dipilih: semua halaman di tabel pages (termasuk beranda = slug '') dan halaman
+	 * yang sudah ada di menu tapi belum dimigrasi. slug => [title, object_id, migrated, status].
 	 */
 	protected function page_options()
 	{
-		$this->config->load('pages', TRUE);
+		$this->load->model('page_model');
 		$options = array();
 
-		foreach ((array) $this->config->item('pages', 'pages') as $key => $page)
+		foreach ($this->page_model->options() as $slug => $page)
 		{
-			if ($key === 'error-404')
-			{
-				continue;
-			}
-			$slug = ($key === 'home') ? '' : $key;
-			preg_match('/\bpage-id-(\d+)\b/', $page['body_attrs'], $m);
-			$title = preg_replace('/ &#8211; Politeknik STMI Jakarta$/', '', $page['title']);
-			$options[$slug] = array(
-				'title'     => html_entity_decode($title, ENT_QUOTES, 'UTF-8'),
-				'object_id' => isset($m[1]) ? (int) $m[1] : NULL,
-				'migrated'  => TRUE,
-			);
+			$options[$slug] = $page + array('migrated' => TRUE);
 		}
 
 		foreach ($this->menu_model->all() as $row)
 		{
 			if ($row['type'] === 'page' && ! isset($options[$row['slug']]))
 			{
-				$options[$row['slug']] = array('title' => $row['title'], 'object_id' => $row['object_id'], 'migrated' => FALSE);
+				$options[$row['slug']] = array('title' => $row['title'], 'object_id' => $row['object_id'], 'migrated' => FALSE, 'status' => 'publish');
 			}
 		}
 

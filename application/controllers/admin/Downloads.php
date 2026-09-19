@@ -32,6 +32,23 @@ class Downloads extends Admin_Controller {
 		));
 	}
 
+	/**
+	 * JSON untuk pemilih paket di editor post/halaman (sisipkan [wpdm_package id='N']).
+	 */
+	public function browse()
+	{
+		$page = max(1, (int) $this->input->get('page'));
+		list($items, $total) = $this->download_model->admin_list(array('status' => '', 'q' => trim((string) $this->input->get('q'))), $page);
+
+		$this->output->set_content_type('application/json')->set_output(json_encode(array(
+			'items'       => array_map(function ($d) {
+				return array('id' => (int) $d['id'], 'title' => $d['title'], 'size' => $d['file_size'], 'status' => $d['status']);
+			}, $items),
+			'page'        => $page,
+			'total_pages' => max(1, (int) ceil($total / Download_model::ADMIN_PER_PAGE)),
+		)));
+	}
+
 	public function create()
 	{
 		$this->form(NULL);

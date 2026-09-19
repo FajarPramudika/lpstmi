@@ -555,6 +555,9 @@ class Wp_clone {
 	{
 		// PHP menelan newline setelah tag penutup, jadi newline aslinya dicetak lewat . "\n" (sama seperti di partial).
 		$html = str_replace("humas@stmi.ac.id\n", "<?= html_escape(\$contacts['email']) . \"\\n\" ?>\n", $html);
+		// Tombol Email widget Chaty (chaty_settings di foot).
+		$html = str_replace('"channel":"Email","value":"humas@stmi.ac.id"', '"channel":"Email","value":"<?= html_escape($contacts[\'email\']) ?>"', $html);
+		$html = str_replace('"url":"mailto:humas@stmi.ac.id"', '"url":"mailto:<?= html_escape($contacts[\'email\']) ?>"', $html);
 		$html = str_replace("021-42888206\n", "<?= html_escape(\$contacts['phone']) . \"\\n\" ?>\n", $html);
 		$html = str_replace("0851-552-44455 \n", "<?= html_escape(\$contacts['whatsapp']) ?> \n", $html);
 		$html = str_replace("0851-552-44455\n", "<?= html_escape(\$contacts['whatsapp']) . \"\\n\" ?>\n", $html);

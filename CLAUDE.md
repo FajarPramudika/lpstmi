@@ -17,7 +17,7 @@ Balas user dalam **Bahasa Indonesia**.
   - Model: `class Nama_model extends CI_Model`.
   - Routing di `application/config/routes.php` (`$route['slug'] = 'controller/method';`).
   - View dimuat dengan `$this->load->view('path', $data)`.
-- Tidak ada git di folder ini; hati-hati saat menimpa file.
+- Folder ini repo git (branch `main`); commit dilakukan user sendiri. **Jangan commit kecuali diminta.**
 
 ## Lingkungan lokal
 
@@ -30,6 +30,25 @@ Balas user dalam **Bahasa Indonesia**.
 - `base_url` = `http://localhost:8000/`, `index_page` kosong, `.htaccess` sudah ada untuk Apache/produksi.
 - Autoload: library `database`; helper `url`, `html`, `wp`. Timezone `Asia/Jakarta` (di awal `config/config.php`).
 - Session (file) di `application/cache/sessions/`, hanya dimuat di `/admin`. CSRF aktif (`csrf_token`, tidak diregenerasi).
+
+## Eksplorasi kode (codebase-memory-mcp)
+
+Repo ini sudah diindeks ke knowledge graph **codebase-memory-mcp** (project `home-ughway-Debiancode-Myprojects-lpstmi`).
+- **Pakai tool MCP ini dulu** untuk mencari/memahami kode, sebelum Grep/Glob/Read:
+  - `search_graph` (cari fungsi/class/method per nama/label/qualified name),
+  - `get_code_snippet` (ambil source satu simbol dengan rentang baris yang tepat),
+  - `trace_path` (rantai pemanggilan, mis. controller → model → helper),
+  - `query_graph` (Cypher untuk pola kompleks), `get_architecture` (gambaran struktur), `search_code` (grep berbasis graph).
+- Grep/Glob/Read tetap dipakai untuk file non-kode (config, view HTML hasil clone, CLAUDE.md, SQL, dll.) dan
+  **file wajib di-Read dulu sebelum diedit**.
+- `stmi.ac.id-clone/` **dikecualikan** dari indeks lewat `.cbmignore` di root (sintaks gitignore). Untuk isi clone,
+  pakai Grep/Read biasa.
+- Indeks masih memuat `system/` (core CI3) dan `wp-content/`/`wp-includes/` (JS/CSS vendor). Kode proyek yang sebenarnya
+  ada di `application/` (+ `assets/admin/`, `server.php`); saring hasil ke path itu (mis. `file_path` diawali `application/`).
+- Indeks tidak selalu mengikuti perubahan terbaru: jika hasil tampak usang (fungsi baru tidak ditemukan, baris tidak cocok),
+  cek `detect_changes`/`index_status` lalu jalankan `index_repository` ulang. Kalau proyek belum terindeks, `index_repository` dulu.
+- `index_repository` bersifat inkremental: menambah pola ke `.cbmignore` **tidak** menghapus node lama. Setelah mengubah
+  `.cbmignore`, jalankan `delete_project` lalu `index_repository` supaya indeks dibangun ulang dari nol.
 
 ## Struktur folder
 
@@ -122,7 +141,7 @@ lpstmi/
 ```
 application/
 ├── core/MY_Controller.php             # render(): isi default, load layouts/main, lalu tandai menu aktif
-├── controllers/Pages.php              # halaman statis (route per slug dari config/pages.php), home + redirect /?p=ID
+├── controllers/Pages.php              # halaman berkerangka khusus (route per slug dari config/pages.php), home + redirect /?p=ID
 ├── controllers/Posts.php              # post & arsip kategori/tag/author dari database
 ├── controllers/admin/                 # panel admin (lihat bagian "Panel admin")
 ├── models/                            # Post_model, Author_model, Term_model, Media_model
@@ -134,7 +153,7 @@ application/
 ├── helpers/admin_helper.php           # slugify, unique_slug, auto_excerpt, content_to_tokens, paginasi admin
 ├── models/Menu_model.php               # menu utama (tabel menu_items): pohon, URL, menu aktif otomatis
 ├── config/site.php                    # judul situs
-├── config/pages.php                   # DIHASILKAN tools: daftar halaman statis + metadata
+├── config/pages.php                   # DIHASILKAN tools: halaman berkerangka khusus (home, statistik, lowongan-kerja, error-404)
 └── views/
     ├── layouts/main.php               # susunan: document_open, title, head/<varian>, <body>, drawer, header, isi, footer, foot/<varian>
     ├── layouts/partials/document_open.php  # <!doctype> s.d. <title>          (sama di semua halaman)
@@ -143,7 +162,8 @@ application/
     ├── layouts/partials/footer.php    # <footer id="footer"> ... </footer>
     ├── layouts/head/<varian>.php      # </title> s.d. sebelum <body: CSS/JS/meta per template
     ├── layouts/foot/<varian>.php      # setelah </footer> s.d. </html>: script per template
-    └── pages/<slug>.php               # isi halaman: dari setelah </header> s.d. sebelum <footer (termasuk <main>)
+    ├── pages/_page.php                # template halaman standar (hero, judul, author, isi, share, sidebar) untuk tabel pages
+    └── pages/<slug>.php               # isi halaman khusus: dari setelah </header> s.d. sebelum <footer (termasuk <main>)
 ```
 
 - **Kenapa head/foot berupa varian:** WordPress hanya memuat CSS/JS yang dipakai tiap halaman, jadi daftar dan urutannya
@@ -155,7 +175,7 @@ application/
   `page` slug / `category` id / `post_categories`), lalu disisipkan `wp_menu_active()` dengan urutan kelas seperti WordPress.
   `config/pages.php` tidak lagi menyimpan `menu_active`.
 - Bagian partial yang dinamis (menu utama, kontak, media sosial, link footer) punya padanan "netralisasi" di `Wp_clone`
-  (`neutralize_main_menu`, `neutralize_contacts`, `neutralize_footer_links`) yang dipakai `Tools::prepare()`, supaya
+  (`neutralize_main_menu`, `neutralize_contacts` (juga email Chaty di `chaty_settings` foot), `neutralize_footer_links`) yang dipakai `Tools::prepare()`, supaya
   `tools check/convert/layout` tetap bisa membandingkan clone dengan partial. **Kalau partial diubah jadi dinamis, tambahkan
   netralisasinya juga**, lalu pastikan `tools check` tetap `502 OK`.
 - **Atribut gambar di layout** (`fetchpriority="high"`, `loading="lazy"`) berbeda per halaman, jadi disimpan di `img_hints`.
@@ -172,7 +192,8 @@ application/
 ## Keputusan user
 
 1. **Berita, pengumuman, dan artikel (post WordPress) disimpan di database** `lpstmi_db`. Halaman statis (Page WordPress)
-   tetap berupa view. Admin panel (CMS) untuk mengelola post, media, kategori, tag, dan pengguna.
+   juga di database (tabel `pages`, dikelola admin & editor; keputusan 2026-09-19), kecuali 3 halaman berkerangka khusus
+   yang tetap berupa view. Admin panel (CMS) untuk mengelola post, halaman, media, kategori, tag, dan pengguna.
 2. Fitur dinamis (pencarian, form, feed): **nanti**. Markup tetap disalin agar tampilan sama.
    Download Manager **sudah dimigrasi** (lihat bagian "Download Manager").
 3. Link absolut ke `https://stmi.ac.id/...`: **diubah** ke `site_url()`/`base_url()` dengan cakupan di aturan 5
@@ -191,6 +212,7 @@ Dibuat dengan CI3 Migrations (`application/migrations/`, `php index.php tools mi
 | `media` | `file` (relatif `wp-content/uploads/`), `width`, `height`, `alt`, `mime_type`, `sizes` (JSON ukuran turunan, **urutan = urutan metadata WordPress**, menentukan urutan srcset) |
 | `posts` | `slug`, `title` (**teks mentah**; ditampilkan lewat `wp_texturize()`), `content` (HTML), `excerpt` (HTML kartu arsip), `author_id`, `featured_media_id`, `status` (publish/draft), `published_at`, `modified_at` (waktu lokal), `layout_head`/`layout_foot` (override varian layout; dipakai 3 post Elementor `post-<ID>`) |
 | `post_terms` | `post_id`, `term_id`, `term_order` (urutan tampil kategori lalu tag) |
+| `pages` | halaman statis (Page WordPress); lihat bagian "Halaman statis dari database" |
 
 - URL situs di `content` disimpan sebagai token `{base_url}`, `{base_url_json}`, `{base_url_encoded}`; diganti saat render
   (`wp_content()`) dan dikembalikan jadi token saat disimpan dari admin (`content_to_tokens()`).
@@ -205,7 +227,8 @@ Dibuat dengan CI3 Migrations (`application/migrations/`, `php index.php tools mi
 ## Render post & arsip (`controllers/Posts.php`, `views/posts/`)
 
 Semua aturan ini sudah diverifikasi byte-per-byte terhadap 186 post + 152 halaman arsip di clone:
-- Route: `/<slug>` (post; halaman statis punya route sendiri dari `config/pages.php`), `/category/<slug>[/page/N]`,
+- Route: `/<slug>` (`Posts::single`: halaman dari tabel `pages` dicek lebih dulu, lalu post; halaman khusus punya route sendiri
+  dari `config/pages.php`), `/category/<slug>[/page/N]`,
   `/tag/<slug>[/page/N]`, `/author/<slug>[/page/N]`, `/?p=<ID>` → 301 ke permalink. 5 post per halaman arsip,
   paginasi `paginate_links()` (end_size 1, mid_size 3). `/…/page/1` → 301 ke URL tanpa page.
 - Judul: `wp_texturize()` (port wptexturize) untuk h1/kartu; `wp_document_title()` untuk `<title>`; `wp_nav_title()`
@@ -241,8 +264,18 @@ Semua aturan ini sudah diverifikasi byte-per-byte terhadap 186 post + 152 halama
 - Render (diverifikasi 131/131 `verify_db`): head `download`; foot `download-pdf` jika deskripsi berisi `class="pdfemb-viewer"`,
   selain itu `download` (ID paket di skrip view-count WPDM adalah variabel); logo header `fetchpriority` kecuali paket bergambar
   unggulan (maka gambar unggulan yang `fetchpriority` dan avatar author `loading="lazy"`); logo footer tanpa `wp-post-image`.
-- Tombol Download yang disematkan di 12 halaman statis & 20 post (kartu "WPDM Link Template") adalah salinan statis: judul/ukuran
-  di kartu tidak ikut berubah bila paketnya diedit. Link-nya sudah `download/<slug>?wpdmdl=ID` (migrasi 013 untuk post).
+- **Kartu download di konten** (kartu "WPDM Link Template: Default Template" di halaman & post) disimpan sebagai kode pendek
+  `[wpdm_package id='N']` (sama dengan shortcode WPDM) dan dirender saat tampil oleh `Download_model::render_shortcodes()` +
+  `views/downloads/_card.php`: judul, ukuran, ikon, teks tombol ikut data paket; paket draft/terhapus tidak tampil; `refresh`
+  acak per tampilan. Judul kartu **mentah** di konten biasa (WordPress menjalankan wptexturize sebelum shortcode) dan
+  **ter-texturize** di konten Elementor. Ikon: kolom `downloads.icon` (migrasi 016; diisi untuk 4 paket Google Drive berikon PDF),
+  NULL = ekstensi file (`file-type-icons/<ext>.svg`, URL luar = `web`). Excerpt pencarian membuang kode pendek (seperti
+  `strip_shortcodes()`), dan pencarian tidak lagi cocok dengan judul paket di dalam kartu (sama seperti WordPress).
+  - Konversi: `php index.php tools download_shortcodes` (aman diulang) mengganti 124 kartu yang hasil render databasenya
+    identik; 7 kartu tetap salinan statis (5 di post berikon dari `tro.stmi.ac.id`, 2 di akreditasi berikon data-URI karena
+    file aslinya `.pd`). `verify_db` menormalkan `refresh` untuk post, halaman, dan paket.
+  - Editor: tombol **Download** di TinyMCE (post & halaman; `toolbar_mode: 'wrap'`) dan tombol "Sisipkan kartu download" di mode
+    HTML mentah membuka pemilih paket (`admin/downloads/browse`, JSON) lalu menyisipkan kode pendek.
 - Converter: atribut `data-downloadurl` ikut diubah. Varian HTTrack `index<hash>.html` dipetakan: link `canonical` → halaman itu;
   isi file biner (PDF) → folder paketnya; redirect "Page has moved" ke **halaman** internal → ikuti; selain itu → path asli dari
   komentar "Mirrored from"; varian download yang tidak tersimpan + `?wpdmdl=` → folder paketnya. Query link dipertahankan.
@@ -271,14 +304,57 @@ Semua aturan ini sudah diverifikasi byte-per-byte terhadap 186 post + 152 halama
   Tabel `menu_items` (migrasi 011): `id` (ID item WordPress untuk 47 item awal; kelas `menu-item-<ID>`), `parent_id`
   (FK ON DELETE CASCADE), `position`, `title` (teks; tampil lewat `wp_texturize()`), `type` (page/category/custom),
   `object_id` (page: ID page WordPress untuk `page-item-<ID>`; category: `terms.id`), `slug` (page; '' = beranda),
-  `url` (custom; token `{base_url}`, NULL = tanpa link). Pilihan halaman = halaman di `config/pages.php` + halaman yang sudah
-  ada di menu tapi belum dimigrasi (ditandai "belum ada"; link 404 sampai halamannya dikonversi).
+  `url` (custom; token `{base_url}`, NULL = tanpa link). Pilihan halaman = semua baris tabel `pages` (beranda = slug '') + halaman
+  yang sudah ada di menu tapi belum dimigrasi (ditandai "belum dimigrasi"; link 404 sampai halamannya dibuat).
 - **Download** (`/admin/downloads`, admin & editor): daftar (status, cari), buat/edit (judul, slug, file dari pustaka media
   atau URL luar, deskripsi TinyMCE, teks tombol, template, gambar unggulan, status, tanggal dibuat, author), hapus. Ukuran file
   dihitung ulang hanya saat file diganti (label hasil impor dipertahankan). Paket baru berisi PDF dengan deskripsi kosong otomatis
   diberi embed PDF Embedder. "Last Updated" diisi saat disimpan.
 - **Pengguna:** tambah/ubah/nonaktifkan/hapus (hanya jika tidak punya post), profil sendiri + ganti password (min. 10 karakter).
-- Halaman statis (`config/pages.php` + `views/pages/`) **tidak** diedit lewat admin.
+- **Halaman** (`/admin/pages`, admin & editor): lihat bagian "Halaman statis dari database".
+
+## Halaman statis dari database (`models/Page_model.php`, `views/pages/_page.php`, `controllers/admin/Pages.php`)
+
+- Tabel `pages` (migrasi 015; dulu `page_index`): `id` (ID page WordPress; kelas `post-<ID>`/`page-id-<ID>`; halaman baru mulai
+  20000 agar tidak bentrok dengan ID WordPress), `slug`, `title` (mentah, tampil lewat `wp_texturize()`), `content`, `view`,
+  `author_id`, `featured_media_id` (hanya kelas `has-post-thumbnail` + kartu pencarian; hero semua halaman sama), `status`,
+  `layout_head`/`layout_foot`, `published_at`, `modified_at`.
+- **`view` NULL** (30 halaman, admin & editor mengelola di `/admin/pages`): `content` = isi `entry-content` persis (termasuk
+  whitespace sebelum `</div>` penutup), dirender `MY_Controller::render_page()` dengan template `views/pages/_page.php`. Ke-30
+  halaman lama (Page WordPress `page-template-default`) memakai kerangka byte-identik yang sama, jadi hanya isi, judul, ID, slug,
+  author, dan gambar unggulan yang berbeda. `body_attrs`, `<title>`, link share, dan `img_hints` diturunkan otomatis:
+  - `elementor-page elementor-page-<ID>` jika konten Elementor **atau** varian head memuat `elementor-frontend-css`
+    (peraturan & perkin: konten biasa, tetapi WordPress tetap memuat Elementor).
+  - `img_hints` + atribut avatar author: `Page_model::img_hints()` (aturan loading WordPress: gambar konten ber-width/height
+    dihitung dulu, lalu logo sticky, logo default, avatar).
+  - Varian layout: `Page_model::layout_for()` mempertahankan varian tersimpan selama memuat aset yang dibutuhkan konten; kalau
+    tidak, dipilih otomatis: `pdfemb-viewer` → foot `daftar-isian-penggunaan-anggaran`, video → foot `maklumat-pelayanan`,
+    Elementor → head `peraturan` + foot `daftar-informasi`, selain itu head `sejarah-kampus` + foot `akademik`. Halaman Elementor
+    hasil impor punya varian head/foot sendiri (CSS `post-<ID>.css`).
+- **`view` terisi** (home, statistik, lowongan-kerja): kerangka khusus (Elementor full width, tanpa hero/sidebar), tetap file view
+  + `config/pages.php`; baris `pages` hanya untuk pencarian & pilihan menu, tidak tampil di admin.
+- Admin: judul, slug (unik; tidak boleh sama dengan post, halaman khusus, atau URL sistem, lihat `root_slug_conflict()`; slug
+  berubah → item menu ikut diperbarui), isi (TinyMCE; halaman Elementor lewat editor blok atau HTML mentah), status, tanggal, author, gambar
+  unggulan. Isi yang tidak diubah disimpan apa adanya (simpan ulang tetap identik, sudah diuji); isi baru diakhiri `"\n\t\t"`
+  seperti output WordPress. Hapus ditolak jika halaman masih dipakai item menu. Draft → URL 404.
+- **Editor blok Elementor** (`libraries/Elementor_doc.php`, `views/admin/pages/_blocks.php`; tab "Editor blok" / "HTML mentah"
+  di form halaman Elementor). Generik untuk semua halaman Elementor (tidak ada modul per halaman). HTML **tidak pernah
+  diserialisasi ulang**: parser mencatat posisi byte tiap tag, lalu hanya potongan yang berubah yang diganti (simpan tanpa
+  perubahan = byte-identik; whitespace tepi isi asli dipertahankan).
+  - Field: Teks (`text-editor`, TinyMCE saat tombol "Editor visual" diklik + sisip kartu download), Judul (`heading`), Gambar
+    (`image`: pilih dari pustaka media; ukuran mengikuti kelas `size-*` asli, `srcset/sizes` dihitung ulang, `wp-image-<ID>`
+    diganti, link lightbox ke file lama ikut diganti), HTML (`html`), Daftar ikon (teks item), Ikon media sosial (link; kosong =
+    tanpa `href`), judul Tab (`nested-tabs`) dan judul item Akordeon (`nested-accordion`). Spasi & Form hanya ditampilkan.
+  - Aksi per blok/tab/item: naik, turun, duplikat, hapus (tombol `block_op` = `<op>|<key>`; isi field ikut disimpan lebih dulu).
+    Kunci aksi = nomor urut blok (`el:<n>`, `item:<n>:<k>`), kunci field = posisi byte; keduanya divalidasi dengan
+    `content_hash` (md5 konten tersimpan) agar tidak salah sasaran bila konten berubah dari tab lain.
+  - Setelah aksi tab/akordeon, penomoran dibuat ulang seperti Elementor (ID `e-n-tab-title|content-<nomor widget><i>`,
+    `data-tab-index`, `aria-selected`, `tabindex`, `e-active`; akordeon `e-n-accordion-item-<prefix><i-1>`, `open` hanya item
+    pertama, `data-accordion-index`, `aria-expanded`). Salinan blok yang berisi tab/akordeon mendapat nomor widget baru (ID unik).
+  - Diuji: duplikat lalu hapus salinan, turun lalu naik = kembali byte-identik (akordeon, tab, widget); tab hasil duplikat
+    berfungsi di halaman publik (JS Elementor).
+- Menambah halaman dari clone: `tools convert <slug>` → `tools verify <slug>` → `tools import_pages` (kerangka standar pindah
+  ke database dan dihapus dari `config/pages.php`) → hapus `views/pages/<slug>.php` → `tools verify_db page`.
 
 ## Halaman 404
 
@@ -298,9 +374,8 @@ Semua aturan ini sudah diverifikasi byte-per-byte terhadap 186 post + 152 halama
 
 - URL: `/?s=<kata>` (Pages::index), `/page/N?s=<kata>`, `/search/<kata>[/page/N]` (format `search_url` Blocksy; `+` = spasi,
   `permitted_uri_chars` ditambah `+`). 5 hasil per halaman; halaman di luar jumlah → 404; `/page/N` tanpa `?s` → 404.
-- Yang dicari: post, paket download, dan halaman statis (tabel `page_index`, migrasi 014, diisi
-  `php index.php tools import_page_index` dari `wp-json/wp/v2/pages` clone + cache API live untuk 2 halaman; **jalankan lagi setelah
-  mengonversi halaman statis baru**). Port `WP_Query::parse_search()` & `parse_search_order()`: kata dipecah (frasa dalam kutip,
+- Yang dicari: post, paket download, dan halaman statis yang terbit (tabel `pages`; untuk halaman khusus, kolom `content` berisi
+  konten dari `wp-json/wp/v2/pages`). Port `WP_Query::parse_search()` & `parse_search_order()`: kata dipecah (frasa dalam kutip,
   kata tunggal a-z & stopword Inggris dibuang, `-kata` = pengecualian), tiap kata harus ada di judul atau konten; urutan 1 kata =
   judul memuat kata lalu tanggal; banyak kata = CASE frasa/semua kata/salah satu kata di judul, frasa di konten; lalu tanggal.
 - Markup mengikuti halaman hasil pencarian situs live (acuan disimpan di `application/cache/wp-search/`, diambil 2026-09-19):
@@ -338,8 +413,9 @@ widget Chaty/GTranslate.
 | `layout <nama> <path>` | simpan head/foot halaman clone sebagai varian layout bernama |
 | `verify [slug\|all]` | bandingkan halaman statis dengan clone |
 | `import_downloads [ulang]` | impor 131 paket Download Manager dari clone |
-| `import_page_index` | isi data halaman statis untuk pencarian (tabel `page_index`) |
-| `verify_db [single-post\|single-wpdmpro\|archive] [detail]` | bandingkan semua post, paket download & arsip (dari database) dengan clone |
+| `import_pages` | pindahkan halaman dari `config/pages.php` ke tabel `pages` (aman diulang; lihat "Halaman statis dari database") |
+| `download_shortcodes` | ganti salinan kartu Download Manager di halaman & post dengan `[wpdm_package id='N']` (aman diulang) |
+| `verify_db [single-post\|single-wpdmpro\|archive\|page] [detail]` | bandingkan semua post, paket download, arsip & halaman (dari database) dengan clone |
 
 ## Alur kerja per halaman statis
 
@@ -350,6 +426,8 @@ php index.php tools convert <slug>               # clone <slug>/index.html -> vi
 php index.php tools convert <slug> path/lain/index.html   # kalau path clone beda dari slug
 php index.php tools verify <slug>                # bandingkan render CI dengan clone, byte per byte
 php index.php tools verify all
+php index.php tools import_pages                 # kerangka standar -> tabel pages (lalu hapus view lamanya)
+php index.php tools verify_db page
 ```
 
 1. `tools convert` gagal kalau header, drawer, footer, atau document_open halaman itu berbeda dari partial bersama.
@@ -360,10 +438,11 @@ php index.php tools verify all
 4. Satu halaman selesai dan terverifikasi dulu, baru lanjut ke halaman berikutnya.
 5. Cek sintaks PHP 7.3: `php -l <file>`.
 
-Status per 2026-09-19: **semua 33 halaman statis** (Page WordPress) sudah dikonversi dan `verify` OK, kecuali `home` yang
-sengaja berbeda sejak commit konten beranda dinamis (blok `<style>` "Override Elementor animation visibility").
-Semua 186 post, 152 halaman arsip (kategori, tag, author, dengan paginasi), dan 131 paket download dirender dari database;
-`verify_db` = `OK 469, BEDA 0`.
-Setelah mengubah template/helper post, **wajib** jalankan `php index.php tools verify_db` (harus `BEDA 0`).
+Status per 2026-09-19: **semua 33 halaman statis** (Page WordPress) sudah dikonversi. 30 halaman dirender dari tabel `pages`
+(`verify_db page` OK 30); 4 view khusus `verify` OK, kecuali `home` yang sengaja berbeda sejak commit konten beranda dinamis
+(blok `<style>` "Override Elementor animation visibility").
+Semua 186 post, 152 halaman arsip (kategori, tag, author, dengan paginasi), 131 paket download, dan 30 halaman dirender dari
+database; `verify_db` = `OK 499, BEDA 0`.
+Setelah mengubah template/helper post atau halaman, **wajib** jalankan `php index.php tools verify_db` (harus `BEDA 0`).
 Catatan: varian foot `archive` juga dipakai halaman `sejarah-kampus` (isinya kebetulan identik).
 `tools check`: 502 dari 504 halaman clone cocok dengan layout bersama (pengecualian: `feed/` yang berisi XML, dan `09/30` yang merupakan halaman 404).

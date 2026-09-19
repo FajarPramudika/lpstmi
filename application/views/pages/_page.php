@@ -8,10 +8,10 @@
 			<div class="ct-media-container"><img loading="lazy" width="1921" height="634" src="<?= base_url('wp-content/uploads/2024/03/Header-1-STMI.jpg') ?>" class="attachment-full size-full" alt="" loading="lazy" decoding="async" srcset="<?= base_url('wp-content/uploads/2024/03/Header-1-STMI.jpg') ?> 1921w, <?= base_url('wp-content/uploads/2024/03/Header-1-STMI-300x99.jpg') ?> 300w, <?= base_url('wp-content/uploads/2024/03/Header-1-STMI-1024x338.jpg') ?> 1024w, <?= base_url('wp-content/uploads/2024/03/Header-1-STMI-768x253.jpg') ?> 768w, <?= base_url('wp-content/uploads/2024/03/Header-1-STMI-1536x507.jpg') ?> 1536w" sizes="auto, (max-width: 1921px) 100vw, 1921px" itemprop="image" /></div>		</figure>
 	
 			<header class="entry-header ct-container-narrow">
-			<h1 class="page-title" itemprop="headline">Materi Workshop</h1><ul class="entry-meta" data-type="icons:slash" ><li class="meta-author" itemprop="author" itemscope="" itemtype="https://schema.org/Person"><a href="<?= site_url('author/admin_tro') ?>" tabindex="-1" class="ct-media-container-static"><img src="https://secure.gravatar.com/avatar/e1497d9887b30713c8998de30235d8d5642ca2cee6d30dd8a5343ae1f0834703?s=50&amp;d=mm&amp;r=g" width="25" height="25" style="height:25px" alt="Admin STMI"></a><a class="ct-meta-element-author" href="<?= site_url('author/admin_tro') ?>" title="Posts by Admin STMI" rel="author" itemprop="url"><span itemprop="name">Admin STMI</span></a></li></ul>
+			<h1 class="page-title" itemprop="headline"><?= wp_texturize($page['title']) ?></h1><ul class="entry-meta" data-type="icons:slash" ><li class="meta-author" itemprop="author" itemscope="" itemtype="https://schema.org/Person"><a href="<?= site_url('author/'.$author['slug']) ?>" tabindex="-1" class="ct-media-container-static"><img <?= $avatar_hint ?>src="https://secure.gravatar.com/avatar/<?= $author['gravatar_hash'] ?>?s=50&amp;d=mm&amp;r=g" width="25" height="25" style="height:25px" alt="<?= html_escape($author['display_name']) ?>"></a><a class="ct-meta-element-author" href="<?= site_url('author/'.$author['slug']) ?>" title="Posts by <?= html_escape($author['display_name']) ?>" rel="author" itemprop="url"><span itemprop="name"><?= html_escape($author['display_name']) ?></span></a></li></ul>
 			<nav class="ct-breadcrumbs" data-source="default"  itemscope="" itemtype="https://schema.org/BreadcrumbList"><span class="first-item" itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem"><meta itemprop="position" content="1"><a href="<?= site_url('') ?>" itemprop="item"><span itemprop="name">Home</span></a><meta itemprop="url" content="../index.html"/><svg class="ct-separator" fill="currentColor" width="8" height="8" viewBox="0 0 8 8" aria-hidden="true" focusable="false">
 				<path d="M2,6.9L4.8,4L2,1.1L2.6,0l4,4l-4,4L2,6.9z"/>
-			</svg></span><span class="last-item" aria-current="page" itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem"><meta itemprop="position" content="2"><span itemprop="name">Materi Workshop</span><meta itemprop="url" content="index.html"/></span>			</nav>
+			</svg></span><span class="last-item" aria-current="page" itemscope="" itemprop="itemListElement" itemtype="https://schema.org/ListItem"><meta itemprop="position" content="2"><span itemprop="name"><?= wp_texturize($page['title']) ?></span><meta itemprop="url" content="index.html"/></span>			</nav>
 
 				</header>
 	</div>
@@ -25,18 +25,13 @@
 		
 		
 	<article
-		id="post-977"
-		class="post-977 page type-page status-publish hentry">
+		id="post-<?= $page['id'] ?>"
+		class="post-<?= $page['id'] ?> page type-page status-publish<?= $has_thumbnail ? ' has-post-thumbnail' : '' ?> hentry">
 
 		
 		
 		
-		<div class="entry-content is-layout-flow">
-			<ul>
-<li><a href="<?= site_url('assets/uploads/materiworkshop/FGD_Capaian_pembelajaran_lulusan.html') ?>">FGD Materi Capaian Pembelajaran Lulusan</a></li>
-<li><a href="<?= site_url('assets/uploads/materiworkshop/CPL_STTer_TIO.html') ?>">Capaian Pembelajaran Lulusan</a></li>
-</ul>
-		</div>
+		<div class="entry-content is-layout-flow"><?= $content ?></div>
 
 		
 		
@@ -45,7 +40,7 @@
 			<span class="ct-module-title">Share :</span>
 			<div data-color="official" data-icons-type="custom:solid">
 							
-				<a href="https://www.facebook.com/sharer/sharer.php?u=<?= rawurlencode(base_url()) ?>materi-workshop%2F" data-network="facebook" aria-label="Facebook" style="--official-color: #557dbc" rel="noopener noreferrer nofollow">
+				<a href="https://www.facebook.com/sharer/sharer.php?u=<?= $share_url ?>" data-network="facebook" aria-label="Facebook" style="--official-color: #557dbc" rel="noopener noreferrer nofollow">
 					<span class="ct-icon-container">
 					<svg
 					width="20px"
@@ -56,7 +51,7 @@
 					</svg>
 				</span>				</a>
 							
-				<a href="https://twitter.com/intent/tweet?url=<?= rawurlencode(base_url()) ?>materi-workshop%2F&amp;text=Materi%20Workshop" data-network="twitter" aria-label="X (Twitter)" style="--official-color: #000000" rel="noopener noreferrer nofollow">
+				<a href="https://twitter.com/intent/tweet?url=<?= $share_url ?>&amp;text=<?= $share_title ?>" data-network="twitter" aria-label="X (Twitter)" style="--official-color: #000000" rel="noopener noreferrer nofollow">
 					<span class="ct-icon-container">
 					<svg
 					width="20px"
@@ -67,7 +62,7 @@
 					</svg>
 				</span>				</a>
 							
-				<a href="https://t.me/share/url?url=<?= rawurlencode(base_url()) ?>materi-workshop%2F&amp;text=Materi%20Workshop" data-network="telegram" aria-label="Telegram" style="--official-color: #229cce" rel="noopener noreferrer nofollow">
+				<a href="https://t.me/share/url?url=<?= $share_url ?>&amp;text=<?= $share_title ?>" data-network="telegram" aria-label="Telegram" style="--official-color: #229cce" rel="noopener noreferrer nofollow">
 					<span class="ct-icon-container">
 					<svg
 					width="20px"
@@ -78,7 +73,7 @@
 					</svg>
 				</span>				</a>
 							
-				<a href="whatsapp://send?text=<?= rawurlencode(base_url()) ?>materi-workshop%2F" data-network="whatsapp" aria-label="WhatsApp" style="--official-color: #5bba67" rel="noopener noreferrer nofollow">
+				<a href="whatsapp://send?text=<?= $share_url ?>" data-network="whatsapp" aria-label="WhatsApp" style="--official-color: #5bba67" rel="noopener noreferrer nofollow">
 					<span class="ct-icon-container">
 					<svg
 					width="20px"
@@ -89,7 +84,7 @@
 					</svg>
 				</span>				</a>
 							
-				<a href="mailto:?subject=Materi%20Workshop&amp;body=<?= rawurlencode(base_url()) ?>materi-workshop%2F" data-network="email" aria-label="Email" style="--official-color: #392c44" rel="noopener noreferrer nofollow">
+				<a href="mailto:?subject=<?= $share_title ?>&amp;body=<?= $share_url ?>" data-network="email" aria-label="Email" style="--official-color: #392c44" rel="noopener noreferrer nofollow">
 					<span class="ct-icon-container">
 					<svg
 					width="20"

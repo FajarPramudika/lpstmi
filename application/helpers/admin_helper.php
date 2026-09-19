@@ -45,6 +45,33 @@ if ( ! function_exists('unique_slug'))
 	}
 }
 
+if ( ! function_exists('root_slug_conflict'))
+{
+	/**
+	 * Post dan halaman sama-sama memakai URL satu segmen (/<slug>). Mengembalikan TRUE jika $slug sudah dipakai
+	 * URL sistem, halaman berkerangka khusus (config/pages.php), atau jenis konten lain ($other: 'posts' | 'pages').
+	 * Bentrok dengan konten sejenis diselesaikan unique_slug() (akhiran -2, -3, ...).
+	 */
+	function root_slug_conflict($slug, $other)
+	{
+		$reserved = array('admin', 'assets', 'author', 'category', 'download', 'error-404', 'feed', 'home', 'page', 'search',
+			'tag', 'tools', 'wp-admin', 'wp-content', 'wp-includes', 'wp-json');
+		if (in_array($slug, $reserved, TRUE))
+		{
+			return TRUE;
+		}
+
+		$CI =& get_instance();
+		$CI->config->load('pages', TRUE);
+		if (isset($CI->config->item('pages', 'pages')[$slug]))
+		{
+			return TRUE;
+		}
+
+		return $CI->db->where('slug', $slug)->count_all_results($other) > 0;
+	}
+}
+
 if ( ! function_exists('content_to_tokens'))
 {
 	/**
