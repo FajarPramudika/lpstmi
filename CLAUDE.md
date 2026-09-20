@@ -333,7 +333,7 @@ Dibuat dengan CI3 Migrations (`application/migrations/`, `php index.php tools mi
 
 | Tabel | Isi |
 |---|---|
-| `authors` | author post sekaligus pengguna admin: `slug` (URL /author/<slug>), `display_name`, `registered_at` (Joined), `gravatar_hash` (sha256 email), `website`, `post_count_offset` (selisih "Articles" WordPress yang ikut menghitung tipe konten lain), `username`, `password_hash` (NULL = tidak bisa login), `role` (admin/editor), `is_active`, `last_login_at`, `password_changed_at` (mematikan sesi lain saat password diganti) |
+| `authors` | author post sekaligus pengguna admin: `slug` (URL /author/<slug>), `display_name`, `registered_at` (Joined), `gravatar_hash` (sha256 email), `website`, `post_count_offset` (selisih "Articles" WordPress yang ikut menghitung tipe konten lain), `username`, `password_hash` (NULL = tidak bisa login), `email` (**unik**, migrasi 019; ikut dipakai sebagai identitas login), `role` (admin/editor), `is_active`, `last_login_at`, `password_changed_at` (mematikan sesi lain saat password diganti) |
 | `terms` | `taxonomy` (category/post_tag), `name`, `slug`, `description` |
 | `media` | `file` (relatif `wp-content/uploads/`), `width`, `height`, `alt`, `mime_type`, `sizes` (JSON ukuran turunan, **urutan = urutan metadata WordPress**, menentukan urutan srcset) |
 | `posts` | `slug`, `title` (**teks mentah**; ditampilkan lewat `wp_texturize()`), `content` (HTML), `excerpt` (HTML kartu arsip), `author_id`, `featured_media_id`, `status` (publish/draft), `published_at`, `modified_at` (waktu lokal), `layout_head`/`layout_foot` (override varian layout; dipakai 3 post Elementor `post-<ID>`) |
@@ -409,11 +409,17 @@ Semua aturan ini sudah diverifikasi byte-per-byte terhadap 186 post + 152 halama
 
 ## Panel admin (`/admin`)
 
-- Login: `/admin/login` (username + password, `password_hash`, session diregenerasi). Logout hanya via POST.
+- Login: `/admin/login` (**username atau email** + password, `password_hash`, session diregenerasi). Logout hanya via POST.
+  Pencarian akun: `Author_model::find_by_login()` — cocokkan `username` ATAU `email`, **hanya untuk akun yang punya
+  username**. Syarat itu mempertahankan arti "username dikosongkan = tanpa akses admin"; tanpa itu, mengosongkan
+  username tidak lagi mencabut akses karena akunnya masih bisa masuk lewat email. Email unik (migrasi 019) dan
+  dicocokkan tanpa peka huruf besar/kecil; kalau sampai ada lebih dari satu kecocokan, login ditolak (gagal aman).
   Membuat/mengatur login dari CLI: `php index.php tools set_login <slug-author> <username> [admin|editor]`
   (password acak ditampilkan sekali).
 - **Pembatasan percobaan login** (tabel `login_attempts`, migrasi 018): maks **5 gagal per username** dan
-  **10 gagal per IP** dalam 5 menit (`Auth::MAX_ATTEMPTS` / `MAX_IP_ATTEMPTS` / `LOCK_SECONDS`). Hitungan **tidak boleh**
+  **10 gagal per IP** dalam 5 menit (`Auth::MAX_ATTEMPTS` / `MAX_IP_ATTEMPTS` / `LOCK_SECONDS`).
+  Hitungan dikunci ke **username akun** (bukan teks yang diketik), supaya login lewat email dan lewat username
+  berbagi jatah yang sama — kalau tidak, satu akun punya dua jatah terpisah dan batasnya jadi dua kali lipat. Hitungan **tidak boleh**
   disimpan di session: itu ada di sisi penyerang dan bisa dilewati hanya dengan membuang cookie. Login berhasil menghapus
   catatan untuk username & IP itu; catatan kedaluwarsa dibuang tiap ada percobaan POST. Di belakang proxy/CDN, isi
   `$config['proxy_ips']` supaya `ip_address()` tidak mengembalikan IP proxy untuk semua orang.

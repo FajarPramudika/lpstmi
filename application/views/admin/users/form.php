@@ -19,7 +19,7 @@ $action = $self ? 'admin/users/profile' : ($is_new ? 'admin/users/create' : 'adm
 		<div class="field">
 			<label for="username">Username login</label>
 			<input type="text" id="username" name="username" value="<?= $v('username') ?>" autocomplete="off">
-			<div class="hint">Kosongkan jika hanya sebagai author tanpa akses admin.</div>
+			<div class="hint">Kosongkan jika hanya sebagai author tanpa akses admin. Tanpa username, login lewat email pun tidak bisa.</div>
 		</div>
 		<div class="field">
 			<label for="role">Peran</label>
@@ -35,7 +35,7 @@ $action = $self ? 'admin/users/profile' : ($is_new ? 'admin/users/create' : 'adm
 		<div class="field">
 			<label for="email">Email</label>
 			<input type="email" id="email" name="email" value="<?= $v('email') ?>">
-			<div class="hint">Dipakai untuk avatar Gravatar di halaman author.</div>
+			<div class="hint">Dipakai untuk avatar Gravatar di halaman author, dan bisa dipakai untuk login selain username. Harus unik.</div>
 		</div>
 		<div class="field">
 			<label for="website">Website</label>

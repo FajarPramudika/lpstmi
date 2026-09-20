@@ -14,7 +14,7 @@
 		<?php if ($error): ?><div class="alert alert-error"><?= html_escape($error) ?></div><?php endif; ?>
 		<?= form_open('admin/login') ?>
 			<div class="field">
-				<label for="username">Username</label>
+				<label for="username">Username atau email</label>
 				<input type="text" id="username" name="username" autocomplete="username" required autofocus value="<?= html_escape((string) $this->input->post('username')) ?>">
 			</div>
 			<div class="field">

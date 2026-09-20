@@ -106,6 +106,11 @@ class Users extends Admin_Controller {
 			{
 				$errors[] = 'Email tidak valid.';
 			}
+			elseif ($data['email'] !== '' && $this->author_model->email_taken($data['email'], $except))
+			{
+				// Email ikut dipakai untuk login, jadi harus unik (lihat migrasi 019).
+				$errors[] = 'Email sudah dipakai pengguna lain.';
+			}
 			if ($data['website'] !== '' && ! filter_var($data['website'], FILTER_VALIDATE_URL))
 			{
 				$errors[] = 'Website harus URL lengkap (https://...).';

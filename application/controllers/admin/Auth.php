@@ -42,28 +42,34 @@ class Auth extends CI_Controller {
 		$error = NULL;
 		if ($this->input->method() === 'post')
 		{
-			$username = trim((string) $this->input->post('username'));
+			// Field ini menerima username ATAU email (lihat Author_model::find_by_login()).
+			$identifier = trim((string) $this->input->post('username'));
 			$password = (string) $this->input->post('password');
 
 			$this->purge_attempts();
 
-			if ($this->is_throttled($username))
+			$user = $this->author_model->find_by_login($identifier);
+
+			// Hitungan percobaan dikunci ke username akun, bukan ke teks yang diketik: kalau tidak, satu akun
+			// punya dua jatah terpisah (lewat username dan lewat email) dan batasnya jadi dua kali lipat.
+			$bucket = $user ? $user['username'] : mb_strtolower($identifier);
+
+			if ($this->is_throttled($bucket))
 			{
-				$this->audit('login ditolak (terkunci)', $username);
+				$this->audit('login ditolak (terkunci)', $identifier);
 				$error = 'Terlalu banyak percobaan gagal. Coba lagi dalam '.ceil(self::LOCK_SECONDS / 60).' menit.';
 			}
 			else
 			{
-				$user = $this->author_model->find_by_username($username);
-
 				// Selalu jalankan satu verifikasi bcrypt, walau akunnya tidak ada / tidak aktif / tanpa password.
 				$usable = ($user && $user['is_active'] && $user['password_hash']);
 				$verified = password_verify($password, $usable ? $user['password_hash'] : self::DUMMY_HASH);
 
 				if ($usable && $verified)
 				{
-					$this->audit('login berhasil', $username, 'id='.$user['id'].' peran='.$user['role']);
-					$this->clear_attempts($username);
+					$this->audit('login berhasil', $user['username'], 'id='.$user['id'].' peran='.$user['role']
+						.($identifier !== $user['username'] ? ' (lewat email)' : ''));
+					$this->clear_attempts($bucket);
 					$this->session->sess_regenerate(TRUE);
 					$this->session->set_userdata('admin_id', (int) $user['id']);
 					// Penanda versi password: session menjadi tidak berlaku kalau password diubah di tempat lain.
@@ -80,9 +86,9 @@ class Auth extends CI_Controller {
 					redirect(strpos($target, 'admin') === 0 ? $target : 'admin');
 				}
 
-				$this->record_attempt($username);
-				$this->audit('login gagal', $username);
-				$error = 'Username atau password salah.';
+				$this->record_attempt($bucket);
+				$this->audit('login gagal', $identifier);
+				$error = 'Username/email atau password salah.';
 			}
 		}
 
@@ -155,7 +161,7 @@ class Auth extends CI_Controller {
 	{
 		$this->db->insert('login_attempts', array(
 			'ip'           => $this->ip(),
-			'username'     => mb_substr($username, 0, 60),
+			'username'     => mb_substr($username, 0, 190),
 			'attempted_at' => date('Y-m-d H:i:s'),
 		));
 	}

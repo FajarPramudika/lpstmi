@@ -16,6 +16,49 @@ class Author_model extends CI_Model {
 		return $this->db->where('username', $username)->get('authors')->row_array();
 	}
 
+	/**
+	 * Cari akun untuk login: boleh dengan username ATAU email.
+	 *
+	 * Hanya akun yang punya username yang bisa login. Itu mempertahankan arti "username dikosongkan =
+	 * tanpa akses admin": tanpa syarat ini, mengosongkan username tidak lagi mencabut akses karena
+	 * akunnya masih bisa masuk lewat email.
+	 *
+	 * Perbandingan tidak peka huruf besar/kecil (collation utf8mb4_general_ci), sesuai kebiasaan email.
+	 * Kalau ada lebih dari satu kecocokan (data lama sebelum email dibuat unik), akun ditolak daripada
+	 * ditebak — gagal ke arah yang aman.
+	 */
+	public function find_by_login($identifier)
+	{
+		$identifier = trim((string) $identifier);
+		if ($identifier === '')
+		{
+			return NULL;
+		}
+
+		$rows = $this->db
+			->where('username IS NOT NULL', NULL, FALSE)
+			->group_start()->where('username', $identifier)->or_where('email', $identifier)->group_end()
+			->limit(2)
+			->get('authors')
+			->result_array();
+
+		return (count($rows) === 1) ? $rows[0] : NULL;
+	}
+
+	/**
+	 * Apakah email sudah dipakai akun lain. Email ikut menjadi identitas login, jadi harus unik.
+	 */
+	public function email_taken($email, $except_id = NULL)
+	{
+		$this->db->where('email', $email);
+		if ($except_id)
+		{
+			$this->db->where('id !=', (int) $except_id);
+		}
+
+		return $this->db->count_all_results('authors') > 0;
+	}
+
 	public function all()
 	{
 		return $this->db
