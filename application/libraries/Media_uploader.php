@@ -16,6 +16,23 @@ class Media_uploader {
 		'zip'  => 'application/zip',
 	);
 
+	/**
+	 * MIME yang boleh terdeteksi dari ISI file untuk tiap ekstensi non-gambar. Ekstensi saja tidak cukup:
+	 * tanpa ini, berkas berisi HTML/skrip bisa disimpan sebagai .pdf lalu dihosting di domain kampus.
+	 * Daftarnya longgar karena libmagic berbeda versi memberi nama berbeda untuk berkas yang sama
+	 * (OOXML sering terdeteksi sebagai application/zip, format Office lama sebagai CDFV2/ms-office).
+	 */
+	public static $content_types = array(
+		'pdf'  => array('application/pdf'),
+		'zip'  => array('application/zip', 'application/x-zip-compressed', 'application/java-archive'),
+		'doc'  => array('application/msword', 'application/vnd.ms-office', 'application/x-ole-storage', 'application/CDFV2'),
+		'xls'  => array('application/vnd.ms-excel', 'application/vnd.ms-office', 'application/x-ole-storage', 'application/CDFV2'),
+		'ppt'  => array('application/vnd.ms-powerpoint', 'application/vnd.ms-office', 'application/x-ole-storage', 'application/CDFV2'),
+		'docx' => array('application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'application/zip', 'application/x-zip-compressed'),
+		'xlsx' => array('application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'application/zip', 'application/x-zip-compressed'),
+		'pptx' => array('application/vnd.openxmlformats-officedocument.presentationml.presentation', 'application/zip', 'application/x-zip-compressed'),
+	);
+
 	/** Batas ukuran file (byte). */
 	const MAX_SIZE = 20971520;
 
@@ -73,6 +90,22 @@ class Media_uploader {
 			if ($info === FALSE OR image_type_to_mime_type($info[2]) !== $mime && ! ($mime === 'image/jpeg' && $info[2] === IMAGETYPE_JPEG))
 			{
 				$this->error = 'File bukan gambar yang valid.';
+				return FALSE;
+			}
+		}
+		elseif (isset(self::$content_types[$ext]) && function_exists('finfo_open'))
+		{
+			$finfo = finfo_open(FILEINFO_MIME_TYPE);
+			$detected = $finfo ? finfo_file($finfo, $file['tmp_name']) : FALSE;
+			if ($finfo)
+			{
+				finfo_close($finfo);
+			}
+			if ($detected !== FALSE && ! in_array($detected, self::$content_types[$ext], TRUE))
+			{
+				// Tipe terdeteksi ikut disebut supaya kalau libmagic di server lain memberi nama berbeda,
+				// penyebab penolakannya langsung terlihat dan daftarnya bisa dilengkapi.
+				$this->error = 'Isi file tidak cocok dengan ekstensi .'.$ext.' (terdeteksi: '.$detected.').';
 				return FALSE;
 			}
 		}

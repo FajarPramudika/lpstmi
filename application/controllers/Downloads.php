@@ -63,6 +63,23 @@ class Downloads extends MY_Controller {
 		));
 	}
 
+	/** Satu IP dihitung sekali per paket dalam rentang ini (detik). */
+	const COUNT_WINDOW = 3600;
+
+	/**
+	 * Naikkan hitungan unduhan, maksimal sekali per IP per paket per jam. Tanpa ini, satu skrip bisa
+	 * menggelembungkan angka unduhan tanpa batas hanya dengan mengulang request.
+	 * Catatan: pengunjung yang berbagi satu IP (NAT kampus) ikut terhitung satu kali dalam rentang itu.
+	 */
+	protected function count_download(array $download)
+	{
+		$this->load->library('rate_limit');
+		if ($this->rate_limit->hit('dl:'.$download['id'].':'.$this->input->ip_address(), 1, self::COUNT_WINDOW))
+		{
+			$this->download_model->increment($download['id']);
+		}
+	}
+
 	/**
 	 * Tambah hitungan lalu kirim file lokal, atau arahkan ke URL luar (mis. Google Drive).
 	 */
@@ -76,7 +93,14 @@ class Downloads extends MY_Controller {
 
 		if (Download_model::is_external($download))
 		{
-			$this->download_model->increment($download['id']);
+			// Jangan mengalihkan ke host sembarangan walau datanya berasal dari admin (lihat $external_hosts).
+			if ( ! Download_model::external_allowed($download['file']))
+			{
+				log_message('error', '[keamanan] redirect unduhan ditolak, host di luar daftar: paket '
+					.$download['id'].' -> '.$download['file']);
+				show_404();
+			}
+			$this->count_download($download);
 			header('Location: '.$download['file'], TRUE, 302);
 			exit;
 		}
@@ -88,7 +112,7 @@ class Downloads extends MY_Controller {
 			show_404();
 		}
 
-		$this->download_model->increment($download['id']);
+		$this->count_download($download);
 
 		$finfo = finfo_open(FILEINFO_MIME_TYPE);
 		$mime = finfo_file($finfo, $path) ?: 'application/octet-stream';

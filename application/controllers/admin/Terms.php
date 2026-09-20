@@ -6,6 +6,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 class Terms extends Admin_Controller {
 
+	/** Editor ikut mengelola konten di sini. */
+	protected $roles = array('admin', 'editor');
+
 	protected $taxonomies = array(
 		'category' => array('taxonomy' => 'category', 'label' => 'Kategori', 'path' => 'category'),
 		'tag'      => array('taxonomy' => 'post_tag', 'label' => 'Tag', 'path' => 'tag'),

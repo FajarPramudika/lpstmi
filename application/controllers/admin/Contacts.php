@@ -24,6 +24,16 @@ class Contacts extends Admin_Controller {
 				'social_youtube'   => $this->input->post('social_youtube'),
 			);
 
+			// Nilai yang dipasang sebagai href / dipakai widget Chaty: tolak skema berbahaya (javascript:, data:).
+			foreach (array('whatsapp_url', 'social_twitter', 'social_instagram', 'social_facebook', 'social_youtube') as $key)
+			{
+				if ( ! is_safe_url($data[$key]))
+				{
+					$this->flash('error', 'URL pada "'.$key.'" harus diawali https://, http://, /, #, mailto:, atau tel:. Data tidak disimpan.');
+					redirect('admin/contacts');
+				}
+			}
+
 			$this->contact_model->update_all($data);
 			$this->flash('success', 'Kontak berhasil diperbarui.');
 			redirect('admin/contacts');

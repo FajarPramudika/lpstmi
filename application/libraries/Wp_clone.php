@@ -543,7 +543,7 @@ class Wp_clone {
 	{
 		$loop = '<ul id="menu-footer-menu" class="widget-menu"><?php foreach ($footer_links as $i => $link): ?>'
 			.'<li id="menu-item-<?= 619 + $i ?>" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-<?= 619 + $i ?>">'
-			.'<a href="<?= html_escape($link[\'url\']) ?>"><?= html_escape($link[\'title\']) ?></a></li>'."\n"
+			.'<a href="<?= html_escape(safe_href($link[\'url\'])) ?>"><?= html_escape($link[\'title\']) ?></a></li>'."\n"
 			.'<?php endforeach; ?></ul>';
 
 		return preg_replace_callback('#<ul id="menu-footer-menu" class="widget-menu">.*?</ul>#s', function () use ($loop) {
@@ -564,10 +564,10 @@ class Wp_clone {
 		$html = str_replace('https:\/\/web.whatsapp.com\/send?phone=6285155244455', '<?= str_replace(\'/\', \'\\/\', html_escape($contacts[\'whatsapp_url\'])) ?>', $html);
 		$html = str_replace('"value":"6285155244455"', '"value":"<?= html_escape(preg_replace(\'/[^0-9]/\', \'\', strpos($contacts[\'whatsapp\'], \'0\') === 0 ? \'62\' . substr($contacts[\'whatsapp\'], 1) : $contacts[\'whatsapp\'])) ?>"', $html);
 		
-		$html = str_replace('https://twitter.com/stmijakarta?lang=en', '<?= html_escape($contacts[\'social_twitter\']) ?>', $html);
-		$html = str_replace('https://www.instagram.com/stmijakarta/?hl=en', '<?= html_escape($contacts[\'social_instagram\']) ?>', $html);
-		$html = str_replace('https://www.facebook.com/PoliteknikSTMIJakarta', '<?= html_escape($contacts[\'social_facebook\']) ?>', $html);
-		$html = str_replace('https://www.youtube.com/channel/UCFalakPYmXniFeqHapt1k8w', '<?= html_escape($contacts[\'social_youtube\']) ?>', $html);
+		$html = str_replace('https://twitter.com/stmijakarta?lang=en', '<?= html_escape(safe_href($contacts[\'social_twitter\'])) ?>', $html);
+		$html = str_replace('https://www.instagram.com/stmijakarta/?hl=en', '<?= html_escape(safe_href($contacts[\'social_instagram\'])) ?>', $html);
+		$html = str_replace('https://www.facebook.com/PoliteknikSTMIJakarta', '<?= html_escape(safe_href($contacts[\'social_facebook\'])) ?>', $html);
+		$html = str_replace('https://www.youtube.com/channel/UCFalakPYmXniFeqHapt1k8w', '<?= html_escape(safe_href($contacts[\'social_youtube\'])) ?>', $html);
 		
 		return $html;
 	}

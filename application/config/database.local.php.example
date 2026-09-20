@@ -1,0 +1,19 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+/**
+ * Contoh kredensial database lokal.
+ *
+ * Salin menjadi database.local.php lalu isi sesuai mesin Anda:
+ *   cp application/config/database.local.php.example application/config/database.local.php
+ *
+ * File database.local.php tidak ikut git. Jangan pernah menuliskan password di database.php.
+ * Di produksi, jangan buat file ini: pakai variabel environment DB_HOST/DB_USER/DB_PASS/DB_NAME
+ * lewat SetEnv di konfigurasi vhost Apache (di luar docroot).
+ */
+return array(
+	'hostname' => '127.0.0.1',
+	'username' => 'lpstmi_app',
+	'password' => '',
+	'database' => 'lpstmi_db',
+);

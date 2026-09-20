@@ -15,6 +15,15 @@ class Search_model extends CI_Model {
 
 	const PER_PAGE = 5;
 
+	/** Halaman terjauh yang dilayani; di luar itu 404 tanpa menjalankan kueri. */
+	const MAX_PAGE = 200;
+
+	/** Panjang maksimum kata kunci yang diproses (pola LIKE panjang mahal dan tidak berguna). */
+	const MAX_QUERY = 128;
+
+	/** Request pencarian per IP per menit (halaman hasil maupun endpoint live search). */
+	const RATE_LIMIT = 60;
+
 	/** Stopword bawaan WordPress (wp_get_search_stopwords). */
 	protected $stopwords = array('about', 'an', 'are', 'as', 'at', 'be', 'by', 'com', 'for', 'from', 'how', 'in', 'is', 'it',
 		'of', 'on', 'or', 'that', 'the', 'this', 'to', 'was', 'what', 'when', 'where', 'who', 'will', 'with', 'www');
@@ -32,7 +41,7 @@ class Search_model extends CI_Model {
 		);
 		$union = implode(' UNION ALL ', array_intersect_key($sources, array_flip($types)));
 
-		list($where, $order) = $this->clauses($query);
+		list($where, $order) = $this->clauses(mb_substr((string) $query, 0, self::MAX_QUERY));
 
 		$total = (int) $this->db->query("SELECT COUNT(*) AS n FROM ($union) s".($where ? " WHERE $where" : ''))->row()->n;
 		$rows = $this->db->query("SELECT s.* FROM ($union) s".($where ? " WHERE $where" : '')

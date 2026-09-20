@@ -1,0 +1,20 @@
+# Folder ini berisi berkas yang diunggah lewat panel admin. Tidak ada satu pun yang boleh dieksekusi
+# sebagai skrip, apa pun isinya. Ini pertahanan berlapis: unggahan sudah dibatasi daftar ekstensi di
+# application/libraries/Media_uploader.php, tetapi lapisan ini tetap berlaku kalau lapisan itu jebol.
+#
+# Catatan: nginx mengabaikan .htaccess. Di nginx, pasang padanannya di konfigurasi server:
+#   location ~* ^/wp-content/uploads/.*\.(php|phtml|phar|cgi|pl|py|sh)$ { deny all; }
+
+<FilesMatch "\.(php|php[0-9]|phtml|phps|phar|cgi|pl|py|sh|htaccess)$">
+	<IfModule authz_core_module>
+		Require all denied
+	</IfModule>
+	<IfModule !authz_core_module>
+		Deny from all
+	</IfModule>
+</FilesMatch>
+
+# Jangan jalankan handler apa pun di folder ini walau modulnya terpasang.
+<IfModule mod_php7.c>
+	php_flag engine off
+</IfModule>

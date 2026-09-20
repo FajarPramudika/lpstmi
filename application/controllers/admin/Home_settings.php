@@ -44,6 +44,7 @@ class Home_settings extends Admin_Controller {
 	public function store_link()
 	{
 		$this->require_post();
+		$this->check_url($this->input->post('url'), 'links');
 		$data = array(
 			'url' => $this->input->post('url'),
 			'image_path' => $this->input->post('image_path'),
@@ -69,6 +70,7 @@ class Home_settings extends Admin_Controller {
 	public function update_link($id)
 	{
 		$this->require_post();
+		$this->check_url($this->input->post('url'), 'links');
 		$data = array(
 			'url' => $this->input->post('url'),
 			'image_path' => $this->input->post('image_path'),
@@ -103,15 +105,10 @@ class Home_settings extends Admin_Controller {
 	public function store_program()
 	{
 		$this->require_post();
-		$data = array(
-			'title' => $this->input->post('title'),
-			'description' => $this->input->post('description'),
-			'url' => $this->input->post('url'),
-			'icon_svg' => $this->input->post('icon_svg'),
-			'order_num' => (int) $this->input->post('order_num'),
-		);
+		$data = $this->program_data();
+		$note = $this->stripped_note($data);
 		$this->home_study_program_model->insert($data);
-		$this->flash('success', 'Program Studi berhasil ditambahkan.');
+		$this->flash('success', 'Program Studi berhasil ditambahkan.'.$note);
 		redirect('admin/home_settings?tab=programs');
 	}
 
@@ -126,16 +123,66 @@ class Home_settings extends Admin_Controller {
 	public function update_program($id)
 	{
 		$this->require_post();
-		$data = array(
-			'title' => $this->input->post('title'),
-			'description' => $this->input->post('description'),
-			'url' => $this->input->post('url'),
-			'icon_svg' => $this->input->post('icon_svg'),
-			'order_num' => (int) $this->input->post('order_num'),
-		);
+		$data = $this->program_data();
+		$note = $this->stripped_note($data);
 		$this->home_study_program_model->update($id, $data);
-		$this->flash('success', 'Program Studi berhasil diperbarui.');
+		$this->flash('success', 'Program Studi berhasil diperbarui.'.$note);
 		redirect('admin/home_settings?tab=programs');
+	}
+
+	/**
+	 * Tolak URL dengan skema yang tidak aman (mis. javascript:) sebelum tersimpan; nilainya dirender
+	 * sebagai atribut href di beranda. Redirect kembali ke tab yang bersangkutan.
+	 */
+	protected function check_url($url, $tab)
+	{
+		if ( ! is_safe_url($url))
+		{
+			$this->flash('error', 'URL harus diawali https://, http://, /, #, mailto:, atau tel:. Data tidak disimpan.');
+			redirect('admin/home_settings?tab='.$tab);
+		}
+	}
+
+	/**
+	 * Data program studi dari form. Judul & ikon dibersihkan sebelum disimpan (keduanya dirender
+	 * sebagai HTML/SVG di beranda): judul hanya boleh tag format sederhana, ikon hanya elemen gambar.
+	 */
+	protected function program_data()
+	{
+		$this->check_url($this->input->post('url'), 'programs');
+
+		$title = (string) $this->input->post('title');
+		$icon = (string) $this->input->post('icon_svg');
+
+		return array(
+			'title'       => safe_inline_html($title),
+			'description' => $this->input->post('description'),
+			'url'         => $this->input->post('url'),
+			'icon_svg'    => safe_inline_svg($icon),
+			'order_num'   => (int) $this->input->post('order_num'),
+			'_raw'        => array('title' => $title, 'icon_svg' => $icon),
+		);
+	}
+
+	/**
+	 * Catatan tambahan untuk pesan sukses kalau ada bagian yang dibuang penyaring.
+	 */
+	protected function stripped_note(array &$data)
+	{
+		$raw = $data['_raw'];
+		unset($data['_raw']);
+
+		$changed = array();
+		if ($data['title'] !== $raw['title'])
+		{
+			$changed[] = 'judul';
+		}
+		if ($data['icon_svg'] !== $raw['icon_svg'])
+		{
+			$changed[] = 'ikon';
+		}
+
+		return $changed ? ' Sebagian isi '.implode(' dan ', $changed).' dibuang karena memuat markup yang tidak diizinkan.' : '';
 	}
 
 	public function edit_banner($id)
@@ -157,6 +204,7 @@ class Home_settings extends Admin_Controller {
 	public function store_banner()
 	{
 		$this->require_post();
+		$this->check_url($this->input->post('url'), 'banners');
 		$data = array(
 			'image_path' => $this->input->post('image_path'),
 			'image_srcset' => $this->input->post('image_srcset') ?: null,
@@ -180,6 +228,7 @@ class Home_settings extends Admin_Controller {
 	public function update_banner($id)
 	{
 		$this->require_post();
+		$this->check_url($this->input->post('url'), 'banners');
 		$data = array(
 			'image_path' => $this->input->post('image_path'),
 			'image_srcset' => $this->input->post('image_srcset') ?: null,
@@ -211,6 +260,7 @@ class Home_settings extends Admin_Controller {
 	public function store_partner()
 	{
 		$this->require_post();
+		$this->check_url($this->input->post('url'), 'partners');
 		$data = array(
 			'name' => $this->input->post('name'),
 			'image_path' => $this->input->post('image_path'),
@@ -233,6 +283,7 @@ class Home_settings extends Admin_Controller {
 	public function update_partner($id)
 	{
 		$this->require_post();
+		$this->check_url($this->input->post('url'), 'partners');
 		$data = array(
 			'name' => $this->input->post('name'),
 			'image_path' => $this->input->post('image_path'),

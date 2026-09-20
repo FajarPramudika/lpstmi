@@ -65,6 +65,10 @@ class Footer_links extends Admin_Controller {
 			{
 				$errors[] = 'URL wajib diisi.';
 			}
+			elseif ( ! is_safe_url($url))
+			{
+				$errors[] = 'URL harus diawali https://, http://, /, #, mailto:, atau tel:.';
+			}
 
 			if (empty($errors))
 			{

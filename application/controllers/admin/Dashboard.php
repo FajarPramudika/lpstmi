@@ -3,6 +3,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Dashboard extends Admin_Controller {
 
+	/** Editor ikut mengelola konten di sini. */
+	protected $roles = array('admin', 'editor');
+
 	public function index()
 	{
 		$this->load->model(array('post_model', 'term_model', 'media_model'));

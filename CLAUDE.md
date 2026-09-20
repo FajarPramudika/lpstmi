@@ -21,15 +21,126 @@ Balas user dalam **Bahasa Indonesia**.
 
 ## Lingkungan lokal
 
-- **Database:** MariaDB 10.4 (XAMPP, `/opt/lampp`), database `lpstmi_db`, user `root`.
-  Konfigurasi di `application/config/database.php`. Hostname **harus `127.0.0.1`**: PHP 7.3 sistem tidak menemukan
+- **Database:** MariaDB 10.4 (XAMPP, `/opt/lampp`), database `lpstmi_db`, user aplikasi **`lpstmi_app`**
+  (bukan `root`; hanya punya DML + DDL pada `lpstmi_db`). Hostname **harus `127.0.0.1`**: PHP 7.3 sistem tidak menemukan
   socket XAMPP kalau pakai `localhost`. Charset `utf8mb4`.
+  - **Kredensial tidak boleh ditulis di `application/config/database.php`** (file itu ikut git). Sumbernya, berurutan:
+    `application/config/database.local.php` (lokal, **tidak ikut git**; contoh: `database.local.php.example`), lalu
+    variabel environment `DB_HOST`/`DB_USER`/`DB_PASS`/`DB_NAME` yang **menimpa** file lokal (dipakai di produksi).
+  - Mesin baru: `cp application/config/database.local.php.example application/config/database.local.php` lalu isi.
 - **Web server dev:** `php -d upload_max_filesize=20M -d post_max_size=25M -S localhost:8000 server.php` (PHP 7.3).
   **Jangan pakai Apache XAMPP**, karena PHP-nya 8.2. `server.php` adalah router khusus built-in server: file statis
   dilayani langsung, sisanya ke `index.php`. Opsi `-d` menaikkan batas upload (default PHP hanya 2 MB).
-- `base_url` = `http://localhost:8000/`, `index_page` kosong, `.htaccess` sudah ada untuk Apache/produksi.
+  `server.php` juga menyetel `CI_ENV=development` (lihat di bawah), jadi perintahnya tidak berubah.
+- **ENVIRONMENT** (`index.php`): request web default **`production`** — lupa menyetel `CI_ENV` tidak boleh membocorkan
+  stack trace/query SQL ke pengunjung. Yang memakai `development`: `server.php` (php -S) dan CLI (`php index.php tools …`,
+  outputnya hanya ke terminal). Untuk memaksa: `CI_ENV=development php index.php …`.
+- `base_url` = `http://localhost:8000/`; di produksi di-override lewat env `CI_BASE_URL` (harus `https://…/`, diakhiri `/`).
+  `index_page` kosong, `.htaccess` sudah ada untuk Apache/produksi.
+- `cookie_secure` otomatis `TRUE` saat `ENVIRONMENT === 'production'` (cookie sesi & CSRF hanya lewat HTTPS), `FALSE` di dev.
 - Autoload: library `database`; helper `url`, `html`, `wp`. Timezone `Asia/Jakarta` (di awal `config/config.php`).
 - Session (file) di `application/cache/sessions/`, hanya dimuat di `/admin`. CSRF aktif (`csrf_token`, tidak diregenerasi).
+  `sess_regenerate_destroy = TRUE`: data session lama ikut dihapus saat ID diputar, jadi ID lama langsung tidak berlaku.
+
+## Deploy ke produksi
+
+Hasil audit keamanan 2026-09-20. Yang **sudah dikerjakan di kode** (temuan 1, 4, 5):
+kredensial DB keluar dari repo, `ENVIRONMENT` default `production` untuk web, `cookie_secure` mengikuti environment.
+
+Yang harus dilakukan **saat deploy** (tidak bisa disiapkan dari codebase):
+
+```apache
+# konfigurasi vhost Apache, DI LUAR docroot — jangan taruh di .htaccess
+SetEnv DB_HOST 127.0.0.1
+SetEnv DB_USER lpstmi_app
+SetEnv DB_PASS <password produksi>
+SetEnv DB_NAME lpstmi_db
+SetEnv CI_BASE_URL https://stmi.ac.id/
+```
+
+- Jangan menyalin `application/config/database.local.php` ke server produksi (env yang dipakai, dan env menimpa file itu).
+- Situs **harus** HTTPS penuh + redirect HTTP→HTTPS, karena `cookie_secure` menjadi `TRUE`; tanpa HTTPS, login tidak akan bisa.
+- Pastikan `CI_ENV` **tidak** disetel ke `development` di produksi.
+- Buat user DB produksi seperti yang lokal: `GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, INDEX, DROP, REFERENCES
+  ON lpstmi_db.* TO 'lpstmi_app'@'127.0.0.1'` — **jangan** `root`, jangan `ALL PRIVILEGES`, jangan `*.*`.
+- Kalau web server-nya nginx, `.htaccess` **diabaikan**: aturan `Require all denied` untuk `application/` dan `system/`
+  serta blokir `stmi.ac.id-clone/` harus ditulis ulang sebagai aturan nginx. `application/cache/sessions/` berisi sesi aktif.
+
+Temuan 2 & 6 (XSS beranda, batas peran editor) dan 3, 7, 8 (brute-force login, ganti password, rotasi sesi)
+telah dikerjakan juga. Yang **belum**:
+**tidak ada.** Seluruh temuan audit sudah ditangani atau diputuskan.
+Temuan 9 (pdf.js) ternyata sudah termitigasi oleh pluginnya; lihat bagian "pdf.js (PDF Embedder)".
+
+**Temuan 18 — risiko yang diterima (keputusan user 2026-09-20):** `authors.gravatar_hash` = sha256 email asli hasil
+impor WordPress, tampil di URL avatar sehingga alamat email yang sudah ditebak bisa dikonfirmasi. **Dibiarkan apa
+adanya.** Alasannya: hash yang sama sudah terpublikasi di situs live sejak dulu (perilaku WordPress bawaan, bukan
+dibuat migrasi ini), nilai privasinya kecil, sedangkan mengubahnya akan membuat `pages/_page.php`,
+`downloads/single.php`, dan `posts/archive.php` berbeda dari clone sehingga `verify_db` tidak lagi bisa dipakai
+sebagai uji regresi tampilan. **Jangan mengubah `gravatar_hash` tanpa membicarakannya lagi dengan user.**
+
+## Pengerasan lain (temuan Low audit 2026-09-20)
+
+- `encryption_key` tidak lagi ditulis di `config.php`; dibaca dari env `CI_ENCRYPTION_KEY` (saat ini **tidak dipakai**
+  kode mana pun: session memakai driver `files`, library Encryption tidak dimuat).
+- **Login**: `Auth::DUMMY_HASH` membuat `password_verify()` tetap berjalan walau username tidak ada, supaya waktu
+  respons tidak membocorkan username yang valid (terukur: selisih median 0,5 ms dari sebelumnya ~75 ms).
+- **Unduhan ke situs luar** dibatasi `Download_model::$external_hosts` (`drive.google.com`, `docs.google.com`,
+  `tro.stmi.ac.id`), dicek saat menyimpan paket **dan** saat mengalihkan. `/download/<slug>?wpdmdl=` mengalihkan
+  langsung ke kolom `file`, jadi tanpa daftar ini tautan yang tampak dari situs kampus bisa mengantar ke mana saja.
+- **Hitungan unduhan** naik maksimal sekali per IP per paket per jam (`Downloads::COUNT_WINDOW`, lewat `Rate_limit`).
+  Konsekuensinya: pengunjung yang berbagi satu IP (NAT kampus) terhitung satu kali dalam rentang itu.
+- `Media::back_url()` hanya menerima path admin yang dikenal, bukan sekadar "diawali `admin/`".
+
+## Batas laju pencarian
+
+Pencarian adalah endpoint publik termahal (LIKE `%kata%` atas UNION posts+pages+downloads berisi HTML puluhan KB).
+Terukur 2026-09-20: `/?s=` ~30 ms dan REST `per_page=100` ~75 ms, dibanding halaman biasa ~12 ms.
+
+- `Search_model::MAX_PAGE` (200): halaman di luar itu 404 / 400 **sebelum** kueri dijalankan.
+- `Search_model::MAX_QUERY` (128): kata kunci dipotong sebelum dijadikan pola LIKE (judul halaman tetap utuh).
+- `Search_model::RATE_LIMIT` (60/menit per IP): halaman hasil **dan** endpoint REST berbagi satu bucket,
+  lewat `libraries/Rate_limit.php` (berbasis file di `application/cache/ratelimit/`, bukan database — pembatas
+  yang menulis satu baris DB per request justru menambah beban yang mau dikurangi). Melebihi batas = 429 + `Retry-After`.
+- Batas per IP hanya menahan penyerang dari satu host; serangan terdistribusi tetap lolos. Di belakang proxy/CDN,
+  `$config['proxy_ips']` **wajib** diisi atau semua pengunjung dihitung sebagai satu IP dan ikut terkunci.
+- Kalau nanti data membesar (ribuan post), yang perlu dipikirkan adalah indeks FULLTEXT — tetapi itu **mengubah urutan
+  hasil**, jadi melanggar syarat "sama dengan WordPress" dan harus diputuskan user dulu.
+
+## pdf.js (PDF Embedder)
+
+`wp-content/plugins/pdf-embedder/assets/js/pdfjs/pdf.min277b.js` adalah pdf.js **2.2.228**, yang termasuk rentang
+CVE-2024-4367 (eksekusi JS lewat `fontMatrix` yang dirakit jadi `new Function`). **Di pasangan ini vektornya tertutup**,
+diverifikasi 2026-09-20:
+- `pdfemb.min20fd.js` hanya punya satu call site `getDocument` dan memanggilnya dengan `isEvalSupported = false`.
+- Di pdf.js, jalur rentannya digate: `getPathGenerator` → `if (this.isEvalSupported && …) { … new Function … }`.
+- Uji runtime pada halaman PDF yang benar-benar merender (canvas 704x995): **0** pembuatan fungsi glyph.
+- Integrasi ini hanya merender canvas; `getAnnotations`/`AnnotationLayer` tidak pernah dipanggil, jadi anotasi
+  link/JavaScript di dalam PDF tidak dirender.
+
+**Jangan menambahkan `script-src` tanpa `'unsafe-eval'`**: terukur ada satu pemanggilan `new Function("r","regeneratorRuntime = r")`
+dari regenerator-runtime di halaman PDF, yang akan patah. Kalau `pdfemb.min20fd.js` diganti/diperbarui, **periksa ulang**
+bahwa `isEvalSupported` masih `false` — mitigasi ini bergantung pada file itu.
+
+## Header keamanan & log
+
+- **Header keamanan** dipasang dua tempat dengan isi sama: `application/hooks/Security_headers.php`
+  (hook `pre_controller`, `enable_hooks = TRUE`) untuk semua respons CodeIgniter, dan `.htaccess` root untuk file
+  statis di Apache. Isinya `X-Content-Type-Options`, `Referrer-Policy`, `X-Frame-Options`, `Permissions-Policy`,
+  dan CSP `frame-ancestors 'self'; base-uri 'self'`. HSTS hanya saat production + HTTPS.
+  **Jangan tambahkan tanpa uji browser:** `object-src` (halaman `statistik` memakai `<object class='tableauViz'>`),
+  `script-src` (semua halaman penuh `<script>` inline Elementor/Blocksy), dan `includeSubDomains` pada HSTS
+  (subdomain jarvis/lib/ppid/e-learning belum tentu HTTPS — flag itu membuatnya tidak bisa dibuka).
+  Di nginx `.htaccess` diabaikan, tetapi hook PHP tetap jalan.
+- **Log** di `application/logs/log-YYYY-MM-DD.php` (satu file per hari, izin 0640, folder ditutup `application/.htaccess`).
+  `log_threshold = 1` (hanya ERROR). Peristiwa keamanan ditulis ke kanal yang sama dengan awalan `[keamanan]`:
+  login berhasil/gagal/terkunci (`Auth::audit()`) serta pembuatan, perubahan peran/status/password, dan penghapusan
+  pengguna (`Admin_Controller::audit()`). Password tidak pernah ikut dicatat. Level INFO/DEBUG sengaja tidak dipakai
+  karena ikut membawa log internal CI yang sangat berisik.
+- **URL dari admin** divalidasi `is_safe_url()` saat disimpan (beranda, link footer, kontak & media sosial, field
+  link editor blok Elementor) dan dilewatkan `safe_href()` saat dirender, sehingga `javascript:`/`data:` tidak pernah
+  masuk atribut `href`. Keduanya di `helpers/wp_helper.php`.
+  **Kalau expression di partial diubah** (mis. menambah `safe_href()`), `Wp_clone::neutralize_contacts()` /
+  `neutralize_footer_links()` harus ikut diubah, atau `tools check` langsung turun dari 502 OK.
 
 ## Eksplorasi kode (codebase-memory-mcp)
 
@@ -222,12 +333,13 @@ Dibuat dengan CI3 Migrations (`application/migrations/`, `php index.php tools mi
 
 | Tabel | Isi |
 |---|---|
-| `authors` | author post sekaligus pengguna admin: `slug` (URL /author/<slug>), `display_name`, `registered_at` (Joined), `gravatar_hash` (sha256 email), `website`, `post_count_offset` (selisih "Articles" WordPress yang ikut menghitung tipe konten lain), `username`, `password_hash` (NULL = tidak bisa login), `role` (admin/editor), `is_active`, `last_login_at` |
+| `authors` | author post sekaligus pengguna admin: `slug` (URL /author/<slug>), `display_name`, `registered_at` (Joined), `gravatar_hash` (sha256 email), `website`, `post_count_offset` (selisih "Articles" WordPress yang ikut menghitung tipe konten lain), `username`, `password_hash` (NULL = tidak bisa login), `role` (admin/editor), `is_active`, `last_login_at`, `password_changed_at` (mematikan sesi lain saat password diganti) |
 | `terms` | `taxonomy` (category/post_tag), `name`, `slug`, `description` |
 | `media` | `file` (relatif `wp-content/uploads/`), `width`, `height`, `alt`, `mime_type`, `sizes` (JSON ukuran turunan, **urutan = urutan metadata WordPress**, menentukan urutan srcset) |
 | `posts` | `slug`, `title` (**teks mentah**; ditampilkan lewat `wp_texturize()`), `content` (HTML), `excerpt` (HTML kartu arsip), `author_id`, `featured_media_id`, `status` (publish/draft), `published_at`, `modified_at` (waktu lokal), `layout_head`/`layout_foot` (override varian layout; dipakai 3 post Elementor `post-<ID>`) |
 | `post_terms` | `post_id`, `term_id`, `term_order` (urutan tampil kategori lalu tag) |
 | `pages` | halaman statis (Page WordPress); lihat bagian "Halaman statis dari database" |
+| `login_attempts` | percobaan login gagal (migrasi 018): `ip` (VARBINARY, `inet_pton`), `username`, `attempted_at`; lihat "Panel admin" |
 
 - URL situs di `content` disimpan sebagai token `{base_url}`, `{base_url_json}`, `{base_url_encoded}`; diganti saat render
   (`wp_content()`) dan dikembalikan jadi token saat disimpan dari admin (`content_to_tokens()`).
@@ -297,10 +409,25 @@ Semua aturan ini sudah diverifikasi byte-per-byte terhadap 186 post + 152 halama
 
 ## Panel admin (`/admin`)
 
-- Login: `/admin/login` (username + password, `password_hash`, maks 5 gagal per sesi lalu kunci 5 menit, session
-  diregenerasi). Logout hanya via POST. Membuat/mengatur login dari CLI:
-  `php index.php tools set_login <slug-author> <username> [admin|editor]` (password acak ditampilkan sekali).
-- Peran: **admin** (semua), **editor** (post, media, kategori, tag, profil sendiri; `/admin/users` → 403).
+- Login: `/admin/login` (username + password, `password_hash`, session diregenerasi). Logout hanya via POST.
+  Membuat/mengatur login dari CLI: `php index.php tools set_login <slug-author> <username> [admin|editor]`
+  (password acak ditampilkan sekali).
+- **Pembatasan percobaan login** (tabel `login_attempts`, migrasi 018): maks **5 gagal per username** dan
+  **10 gagal per IP** dalam 5 menit (`Auth::MAX_ATTEMPTS` / `MAX_IP_ATTEMPTS` / `LOCK_SECONDS`). Hitungan **tidak boleh**
+  disimpan di session: itu ada di sisi penyerang dan bisa dilewati hanya dengan membuang cookie. Login berhasil menghapus
+  catatan untuk username & IP itu; catatan kedaluwarsa dibuang tiap ada percobaan POST. Di belakang proxy/CDN, isi
+  `$config['proxy_ips']` supaya `ip_address()` tidak mengembalikan IP proxy untuk semua orang.
+- **Ganti password**: mengubah password **sendiri** wajib mengisi "Password saat ini". Setiap perubahan password mengisi
+  `authors.password_changed_at`; session menyimpan nilai itu sebagai `pw_at` saat login, dan `Admin_Controller` menolak
+  session yang nilainya berbeda — jadi **sesi lain ikut berakhir**, termasuk saat admin mengganti password pengguna lain.
+  Session milik yang melakukan perubahan diperbarui supaya tidak ikut terlempar. `password_changed_at` NULL = belum pernah
+  diganti, sehingga session lama tidak terputus hanya karena migrasi dijalankan.
+- Peran: **admin** (semua), **editor** (dasbor, post, halaman, download, media, kategori, tag, profil sendiri).
+  Khusus admin: **pengguna, menu, beranda, link footer, kontak & media sosial** — editor mendapat **403** di sana,
+  dan menunya disembunyikan di `views/admin/layout.php`.
+  `Admin_Controller::$roles` default **`array('admin')`** (ketat). Controller yang juga untuk editor **wajib**
+  menyatakan `protected $roles = array('admin', 'editor');` sendiri, supaya controller admin baru tidak otomatis
+  terbuka untuk editor. `Users` memakai `array('admin', 'editor')` lalu membatasi per method (hanya `profile`).
 - Controller di `application/controllers/admin/` (`Admin_Controller` di `core/MY_Controller.php`), view di
   `views/admin/`, aset di `assets/admin/` (CSS/JS sendiri, TinyMCE 6.8.5 MIT di `assets/admin/vendor/tinymce/`).
 - **Post:** daftar (filter status/kategori/cari), buat/edit (judul mentah, slug unik & tidak bentrok dengan halaman statis
@@ -310,7 +437,11 @@ Semua aturan ini sudah diverifikasi byte-per-byte terhadap 186 post + 152 halama
   Menyimpan post hasil impor **tanpa perubahan** menghasilkan tampilan yang tetap identik (sudah diuji). Konten yang
   diedit lewat TinyMCE bisa dinormalisasi oleh editor (atribut/whitespace), itu wajar.
 - **Media:** upload (form multi-file, AJAX dari editor & pemilih), maks 20 MB, tipe: gambar (jpg/png/gif/webp) dan dokumen
-  (pdf/doc/docx/xls/xlsx/ppt/pptx/zip), file disimpan di `wp-content/uploads/YYYY/MM/`. Gambar dibuatkan ukuran seperti
+  (pdf/doc/docx/xls/xlsx/ppt/pptx/zip), file disimpan di `wp-content/uploads/YYYY/MM/`.
+  **Isi file ikut dicek**, bukan hanya ekstensinya: gambar lewat `getimagesize()`, dokumen lewat `finfo` terhadap
+  `Media_uploader::$content_types`. Pesan galat menyebut tipe yang terdeteksi, jadi kalau libmagic di server lain
+  memberi nama berbeda, daftarnya tinggal dilengkapi. `wp-content/uploads/.htaccess` menolak eksekusi skrip
+  (di nginx harus ditulis ulang sebagai aturan server). Gambar dibuatkan ukuran seperti
   WordPress (`libraries/Media_uploader.php`): medium 300, large 1024, thumbnail 150 crop, medium_large 768, 1536, 2048,
   dan `-scaled` jika > 2560 px. Alt text bisa diubah. Hapus media menghapus semua file ukurannya, **kecuali** file-nya (asli
   atau ukuran mana pun) masih dipakai di post, halaman, paket download, tabel beranda, atau view situs
@@ -472,6 +603,11 @@ tanpa style inline tambahan (merusak ukuran tile & layout mobile), tanpa blok "O
 (JS Elementor frontend sudah dimuat; animasi fade-in harus tetap jalan), tile/mitra baru tanpa ID Elementor memakai ID
 tile/mitra pertama (aturan CSS `post-490` semuanya sama), kelas `wp-image-<ID>` logo mitra dari tabel `media`, dan whitespace
 loop (slide carousel satu baris, indentasi baris tile & mitra) sama persis dengan output Elementor.
+**Nilai dari tabel `home_*` tidak boleh dicetak mentah.** Judul program studi memakai `safe_inline_html()` (escape semua,
+kecuali tag format sederhana seperti `<br>` yang memang dipakai judul "Teknik Industri &lt;br&gt; Otomotif") dan ikonnya
+memakai `safe_inline_svg()` (hanya elemen gambar; `<script>`, `<animate>`, atribut `on*`/`href` dibuang). Keduanya di
+`helpers/wp_helper.php`, dan `admin/Home_settings` juga membersihkannya saat menyimpan. Kelima baris data lama melewati
+kedua fungsi ini **tanpa berubah satu byte pun**, jadi `verify home` tetap sama.
 `tools verify <slug> dump` menyimpan HTML seharusnya & hasil render ke `application/cache/verify/` untuk di-diff.
 Semua 186 post, 152 halaman arsip (kategori, tag, author, dengan paginasi), 131 paket download, dan 32 halaman dirender dari
 database; `verify_db` = `OK 501, BEDA 0`.

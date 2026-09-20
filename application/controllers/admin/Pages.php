@@ -7,6 +7,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 class Pages extends Admin_Controller {
 
+	/** Editor ikut mengelola konten di sini. */
+	protected $roles = array('admin', 'editor');
+
 	public function __construct()
 	{
 		parent::__construct();

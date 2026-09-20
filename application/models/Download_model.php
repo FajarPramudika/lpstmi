@@ -51,6 +51,23 @@ class Download_model extends CI_Model {
 		return (bool) preg_match('#^https?://#i', $download['file']);
 	}
 
+	/**
+	 * Host luar yang boleh menjadi tujuan unduhan. /download/<slug>?wpdmdl=<ID> mengalihkan langsung ke
+	 * nilai kolom `file`, jadi tanpa daftar ini sebuah tautan yang tampak berasal dari situs kampus bisa
+	 * mengantar pengunjung ke mana saja. Semua paket eksternal yang ada memakai drive.google.com.
+	 */
+	public static $external_hosts = array('drive.google.com', 'docs.google.com', 'tro.stmi.ac.id');
+
+	/**
+	 * TRUE kalau URL luar ini boleh dipakai sebagai file paket.
+	 */
+	public static function external_allowed($url)
+	{
+		$host = parse_url((string) $url, PHP_URL_HOST);
+
+		return ($host !== NULL && $host !== FALSE && in_array(strtolower($host), self::$external_hosts, TRUE));
+	}
+
 	/* ------------------------------------------------------------------
 	 * Panel admin
 	 * ------------------------------------------------------------------ */

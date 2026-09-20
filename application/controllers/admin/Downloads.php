@@ -6,6 +6,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 class Downloads extends Admin_Controller {
 
+	/** Editor ikut mengelola konten di sini. */
+	protected $roles = array('admin', 'editor');
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -164,6 +167,11 @@ class Downloads extends Admin_Controller {
 		elseif ( ! $external && $local === NULL)
 		{
 			$errors[] = 'File tidak ditemukan di folder uploads. Pilih lewat tombol "Pilih file".';
+		}
+		elseif ($external && ! Download_model::external_allowed($file))
+		{
+			$errors[] = 'URL file di situs lain hanya boleh dari: '.implode(', ', Download_model::$external_hosts)
+				.'. Unduhan dialihkan langsung ke alamat ini, jadi tujuannya dibatasi.';
 		}
 		elseif (mb_strlen($file) > 500)
 		{

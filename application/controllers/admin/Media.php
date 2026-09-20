@@ -6,6 +6,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 class Media extends Admin_Controller {
 
+	/** Editor ikut mengelola konten di sini. */
+	protected $roles = array('admin', 'editor');
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -192,10 +195,15 @@ class Media extends Admin_Controller {
 		$this->output->set_status_header($status)->set_content_type('application/json')->set_output(json_encode($data));
 	}
 
+	/**
+	 * Tujuan kembali setelah simpan/hapus. Hanya menerima path admin yang dikenal: nilai ini berasal dari
+	 * input, jadi pemeriksaan "diawali admin/" saja terlalu longgar.
+	 */
 	protected function back_url()
 	{
 		$back = (string) $this->input->post('back');
 
-		return (strpos($back, 'admin/') === 0) ? $back : 'admin/media';
+		return preg_match('#^admin/(media|posts|pages|downloads)(/[A-Za-z0-9_/-]*)?(\?[A-Za-z0-9_=&%.+-]*)?$#', $back)
+			? $back : 'admin/media';
 	}
 }

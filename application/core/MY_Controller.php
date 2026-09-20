@@ -54,6 +54,18 @@ class MY_Controller extends CI_Controller {
 
 		$query = trim((string) $query);
 		$page = max(1, (int) $page);
+
+		// Halaman di luar batas ditolak SEBELUM kueri dijalankan (pengecekan terhadap $total_pages di
+		// bawah baru berjalan setelah kuerinya telanjur dieksekusi).
+		if ($page > Search_model::MAX_PAGE)
+		{
+			return $this->render_not_found();
+		}
+		if ( ! $this->search_allowed())
+		{
+			return $this->too_many_requests();
+		}
+
 		list($rows, $total) = $this->search_model->search($query, $page);
 		$total_pages = (int) ceil($total / Search_model::PER_PAGE);
 		if ($page > 1 && $page > $total_pages)
@@ -196,6 +208,33 @@ class MY_Controller extends CI_Controller {
 	}
 
 	/**
+	 * Pencarian adalah endpoint publik termahal, jadi dibatasi per IP (lihat libraries/Rate_limit.php).
+	 * Batasnya longgar supaya live search Blocksy (satu request per ketikan) dan pengunjung di balik
+	 * satu IP kampus tidak ikut terhalang.
+	 */
+	protected function search_allowed()
+	{
+		$this->load->library('rate_limit');
+
+		return $this->rate_limit->hit('search:'.$this->input->ip_address(), Search_model::RATE_LIMIT, 60);
+	}
+
+	/**
+	 * Respons 429 untuk permintaan yang melebihi batas laju.
+	 */
+	protected function too_many_requests()
+	{
+		$this->output
+			->set_status_header(429)
+			->set_header('Retry-After: '.$this->rate_limit->retry_after())
+			->set_content_type('text/html', 'UTF-8')
+			->set_output('<!doctype html><html lang="id"><meta charset="utf-8"><title>Terlalu banyak permintaan</title>'
+				.'<body style="font-family:sans-serif;padding:2rem"><h1>Terlalu banyak permintaan</h1>'
+				.'<p>Permintaan pencarian dari alamat ini terlalu sering. Coba lagi sebentar lagi.</p>'
+				.'<p><a href="'.html_escape(site_url()).'">Kembali ke beranda</a></p>');
+	}
+
+	/**
 	 * Halaman 404 bergaya WordPress ("Oops! That page can't be found.", dari clone js15_as.html) dengan status 404.
 	 * Dipanggil lewat 404_override (Pages::not_found) dan MY_Exceptions::show_404().
 	 */
@@ -220,8 +259,12 @@ class Admin_Controller extends CI_Controller {
 	/** @var array|null author yang sedang login */
 	protected $user;
 
-	/** Peran yang boleh mengakses controller ini. */
-	protected $roles = array('admin', 'editor');
+	/**
+	 * Peran yang boleh mengakses controller ini.
+	 * Default sengaja ketat (admin saja): controller yang juga untuk editor harus menyatakannya sendiri,
+	 * supaya controller baru tidak otomatis terbuka untuk editor.
+	 */
+	protected $roles = array('admin');
 
 	public function __construct()
 	{
@@ -237,6 +280,14 @@ class Admin_Controller extends CI_Controller {
 		{
 			$this->session->unset_userdata('admin_id');
 			$this->session->set_userdata('admin_redirect', $this->uri->uri_string());
+			redirect('admin/login');
+		}
+
+		// Password diubah sejak session ini dibuat (dari perangkat lain, atau oleh admin) -> session tidak berlaku lagi.
+		// NULL === NULL untuk akun yang passwordnya belum pernah diganti, jadi session lama tidak ikut terputus.
+		if ($this->session->userdata('pw_at') !== $this->user['password_changed_at'])
+		{
+			$this->session->sess_destroy();
 			redirect('admin/login');
 		}
 
@@ -261,6 +312,16 @@ class Admin_Controller extends CI_Controller {
 	protected function flash($type, $message)
 	{
 		$this->session->set_flashdata('flash', array('type' => $type, 'message' => $message));
+	}
+
+	/**
+	 * Catat perubahan yang penting secara keamanan (akun, peran) ke application/logs/, lengkap dengan
+	 * siapa yang melakukannya. Memakai level 'error' karena hanya level itu yang aktif (log_threshold = 1).
+	 */
+	protected function audit($message)
+	{
+		log_message('error', '[keamanan] '.$message.' [oleh '.$this->user['username'].' id='.$this->user['id']
+			.' ip='.$this->input->ip_address().']');
 	}
 
 	/* ------------------------------------------------------------------

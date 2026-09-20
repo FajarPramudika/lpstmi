@@ -43,10 +43,10 @@ $nav = array(
 		array('terms:tag', 'admin/terms/index/tag', 'Tag', 'tag', TRUE),
 	),
 	'Tampilan situs' => array(
-		array('home_settings', 'admin/home_settings', 'Beranda', 'home', TRUE),
+		array('home_settings', 'admin/home_settings', 'Beranda', 'home', $is_admin),
 		array('menu', 'admin/menu', 'Menu', 'menu', $is_admin),
-		array('footer_links', 'admin/footer_links', 'Link footer', 'link', TRUE),
-		array('contacts', 'admin/contacts', 'Kontak & media sosial', 'contact', TRUE),
+		array('footer_links', 'admin/footer_links', 'Link footer', 'link', $is_admin),
+		array('contacts', 'admin/contacts', 'Kontak & media sosial', 'contact', $is_admin),
 	),
 	'Akun' => array(
 		array('users', 'admin/users', 'Pengguna', 'users', $is_admin),

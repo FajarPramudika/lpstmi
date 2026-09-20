@@ -25,7 +25,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 | a PHP script and you can easily do that on your own.
 |
 */
-$config['base_url'] = 'http://localhost:8000/';
+// Di produksi, set lewat environment: SetEnv CI_BASE_URL https://stmi.ac.id/ di vhost.
+// Harus diakhiri garis miring, dan harus https:// agar cookie ber-flag Secure bisa terkirim.
+$config['base_url'] = getenv('CI_BASE_URL') ?: 'http://localhost:8000/';
 
 /*
 |--------------------------------------------------------------------------
@@ -104,7 +106,7 @@ $config['charset'] = 'UTF-8';
 | setting this variable to TRUE (boolean).  See the user guide for details.
 |
 */
-$config['enable_hooks'] = FALSE;
+$config['enable_hooks'] = TRUE;   // dipakai untuk header keamanan (application/hooks/Security_headers.php)
 
 /*
 |--------------------------------------------------------------------------
@@ -228,7 +230,9 @@ $config['allow_get_array'] = TRUE;
 | your log files will fill up very fast.
 |
 */
-$config['log_threshold'] = 0;
+// 1 = hanya ERROR. Ini juga kanal untuk peristiwa keamanan (diawali "[keamanan]"): level INFO/DEBUG
+// di CI3 sangat berisik karena memuat log internal framework.
+$config['log_threshold'] = 1;
 
 /*
 |--------------------------------------------------------------------------
@@ -265,7 +269,8 @@ $config['log_file_extension'] = '';
 | IMPORTANT: This MUST be an integer (no quotes) and you MUST use octal
 |            integer notation (i.e. 0700, 0644, etc.)
 */
-$config['log_file_permissions'] = 0644;
+// 0640: log bisa memuat URL & username, jangan bisa dibaca semua user di server.
+$config['log_file_permissions'] = 0640;
 
 /*
 |--------------------------------------------------------------------------
@@ -329,7 +334,10 @@ $config['cache_query_string'] = FALSE;
 | https://codeigniter.com/userguide3/libraries/encryption.html
 |
 */
-$config['encryption_key'] = 'fabe9df76e78a1b2fab295814d86cb90';
+// Tidak dipakai kode mana pun saat ini (session memakai driver 'files', library Encryption tidak dimuat).
+// Nilainya dulu ditulis di sini dan ikut ter-commit; kalau suatu saat library Encryption dipakai,
+// isi lewat environment: SetEnv CI_ENCRYPTION_KEY <hasil bin2hex(random_bytes(16))>.
+$config['encryption_key'] = getenv('CI_ENCRYPTION_KEY') ?: '';
 
 /*
 |--------------------------------------------------------------------------
@@ -393,7 +401,10 @@ $config['sess_expiration'] = 7200;
 $config['sess_save_path'] = APPPATH.'cache/sessions/';
 $config['sess_match_ip'] = FALSE;
 $config['sess_time_to_update'] = 300;
-$config['sess_regenerate_destroy'] = FALSE;
+// TRUE: data session lama ikut dihapus saat ID diputar (tiap sess_time_to_update detik).
+// Dengan FALSE, session ID lama tetap berlaku sampai garbage collector jalan, sehingga ID yang
+// pernah bocor punya masa pakai jauh lebih panjang dari yang terlihat.
+$config['sess_regenerate_destroy'] = TRUE;
 
 /*
 |--------------------------------------------------------------------------
@@ -414,7 +425,9 @@ $config['sess_regenerate_destroy'] = FALSE;
 $config['cookie_prefix']	= '';
 $config['cookie_domain']	= '';
 $config['cookie_path']		= '/';
-$config['cookie_secure']	= FALSE;
+// TRUE di produksi: cookie sesi & CSRF hanya dikirim lewat HTTPS. Dev lokal memakai HTTP,
+// jadi di sana harus FALSE atau login tidak akan pernah tersimpan.
+$config['cookie_secure']	= (ENVIRONMENT === 'production');
 $config['cookie_httponly'] 	= TRUE;
 $config['cookie_samesite'] 	= 'Lax';
 

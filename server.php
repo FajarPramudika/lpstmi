@@ -7,6 +7,13 @@
  * File statis yang ada (wp-content, wp-includes) dilayani langsung,
  * request lainnya diteruskan ke front controller CodeIgniter.
  */
+// Router ini hanya dipakai oleh php -S (pengembangan), jadi aman menyalakan mode development:
+// pesan error tampil lengkap. index.php sendiri default ke production untuk request web.
+if ( ! isset($_SERVER['CI_ENV']))
+{
+	$_SERVER['CI_ENV'] = 'development';
+}
+
 $path = urldecode(parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH));
 
 if (strpos($path, '/stmi.ac.id-clone') === 0)

@@ -9,7 +9,7 @@
 				<div class="elementor-widget-container">
 							<div class="elementor-image-carousel-wrapper swiper" role="region" aria-roledescription="carousel" aria-label="Image Carousel" dir="ltr">
 			<div class="elementor-image-carousel swiper-wrapper swiper-image-stretch" aria-live="off">
-								<?php $i = 1; foreach($home_banners as $banner): ?><div class="swiper-slide" role="group" aria-roledescription="slide" aria-label="<?= $i++ ?> of <?= count($home_banners) ?>"><?php if($banner['url']): ?><a href="<?= html_escape($banner['url']) ?>"><?php endif; ?><figure class="swiper-slide-inner"><img decoding="async" class="<?= html_escape($banner['image_class']) ?>" src="<?= base_url(html_escape($banner['image_path'])) ?>" alt="Header Politeknik STMI"<?= $banner['image_srcset'] ? ' srcset="' . html_escape($banner['image_srcset']) . '"' : '' ?> /></figure><?php if($banner['url']): ?></a><?php endif; ?></div><?php endforeach; ?>			</div>
+								<?php $i = 1; foreach($home_banners as $banner): ?><div class="swiper-slide" role="group" aria-roledescription="slide" aria-label="<?= $i++ ?> of <?= count($home_banners) ?>"><?php if($banner['url']): ?><a href="<?= html_escape(safe_href($banner['url'])) ?>"><?php endif; ?><figure class="swiper-slide-inner"><img decoding="async" class="<?= html_escape($banner['image_class']) ?>" src="<?= base_url(html_escape($banner['image_path'])) ?>" alt="Header Politeknik STMI"<?= $banner['image_srcset'] ? ' srcset="' . html_escape($banner['image_srcset']) . '"' : '' ?> /></figure><?php if($banner['url']): ?></a><?php endif; ?></div><?php endforeach; ?>			</div>
 					</div>
 						</div>
 				</div>
@@ -26,7 +26,7 @@
 		<div class="elementor-element elementor-element-<?= $link['container_id'] ?> e-con-full e-flex e-con e-child" data-id="<?= $link['container_id'] ?>" data-element_type="container">
 				<div class="elementor-element elementor-element-<?= $link['widget_id'] ?> e-transform elementor-widget elementor-widget-image" data-id="<?= $link['widget_id'] ?>" data-element_type="widget" data-settings="{&quot;_animation&quot;:&quot;none&quot;,&quot;_transform_scale_effect_hover&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:0.9,&quot;sizes&quot;:[]},&quot;_transform_scale_effect_hover_tablet&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:&quot;&quot;,&quot;sizes&quot;:[]},&quot;_transform_scale_effect_hover_mobile&quot;:{&quot;unit&quot;:&quot;px&quot;,&quot;size&quot;:&quot;&quot;,&quot;sizes&quot;:[]}}" data-widget_type="image.default">
 				<div class="elementor-widget-container">
-																<a href="<?= html_escape($link['url']) ?>"<?= strpos($link['url'], 'ppid.stmi.ac.id') !== false ? '' : ' target="_blank"' ?>>
+																<a href="<?= html_escape(safe_href($link['url'])) ?>"<?= strpos($link['url'], 'ppid.stmi.ac.id') !== false ? '' : ' target="_blank"' ?>>
 							<?= $link['img_hint_key'] ? wp_img_hint($img_hints, $link['img_hint_key']) : '' ?><img <?= strpos($link['url'], 'e-learning') === false ? 'loading="lazy" ' : '' ?>decoding="async" width="348" height="89" src="<?= base_url(html_escape($link['image_path'])) ?>" class="<?= html_escape($link['image_class']) ?>" alt=""<?= $link['image_srcset'] ? ' srcset="' . base_url(explode(' ', $link['image_srcset'])[0]) . ' 348w, ' . base_url(explode(' ', $link['image_srcset'])[2]) . ' 300w" sizes="(max-width: 348px) 100vw, 348px"' : '' ?> />								</a>
 															</div>
 				</div>
@@ -109,13 +109,13 @@ STMI <br> JAKARTA</h5>				</div>
 				<div class="elementor-widget-container">
 							<div class="elementor-icon-wrapper">
 			<a class="elementor-icon" href="#">
-			<svg aria-hidden="true" class="<?= $prog['container_id'] === '64b9fa9' ? 'e-font-icon-svg e-fas-cogs' : ($prog['container_id'] === 'f049439' ? 'e-font-icon-svg e-fas-vial' : ($prog['container_id'] === '7f98178' ? 'e-font-icon-svg e-fas-laptop-code' : ($prog['container_id'] === '29352f3' ? 'e-font-icon-svg e-fas-calculator' : 'e-font-icon-svg e-fas-atom'))) ?>" viewBox="0 0 <?= $prog['container_id'] === '64b9fa9' || $prog['container_id'] === '7f98178' ? '640' : ($prog['container_id'] === 'f049439' ? '480' : '448') ?> 512" xmlns="http://www.w3.org/2000/svg"><?= $prog['icon_svg'] ?></svg>			</a>
+			<svg aria-hidden="true" class="<?= $prog['container_id'] === '64b9fa9' ? 'e-font-icon-svg e-fas-cogs' : ($prog['container_id'] === 'f049439' ? 'e-font-icon-svg e-fas-vial' : ($prog['container_id'] === '7f98178' ? 'e-font-icon-svg e-fas-laptop-code' : ($prog['container_id'] === '29352f3' ? 'e-font-icon-svg e-fas-calculator' : 'e-font-icon-svg e-fas-atom'))) ?>" viewBox="0 0 <?= $prog['container_id'] === '64b9fa9' || $prog['container_id'] === '7f98178' ? '640' : ($prog['container_id'] === 'f049439' ? '480' : '448') ?> 512" xmlns="http://www.w3.org/2000/svg"><?= safe_inline_svg($prog['icon_svg']) ?></svg>			</a>
 		</div>
 						</div>
 				</div>
 				<div class="elementor-element elementor-element-<?= $prog['heading_id'] ?> elementor-widget elementor-widget-heading" data-id="<?= $prog['heading_id'] ?>" data-element_type="widget" data-widget_type="heading.default">
 				<div class="elementor-widget-container">
-					<h6 class="elementor-heading-title elementor-size-default"><?= $prog['title'] ?></h6>				</div>
+					<h6 class="elementor-heading-title elementor-size-default"><?= safe_inline_html($prog['title']) ?></h6>				</div>
 				</div>
 				<div class="elementor-element elementor-element-<?= $prog['text_id'] ?> elementor-widget elementor-widget-text-editor" data-id="<?= $prog['text_id'] ?>" data-element_type="widget" data-widget_type="text-editor.default">
 				<div class="elementor-widget-container">
@@ -124,7 +124,7 @@ STMI <br> JAKARTA</h5>				</div>
 				<div class="elementor-element elementor-element-<?= $prog['button_id'] ?> elementor-align-center elementor-widget elementor-widget-button" data-id="<?= $prog['button_id'] ?>" data-element_type="widget" data-widget_type="button.default">
 				<div class="elementor-widget-container">
 									<div class="elementor-button-wrapper">
-					<a class="elementor-button elementor-button-link elementor-size-xs" href="<?= html_escape($prog['url']) ?>" target="_blank">
+					<a class="elementor-button elementor-button-link elementor-size-xs" href="<?= html_escape(safe_href($prog['url'])) ?>" target="_blank">
 						<span class="elementor-button-content-wrapper">
 									<span class="elementor-button-text">Selengkapnya</span>
 					</span>
@@ -204,7 +204,7 @@ foreach($chunks as $i => $chunk):
 				<div class="elementor-element elementor-element-<?= $w_id ?> elementor-widget elementor-widget-image" data-id="<?= $w_id ?>" data-element_type="widget" data-widget_type="image.default">
 				<div class="elementor-widget-container">
 <?php if ($partner['url']): // seperti widget gambar Elementor yang ber-link ?>
-																<a href="<?= html_escape($partner['url']) ?>" target="_blank">
+																<a href="<?= html_escape(safe_href($partner['url'])) ?>" target="_blank">
 							<img loading="lazy" decoding="async" width="150" height="150" src="<?= base_url(html_escape($partner['image_path'])) ?>" class="attachment-full size-full<?= $partner['media_id'] ? ' wp-image-'.(int) $partner['media_id'] : '' ?>" alt="<?= html_escape($partner['name']) ?>" />								</a>
 															</div>
 <?php else: ?>

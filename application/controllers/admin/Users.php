@@ -6,6 +6,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  */
 class Users extends Admin_Controller {
 
+	/** Editor hanya untuk profile(); dibatasi per method di bawah. */
+	protected $roles = array('admin', 'editor');
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -59,6 +62,7 @@ class Users extends Admin_Controller {
 		else
 		{
 			$this->author_model->delete($author['id']);
+			$this->audit('pengguna dihapus: "'.$author['username'].'" id='.$author['id'].' peran='.$author['role']);
 			$this->flash('success', 'Pengguna dihapus.');
 		}
 		redirect('admin/users');
@@ -131,7 +135,13 @@ class Users extends Admin_Controller {
 			}
 			if ($password !== '')
 			{
-				if (strlen($password) < 10)
+				// Mengubah password sendiri wajib menyertakan password saat ini: sesi yang dibajak tidak
+				// boleh bisa mengunci pemilik akun keluar. Admin yang mengubah akun orang lain tidak perlu.
+				if ($self && ! password_verify((string) $in->post('current_password'), (string) $this->user['password_hash']))
+				{
+					$errors[] = 'Password saat ini salah.';
+				}
+				elseif (strlen($password) < 10)
 				{
 					$errors[] = 'Password minimal 10 karakter.';
 				}
@@ -142,6 +152,8 @@ class Users extends Admin_Controller {
 				else
 				{
 					$data['password_hash'] = password_hash($password, PASSWORD_DEFAULT);
+					// Mematikan sesi lain milik akun ini (lihat Admin_Controller).
+					$data['password_changed_at'] = date('Y-m-d H:i:s');
 				}
 			}
 			if ( ! $self && ! empty($data['username']) && $password === '' && ( ! $author OR empty($author['password_hash'])))
@@ -161,6 +173,31 @@ class Users extends Admin_Controller {
 				if ($author)
 				{
 					$this->author_model->update($author['id'], $data);
+
+					$changes = array();
+					if (isset($data['role']) && $data['role'] !== $author['role'])
+					{
+						$changes[] = 'peran '.$author['role'].' -> '.$data['role'];
+					}
+					if (isset($data['is_active']) && (int) $data['is_active'] !== (int) $author['is_active'])
+					{
+						$changes[] = $data['is_active'] ? 'diaktifkan' : 'dinonaktifkan';
+					}
+					if (isset($data['password_changed_at']))
+					{
+						$changes[] = 'password diganti';
+					}
+					if ($changes)
+					{
+						$this->audit('akun "'.$author['username'].'" id='.$author['id'].': '.implode(', ', $changes));
+					}
+
+					// Kalau yang berubah adalah password akun yang sedang dipakai, perbarui penanda di session ini
+					// supaya yang mengubah tidak ikut terlempar ke halaman login; sesi lain tetap terputus.
+					if (isset($data['password_changed_at']) && (int) $author['id'] === (int) $this->user['id'])
+					{
+						$this->session->set_userdata('pw_at', $data['password_changed_at']);
+					}
 				}
 				else
 				{
@@ -169,9 +206,11 @@ class Users extends Admin_Controller {
 					{
 						$data['gravatar_hash'] = Author_model::gravatar_hash('');
 					}
-					$this->author_model->create($data);
+					$new_id = $this->author_model->create($data);
+					$this->audit('pengguna dibuat: "'.$data['username'].'" id='.$new_id.' peran='.$data['role']);
 				}
-				$this->flash('success', 'Data pengguna disimpan.');
+				$this->flash('success', 'Data pengguna disimpan.'
+					.(isset($data['password_changed_at']) ? ' Password diganti, jadi sesi lain akun ini diakhiri.' : ''));
 				redirect($self ? 'admin/users/profile' : 'admin/users');
 			}
 			$author = array_merge($author ? $author : array(), $data);

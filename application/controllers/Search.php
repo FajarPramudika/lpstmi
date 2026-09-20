@@ -38,6 +38,16 @@ class Search extends MY_Controller {
 		$per_page = min(100, max(1, (int) ($this->input->get('per_page') ?: 10)));
 		$page = max(1, (int) ($this->input->get('page') ?: 1));
 
+		// Endpoint publik tanpa autentikasi dan paling mahal di situs: batasi halaman & laju dulu.
+		if ($page > Search_model::MAX_PAGE)
+		{
+			return $this->rest_error(400, 'rest_invalid_param', 'Parameter page di luar batas.');
+		}
+		if ( ! $this->search_allowed())
+		{
+			return $this->rest_error(429, 'too_many_requests', 'Terlalu banyak permintaan pencarian.');
+		}
+
 		list($rows, $total) = $this->search_model->search($query, $page, $per_page, array('post', 'page'));
 
 		$out = array();
@@ -59,6 +69,22 @@ class Search extends MY_Controller {
 			->set_header('X-WP-Total: '.$total)
 			->set_header('X-WP-TotalPages: '.(int) ceil($total / $per_page))
 			->set_output(json_encode($out, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+	}
+
+	/**
+	 * Galat bergaya REST API WordPress (live search Blocksy hanya membaca status HTTP-nya).
+	 */
+	protected function rest_error($status, $code, $message)
+	{
+		$this->output
+			->set_status_header($status)
+			->set_content_type('application/json', 'UTF-8')
+			->set_output(json_encode(array('code' => $code, 'message' => $message, 'data' => array('status' => $status))));
+
+		if ($status === 429)
+		{
+			$this->output->set_header('Retry-After: '.$this->rate_limit->retry_after());
+		}
 	}
 
 	/**

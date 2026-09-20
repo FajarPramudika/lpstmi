@@ -52,8 +52,16 @@
  *     production
  *
  * NOTE: If you change these, also change the error_reporting() code below
+ *
+ * Default untuk request web adalah 'production': lupa menyetel CI_ENV tidak boleh berakibat
+ * stack trace, jalur file, dan query SQL tampil ke pengunjung. Yang menyetel 'development':
+ *   - server.php (router php -S, hanya dipakai saat pengembangan lokal), dan
+ *   - baris di bawah untuk CLI (php index.php tools ...), yang outputnya hanya ke terminal.
+ * Di produksi, biarkan CI_ENV tidak disetel, atau SetEnv CI_ENV production di vhost.
  */
-	define('ENVIRONMENT', isset($_SERVER['CI_ENV']) ? $_SERVER['CI_ENV'] : 'development');
+	define('ENVIRONMENT', isset($_SERVER['CI_ENV'])
+		? $_SERVER['CI_ENV']
+		: (PHP_SAPI === 'cli' ? 'development' : 'production'));
 
 /*
  *---------------------------------------------------------------

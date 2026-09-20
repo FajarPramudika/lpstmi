@@ -622,3 +622,71 @@ if ( ! function_exists('wp_js_string'))
 		);
 	}
 }
+
+if ( ! function_exists('safe_inline_html'))
+{
+	/**
+	 * Teks pendek dari database yang boleh memuat sedikit tag format (mis. judul program studi berisi <br>).
+	 * Tag di daftar aman dibiarkan apa adanya; selain itu seluruhnya di-escape, sehingga <script>, atribut
+	 * event, dan tag apa pun yang lain hanya tampil sebagai teks.
+	 * Dipakai di tempat yang dulu mencetak nilai database mentah.
+	 */
+	function safe_inline_html($text)
+	{
+		$allowed = '(?:br\s*/?|/?(?:strong|em|b|i|sup|sub|small))';
+		$parts = preg_split('#(<'.$allowed.'>)#i', (string) $text, -1, PREG_SPLIT_DELIM_CAPTURE);
+
+		$out = '';
+		foreach ($parts as $i => $part)
+		{
+			// Indeks ganjil = tag yang tertangkap pola di atas (aman), genap = teks biasa.
+			$out .= ($i % 2) ? $part : htmlspecialchars($part, ENT_NOQUOTES, 'UTF-8', FALSE);
+		}
+
+		return $out;
+	}
+}
+
+if ( ! function_exists('safe_inline_svg'))
+{
+	/**
+	 * Isi <svg> dari database (mis. ikon program studi beranda): hanya elemen gambar yang dibiarkan,
+	 * atribut event (on*) dan href dibuang. Mencegah <script>/<animate onbegin=...> di dalam SVG inline.
+	 */
+	function safe_inline_svg($svg)
+	{
+		$allowed = 'path|circle|ellipse|rect|line|polyline|polygon|g|defs|title|desc|linearGradient|radialGradient|stop|clipPath|mask';
+
+		// Buang tag apa pun di luar daftar aman (termasuk <script> dan <animate>).
+		$svg = preg_replace('#</?(?!(?:'.$allowed.')\b)[a-zA-Z][^>]*>#i', '', (string) $svg);
+
+		// Buang atribut event dan href, walau tagnya sendiri aman.
+		return preg_replace('/\s(?:on[a-zA-Z]+|(?:xlink:)?href)\s*=\s*(?:"[^"]*"|\'[^\']*\'|[^\s>]+)/i', '', $svg);
+	}
+}
+
+if ( ! function_exists('is_safe_url'))
+{
+	/**
+	 * Skema URL yang aman dipasang di atribut href. Menolak javascript:, data:, vbscript:, dsb.
+	 * Kosong dianggap aman (dipakai untuk "tanpa link"); pemanggil yang menentukan boleh kosong atau tidak.
+	 */
+	function is_safe_url($url)
+	{
+		$url = trim((string) $url);
+
+		return ($url === '') OR (bool) preg_match('#^(\#[^\s]*|/[^\s]*|\{base_url\}\S*|https?://\S+|mailto:\S+|tel:\S+)$#i', $url);
+	}
+}
+
+if ( ! function_exists('safe_href'))
+{
+	/**
+	 * Nilai href dari database. URL dengan skema tidak aman diganti '#' supaya data lama yang telanjur
+	 * tersimpan sebelum validasi input ada tidak ikut dieksekusi. Hasilnya masih perlu html_escape().
+	 */
+	function safe_href($url)
+	{
+		return is_safe_url($url) ? (string) $url : '#';
+	}
+}

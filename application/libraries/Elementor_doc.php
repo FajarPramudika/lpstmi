@@ -512,7 +512,8 @@ class Elementor_doc {
 			}
 			elseif ($type === 'href')
 			{
-				if ($value === $f['value'])
+				// Skema berbahaya (javascript:, data:) diabaikan: nilai lama dipertahankan.
+				if ($value === $f['value'] OR ! is_safe_url($value))
 				{
 					continue;
 				}

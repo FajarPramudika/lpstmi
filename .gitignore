@@ -1,5 +1,10 @@
 .DS_Store
 
+# Kredensial & laporan yang tidak boleh ikut git
+application/config/database.local.php
+security-audit.md
+security-fix.md
+
 application/cache/*
 !application/cache/index.html
 

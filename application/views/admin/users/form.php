@@ -41,6 +41,13 @@ $action = $self ? 'admin/users/profile' : ($is_new ? 'admin/users/create' : 'adm
 			<label for="website">Website</label>
 			<input type="url" id="website" name="website" value="<?= $v('website') ?>" placeholder="https://">
 		</div>
+		<?php if ($self): ?>
+		<div class="field">
+			<label for="current_password">Password saat ini</label>
+			<input type="password" id="current_password" name="current_password" autocomplete="current-password">
+			<div class="hint">Wajib diisi hanya kalau Anda mengganti password.</div>
+		</div>
+		<?php endif; ?>
 		<div class="field">
 			<label for="password"><?= $is_new ? 'Password' : 'Password baru' ?></label>
 			<input type="password" id="password" name="password" autocomplete="new-password" minlength="10">

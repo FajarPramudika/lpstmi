@@ -1,3 +1,20 @@
+# Header keamanan untuk SEMUA respons, termasuk file statis (wp-content/uploads, CSS, JS) yang tidak
+# lewat PHP. Untuk respons dari CodeIgniter, header yang sama juga dipasang oleh
+# application/hooks/Security_headers.php — di sana ada penjelasan kenapa object-src & script-src tidak
+# dibatasi, dan kenapa HSTS tidak boleh memakai includeSubDomains. "set" menimpa, jadi tidak dobel.
+# Catatan: nginx mengabaikan file ini; di nginx, aturan ini harus ditulis ulang di konfigurasi server.
+<IfModule mod_headers.c>
+	Header always set X-Content-Type-Options "nosniff"
+	Header always set Referrer-Policy "strict-origin-when-cross-origin"
+	Header always set X-Frame-Options "SAMEORIGIN"
+	Header always set Content-Security-Policy "frame-ancestors 'self'; base-uri 'self'"
+	Header always set Permissions-Policy "geolocation=(), microphone=(), camera=()"
+
+	# Aktifkan HANYA setelah seluruh situs berjalan di HTTPS. Jangan tambahkan includeSubDomains
+	# sebelum semua subdomain (jarvis, lib, ppid, e-learning, ...) juga HTTPS.
+	# Header always set Strict-Transport-Security "max-age=31536000"
+</IfModule>
+
 <IfModule mod_rewrite.c>
 	RewriteEngine On
 

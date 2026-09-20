@@ -73,12 +73,36 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $active_group = 'default';
 $query_builder = TRUE;
 
+/*
+| Kredensial TIDAK boleh ditulis di file ini (file ini ikut git). Urutan sumbernya:
+|   1. application/config/database.local.php  -> pengembangan lokal; tidak ikut git.
+|      Isinya: <?php return array('username' => '...', 'password' => '...');
+|   2. Variabel environment DB_HOST / DB_USER / DB_PASS / DB_NAME -> produksi.
+|      Di Apache: SetEnv di konfigurasi vhost (di luar docroot), bukan di .htaccess.
+| Environment menimpa file lokal, sehingga server produksi tidak bisa salah memakai kredensial dev.
+*/
+$creds = array('hostname' => '127.0.0.1', 'username' => '', 'password' => '', 'database' => 'lpstmi_db');
+
+if (is_file(APPPATH.'config/database.local.php'))
+{
+	$creds = array_merge($creds, (array) include APPPATH.'config/database.local.php');
+}
+
+foreach (array('DB_HOST' => 'hostname', 'DB_USER' => 'username', 'DB_PASS' => 'password', 'DB_NAME' => 'database') as $env => $key)
+{
+	$value = getenv($env);
+	if ($value !== FALSE && $value !== '')
+	{
+		$creds[$key] = $value;
+	}
+}
+
 $db['default'] = array(
 	'dsn'	=> '',
-	'hostname' => '127.0.0.1',
-	'username' => 'root',
-	'password' => 'Sorry.240106',
-	'database' => 'lpstmi_db',
+	'hostname' => $creds['hostname'],
+	'username' => $creds['username'],
+	'password' => $creds['password'],
+	'database' => $creds['database'],
 	'dbdriver' => 'mysqli',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
