@@ -6,7 +6,7 @@ Dokumen ini fokus pada **konfigurasi yang dibutuhkan untuk menjalankan aplikasi*
 
 ## Persyaratan Sistem
 
-- **PHP 7.3** (wajib). Jangan pakai PHP 7.4 ke atas: kode ini memakai gaya CI3 lama dan belum diuji di versi baru.
+- **PHP 7.3** (wajib). Jangan pakai PHP 7.4 ke atas: kode ini memakai gaya CI3 lama
 - **MariaDB 10.4** / MySQL 5.7+, database `utf8mb4`.
 - Ekstensi PHP: `mysqli`, `gd`, `fileinfo`, `mbstring`, `iconv`, `json`.
   - `gd` dipakai membuat ukuran turunan gambar ala WordPress, `fileinfo` untuk memvalidasi isi file yang diunggah.
@@ -22,25 +22,25 @@ Tidak ada kredensial yang ditulis di dalam kode. Semua nilai yang berbeda antar-
 
 Urutan itu disengaja: server production tidak bisa salah memakai kredensial development walaupun file lokalnya ikut ter-copy.
 
-| Variabel | Wajib | Keterangan |
-| --- | --- | --- |
-| `DB_HOST` | ya (production) | Host database. Di lokal **harus `127.0.0.1`**, bukan `localhost` — PHP 7.3 sistem tidak menemukan socket XAMPP. |
-| `DB_USER` | ya (production) | User database aplikasi. **Jangan `root`.** |
-| `DB_PASS` | ya (production) | Password user database. |
-| `DB_NAME` | ya (production) | Nama database, mis. `lpstmi_db`. |
-| `CI_BASE_URL` | ya (production) | URL situs, **harus diakhiri garis miring**, mis. `https://stmi.ac.id/`. Default `http://localhost:8000/`. |
-| `CI_ENV` | tidak | `development` / `production`. Lihat tabel di bawah — biasanya tidak perlu diisi. |
-| `CI_ENCRYPTION_KEY` | tidak | Belum dipakai kode mana pun (session memakai driver `files`). Isi kalau nanti library `Encryption` dipakai. |
+| Variabel            | Wajib           | Keterangan                                                                                                      |
+| ------------------- | --------------- | --------------------------------------------------------------------------------------------------------------- |
+| `DB_HOST`           | ya (production) | Host database. Di lokal **harus `127.0.0.1`**, bukan `localhost` — PHP 7.3 sistem tidak menemukan socket XAMPP. |
+| `DB_USER`           | ya (production) | User database aplikasi. **Jangan `root`.**                                                                      |
+| `DB_PASS`           | ya (production) | Password user database.                                                                                         |
+| `DB_NAME`           | ya (production) | Nama database, mis. `lpstmi_db`.                                                                                |
+| `CI_BASE_URL`       | ya (production) | URL situs, **harus diakhiri garis miring**, mis. `https://stmi.ac.id/`. Default `http://localhost:8000/`.       |
+| `CI_ENV`            | tidak           | `development` / `production`. Lihat tabel di bawah — biasanya tidak perlu diisi.                                |
+| `CI_ENCRYPTION_KEY` | tidak           | Belum dipakai kode mana pun (session memakai driver `files`). Isi kalau nanti library `Encryption` dipakai.     |
 
 ### Environment
 
 `ENVIRONMENT` menentukan apakah pesan error tampil ke pengunjung dan apakah cookie diberi flag `Secure`. Defaultnya sengaja aman, jadi **lupa menyetel `CI_ENV` tidak akan membocorkan apa pun**:
 
-| Dijalankan lewat | `ENVIRONMENT` | Efek |
-| --- | --- | --- |
-| Web (Apache/nginx → `index.php`) | `production` | Error disembunyikan, `cookie_secure = TRUE` (butuh HTTPS). |
+| Dijalankan lewat                   | `ENVIRONMENT` | Efek                                                                              |
+| ---------------------------------- | ------------- | --------------------------------------------------------------------------------- |
+| Web (Apache/nginx → `index.php`)   | `production`  | Error disembunyikan, `cookie_secure = TRUE` (butuh HTTPS).                        |
 | `server.php` (php -S, development) | `development` | Error tampil lengkap, `cookie_secure = FALSE`. Disetel sendiri oleh `server.php`. |
-| CLI (`php index.php tools …`) | `development` | Error tampil di terminal. |
+| CLI (`php index.php tools …`)      | `development` | Error tampil di terminal.                                                         |
 
 Untuk memaksa: `CI_ENV=development php index.php tools verify home`.
 
@@ -53,6 +53,19 @@ Untuk memaksa: `CI_ENV=development php index.php tools verify home`.
 ---
 
 ## Menjalankan di Development
+
+### Khusus Windows + Laragon
+
+1. Di Laragon, nyalakan **MySQL** (menu **Start All** juga boleh) dan pastikan port `3306` tidak dipakai layanan database lain.
+2. Buka Terminal Laragon atau gunakan executable PHP dari `C:\laragon\bin\php\...\php.exe`. Jangan memakai `php` dari XAMPP bila hasil `php -v` menunjukkan `C:\xampp`.
+3. Proyek ini boleh tetap berada di folder Downloads. Langkah di bawah memakai PHP built-in server, jadi tidak perlu memindahkan proyek ke `C:\laragon\www` atau membuat virtual host Apache.
+
+Contoh PowerShell (sesuaikan folder versi PHP bila berbeda):
+
+```powershell
+$php = 'C:\laragon\bin\php\php-x.x.xx-Win32-vs16-x64\php.exe'
+& $php -v
+```
 
 ### 1. Siapkan database dan user-nya
 
@@ -69,9 +82,12 @@ Hak `CREATE/ALTER/INDEX/DROP` dibutuhkan untuk menjalankan migrasi. Jangan membe
 
 ### 2. Isi kredensial lokal
 
-```bash
+````bash
 cp application/config/database.local.php.example application/config/database.local.php
-```
+``` or
+```powershell
+Copy-Item application/config/database.local.php.example application/config/database.local.php
+````
 
 Lalu isi `username` dan `password` sesuai user yang barusan dibuat. Berkas ini **tidak ikut git** — jangan pernah menulis password di `application/config/database.php`.
 
@@ -117,7 +133,7 @@ php -d upload_max_filesize=20M -d post_max_size=25M -S localhost:8000 server.php
 
 Situs: `http://localhost:8000/` · Panel admin: `http://localhost:8000/admin`
 
-> Jangan pakai Apache bawaan XAMPP kalau PHP-nya 8.x. `server.php` adalah router khusus built-in server: berkas statis dilayani langsung, sisanya diteruskan ke `index.php`.
+> `server.php` adalah router khusus built-in server: berkas statis dilayani langsung, sisanya diteruskan ke `index.php`. Untuk menutupnya, tekan `Ctrl+C` pada terminal yang menjalankan server.
 
 ---
 
@@ -261,21 +277,21 @@ Panel administrasi dibangun kustom (bukan bawaan WordPress), diakses di `/admin`
 
 Semua perintah hanya bisa dijalankan dari terminal.
 
-| Perintah | Deskripsi |
-| --- | --- |
-| `php index.php tools migrate` | Menjalankan migrasi struktur database. |
-| `php index.php tools set_login <slug> <username> [admin\|editor]` | Memberi akses login panel admin ke seorang author. |
-| `php index.php tools import_seed [ulang]` | Memuat seluruh konten dari `application/seeds/seed.sql`. Cara menyiapkan mesin baru. |
-| `php index.php tools export_seed` | Menulis konten database ke `application/seeds/seed.sql` (tanpa kredensial). |
-| `php index.php tools import_posts` | Mengimpor post, media, kategori dari hasil clone. **Mengosongkan tabel konten dulu.** |
-| `php index.php tools import_downloads [ulang]` | Mengimpor paket Download Manager. |
-| `php index.php tools import_pages` | Memindahkan halaman statis ke tabel `pages` (aman diulang). |
-| `php index.php tools import_media` | Mendaftarkan berkas `wp-content/uploads/` ke pustaka media (aman diulang). |
-| `php index.php tools download_shortcodes` | Mengganti salinan kartu download di konten dengan kode pendek (aman diulang). |
-| `php index.php tools check [folder]` | Mengecek kecocokan halaman clone terhadap layout bersama. |
-| `php index.php tools convert <slug> [path]` | Mengonversi halaman statis clone menjadi View CI. |
-| `php index.php tools verify [slug\|all] [dump]` | Memverifikasi render CI byte-identik dengan clone. `dump` menyimpan keduanya untuk di-diff. |
-| `php index.php tools verify_db [tipe] [detail]` | Memverifikasi seluruh konten dari database (post, arsip, paket, halaman). |
+| Perintah                                                          | Deskripsi                                                                                   |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `php index.php tools migrate`                                     | Menjalankan migrasi struktur database.                                                      |
+| `php index.php tools set_login <slug> <username> [admin\|editor]` | Memberi akses login panel admin ke seorang author.                                          |
+| `php index.php tools import_seed [ulang]`                         | Memuat seluruh konten dari `application/seeds/seed.sql`. Cara menyiapkan mesin baru.        |
+| `php index.php tools export_seed`                                 | Menulis konten database ke `application/seeds/seed.sql` (tanpa kredensial).                 |
+| `php index.php tools import_posts`                                | Mengimpor post, media, kategori dari hasil clone. **Mengosongkan tabel konten dulu.**       |
+| `php index.php tools import_downloads [ulang]`                    | Mengimpor paket Download Manager.                                                           |
+| `php index.php tools import_pages`                                | Memindahkan halaman statis ke tabel `pages` (aman diulang).                                 |
+| `php index.php tools import_media`                                | Mendaftarkan berkas `wp-content/uploads/` ke pustaka media (aman diulang).                  |
+| `php index.php tools download_shortcodes`                         | Mengganti salinan kartu download di konten dengan kode pendek (aman diulang).               |
+| `php index.php tools check [folder]`                              | Mengecek kecocokan halaman clone terhadap layout bersama.                                   |
+| `php index.php tools convert <slug> [path]`                       | Mengonversi halaman statis clone menjadi View CI.                                           |
+| `php index.php tools verify [slug\|all] [dump]`                   | Memverifikasi render CI byte-identik dengan clone. `dump` menyimpan keduanya untuk di-diff. |
+| `php index.php tools verify_db [tipe] [detail]`                   | Memverifikasi seluruh konten dari database (post, arsip, paket, halaman).                   |
 
 **Server harus berjalan** saat menjalankan `verify`, karena perintah itu mengambil halaman lewat HTTP dari `base_url`.
 
