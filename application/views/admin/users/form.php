@@ -58,6 +58,6 @@ $action = $self ? 'admin/users/profile' : ($is_new ? 'admin/users/create' : 'adm
 			<input type="password" id="password_confirm" name="password_confirm" autocomplete="new-password">
 		</div>
 		<button type="submit" class="btn btn-primary">Simpan</button>
-		<?php if ( ! $self): ?><a class="btn" href="<?= site_url('admin/users') ?>">Batal</a><?php endif; ?>
+		<?php if ( ! $self): ?><a class="btn" href="<?= site_url('admin/users') ?>">&larr; Kembali</a><?php endif; ?>
 	<?= form_close() ?>
 </div>

@@ -54,7 +54,7 @@ $type = isset($item['type']) ? $item['type'] : 'page';
 			<div class="hint">Tidak ada batas kedalaman. Item ini dan sub-itemnya tidak bisa dipilih sebagai induk.</div>
 		</div>
 		<button type="submit" class="btn btn-primary">Simpan</button>
-		<a class="btn" href="<?= site_url('admin/menu') ?>">Batal</a>
+		<a class="btn" href="<?= site_url('admin/menu') ?>">&larr; Kembali</a>
 	<?= form_close() ?>
 </div>
 <script>

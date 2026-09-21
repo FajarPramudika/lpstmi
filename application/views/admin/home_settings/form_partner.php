@@ -6,8 +6,11 @@
 		<div class="card">
 			<div class="field">
 				<label for="image_path">Path Logo (Image Path)</label>
-				<input type="text" id="image_path" name="image_path" required maxlength="255" value="<?= $is_create ? '' : html_escape($partner['image_path']) ?>">
-				<div class="hint">Contoh: <code>wp-content/uploads/2024/03/Logo-Partner.jpg</code></div>
+				<div style="display:flex;gap:8px">
+					<input type="text" id="image_path" name="image_path" required maxlength="255" value="<?= $is_create ? '' : html_escape($partner['image_path']) ?>">
+					<button type="button" class="btn" data-home-image-picker>Unggah / Pilih gambar</button>
+				</div>
+				<div class="hint">Unggah logo baru atau pilih dari pustaka media. Path dapat diisi manual bila diperlukan.</div>
 			</div>
 
 			<div class="field">
@@ -35,17 +38,18 @@
 			</div>
 			
 			<button type="submit" class="btn btn-primary" style="width:100%;justify-content:center"><?= $is_create ? 'Tambah Mitra' : 'Simpan Perubahan' ?></button>
-			<p style="text-align:center;margin:10px 0 0"><a href="<?= site_url('admin/home_settings?tab=partners') ?>">Batal</a></p>
+			<p style="text-align:center;margin:10px 0 0"><a class="btn btn-sm" href="<?= site_url('admin/home_settings?tab=partners') ?>">&larr; Kembali</a></p>
 		</div>
 
 		<?php if (!$is_create): ?>
 		<div class="card">
 			<label>Pratinjau Logo</label>
-			<div style="margin-top: 10px; background: #fff; border: 1px solid #ddd; padding: 10px; border-radius: 5px; text-align: center;">
+			<div data-home-image-preview style="margin-top: 10px; background: #fff; border: 1px solid #ddd; padding: 10px; border-radius: 5px; text-align: center;">
 				<img src="<?= base_url(html_escape($partner['image_path'])) ?>" alt="" style="max-width: 100%; height: auto;">
 			</div>
 		</div>
 		<?php endif; ?>
+		<?php if ($is_create): ?><div class="card"><label>Pratinjau logo</label><div data-home-image-preview style="margin-top:10px;text-align:center"></div></div><?php endif; ?>
 	</div>
 </div>
 <?= form_close() ?>

@@ -152,4 +152,34 @@
 			remove.hidden = true;
 		});
 	}
+
+	// Gambar pada pengaturan Beranda. Pemilih yang sama juga menyediakan upload gambar baru.
+	var homeImagePicker = document.querySelector('[data-home-image-picker]');
+	if (homeImagePicker) {
+		var homeImageInput = document.getElementById('image_path');
+		var homeImagePreview = document.querySelector('[data-home-image-preview]');
+		homeImagePicker.addEventListener('click', function () {
+			window.openMediaPicker({ type: 'image', onSelect: function (item) {
+				var path = item.url;
+				if (path.indexOf(baseUrl) === 0) {
+					path = path.slice(baseUrl.length);
+				} else {
+					var marker = '/wp-content/uploads/';
+					var markerIndex = path.indexOf(marker);
+					if (markerIndex !== -1) { path = path.slice(markerIndex + 1); }
+				}
+				homeImageInput.value = path;
+				var srcset = document.getElementById('image_srcset');
+				if (srcset) { srcset.value = ''; }
+				if (homeImagePreview) {
+					homeImagePreview.innerHTML = '';
+					var image = document.createElement('img');
+					image.src = item.url;
+					image.alt = '';
+					image.style.cssText = 'max-width:100%;max-height:160px;height:auto;';
+					homeImagePreview.appendChild(image);
+				}
+			} });
+		});
+	}
 })();

@@ -56,6 +56,7 @@ $published_at = ! empty($post['published_at']) ? date('Y-m-d\TH:i:s', strtotime(
 				</select>
 			</div>
 			<button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">Simpan</button>
+			<p style="text-align:center;margin:10px 0 0"><a class="btn btn-sm" href="<?= site_url('admin/posts') ?>">&larr; Kembali ke Post</a></p>
 			<?php if ( ! $is_new && $post['status'] === 'publish'): ?>
 			<p style="text-align:center;margin:10px 0 0"><a href="<?= site_url($post['slug']) ?>" target="_blank" rel="noopener">Lihat post &nearr;</a></p>
 			<?php endif; ?>

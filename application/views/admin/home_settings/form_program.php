@@ -36,7 +36,7 @@
 			</div>
 			
 			<button type="submit" class="btn btn-primary" style="width:100%;justify-content:center"><?= $is_create ? 'Tambah Program Studi' : 'Simpan Perubahan' ?></button>
-			<p style="text-align:center;margin:10px 0 0"><a href="<?= site_url('admin/home_settings?tab=programs') ?>">Batal</a></p>
+			<p style="text-align:center;margin:10px 0 0"><a class="btn btn-sm" href="<?= site_url('admin/home_settings?tab=programs') ?>">&larr; Kembali</a></p>
 		</div>
 
 		<?php if (!$is_create): ?>

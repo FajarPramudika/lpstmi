@@ -15,6 +15,6 @@
 			<textarea id="description" name="description" rows="3"><?= html_escape(isset($term['description']) ? $term['description'] : '') ?></textarea>
 		</div>
 		<button type="submit" class="btn btn-primary">Simpan</button>
-		<a class="btn" href="<?= site_url('admin/terms/index/'.$type) ?>">Batal</a>
+		<a class="btn" href="<?= site_url('admin/terms/index/'.$type) ?>">&larr; Kembali</a>
 	<?= form_close() ?>
 </div>

@@ -21,7 +21,7 @@
 
 		<div style="margin-top:20px">
 			<button type="submit" class="btn btn-primary">Simpan</button>
-			<a href="<?= site_url('admin/footer_links/index') ?>" class="btn">Batal</a>
+			<a href="<?= site_url('admin/footer_links/index') ?>" class="btn">&larr; Kembali</a>
 		</div>
 	<?= form_close() ?>
 </div>
