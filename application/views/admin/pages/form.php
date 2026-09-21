@@ -3,6 +3,7 @@ $is_new = empty($page['id']);
 $published_at = ! empty($page['published_at']) ? date('Y-m-d\TH:i:s', strtotime($page['published_at'])) : date('Y-m-d\TH:i:s');
 ?>
 <?= form_open($is_new ? 'admin/pages/create' : 'admin/pages/edit/'.$page['id'], array('id' => 'page-form')) ?>
+<div class="form-back-row"><a class="btn form-back" href="<?= site_url('admin/pages') ?>">&larr; Kembali ke Halaman</a></div>
 <div class="editor-layout">
 	<div>
 		<div class="card">
@@ -63,7 +64,6 @@ $published_at = ! empty($page['published_at']) ? date('Y-m-d\TH:i:s', strtotime(
 				<div class="hint">Tampil di bawah judul halaman.</div>
 			</div>
 			<button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">Simpan</button>
-			<p style="text-align:center;margin:10px 0 0"><a class="btn btn-sm" href="<?= site_url('admin/pages') ?>">&larr; Kembali ke Halaman</a></p>
 			<?php if ( ! $is_new && $page['status'] === 'publish'): ?>
 			<p style="text-align:center;margin:10px 0 0"><a href="<?= site_url($page['slug']) ?>" target="_blank" rel="noopener">Lihat halaman &nearr;</a></p>
 			<?php endif; ?>

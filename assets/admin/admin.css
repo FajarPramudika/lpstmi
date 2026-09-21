@@ -132,6 +132,14 @@ table.list .num { text-align: right; white-space: nowrap; }
 /* Form */
 label { display: block; font-weight: 600; margin-bottom: 6px; }
 .field { margin-bottom: 16px; }
+.form-back-row { margin: 0 0 16px; }
+.form-back { color: var(--accent); border-color: #cbd8ee; background: #f8faff; font-weight: 600; }
+.form-back:hover { background: var(--accent-soft); border-color: var(--accent); }
+.field-control { display: flex; gap: 8px; align-items: center; }
+.field-control input { flex: 1; min-width: 0; }
+.field-control .btn { flex: none; white-space: nowrap; }
+.media-selection-preview { margin-top: 8px; padding: 8px; border: 1px dashed var(--border); border-radius: 6px; background: #fafbfc; text-align: center; }
+.media-selection-preview img { max-width: 100%; max-height: 120px; height: auto; display: block; margin: 0 auto; }
 .hint { font-size: 12px; color: var(--muted); margin-top: 4px; font-weight: 400; }
 input[type=text], input[type=email], input[type=url], input[type=password], input[type=search], input[type=datetime-local], select, textarea {
 	width: 100%; padding: 8px 10px; border: 1px solid var(--border); border-radius: 6px; font: inherit; background: #fff; color: var(--text);
@@ -182,6 +190,8 @@ input.title-input { font-size: 18px; padding: 10px 12px; }
 
 @media (max-width: 960px) {
 	.editor-layout { grid-template-columns: 1fr; }
+	.field-control { align-items: stretch; flex-wrap: wrap; }
+	.field-control input { min-width: 180px; }
 }
 @media (max-width: 760px) {
 	.app { display: block; }

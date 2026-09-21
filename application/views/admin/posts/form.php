@@ -3,6 +3,7 @@ $is_new = empty($post['id']);
 $published_at = ! empty($post['published_at']) ? date('Y-m-d\TH:i:s', strtotime($post['published_at'])) : date('Y-m-d\TH:i:s');
 ?>
 <?= form_open($is_new ? 'admin/posts/create' : 'admin/posts/edit/'.$post['id'], array('id' => 'post-form')) ?>
+<div class="form-back-row"><a class="btn form-back" href="<?= site_url('admin/posts') ?>">&larr; Kembali ke Post</a></div>
 <div class="editor-layout">
 	<div>
 		<div class="card">
@@ -56,7 +57,6 @@ $published_at = ! empty($post['published_at']) ? date('Y-m-d\TH:i:s', strtotime(
 				</select>
 			</div>
 			<button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">Simpan</button>
-			<p style="text-align:center;margin:10px 0 0"><a class="btn btn-sm" href="<?= site_url('admin/posts') ?>">&larr; Kembali ke Post</a></p>
 			<?php if ( ! $is_new && $post['status'] === 'publish'): ?>
 			<p style="text-align:center;margin:10px 0 0"><a href="<?= site_url($post['slug']) ?>" target="_blank" rel="noopener">Lihat post &nearr;</a></p>
 			<?php endif; ?>

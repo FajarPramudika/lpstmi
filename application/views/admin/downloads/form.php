@@ -4,6 +4,7 @@ $v = function ($key, $default = '') use ($download) { return isset($download[$ke
 $published_at = $v('published_at') ? date('Y-m-d\TH:i:s', strtotime($v('published_at'))) : date('Y-m-d\TH:i:s');
 ?>
 <?= form_open($is_new ? 'admin/downloads/create' : 'admin/downloads/edit/'.$download['id']) ?>
+<div class="form-back-row"><a class="btn form-back" href="<?= site_url('admin/downloads') ?>">&larr; Kembali ke Download</a></div>
 <div class="editor-layout">
 	<div>
 		<div class="card">
@@ -56,7 +57,6 @@ $published_at = $v('published_at') ? date('Y-m-d\TH:i:s', strtotime($v('publishe
 				</select>
 			</div>
 			<button type="submit" class="btn btn-primary" style="width:100%;justify-content:center">Simpan</button>
-			<p style="text-align:center;margin:10px 0 0"><a class="btn btn-sm" href="<?= site_url('admin/downloads') ?>">&larr; Kembali ke Download</a></p>
 			<?php if ( ! $is_new && $v('status') === 'publish'): ?>
 			<p style="text-align:center;margin:10px 0 0"><a href="<?= site_url('download/'.$download['slug']) ?>" target="_blank" rel="noopener">Lihat halaman &nearr;</a></p>
 			<?php endif; ?>

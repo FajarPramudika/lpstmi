@@ -154,10 +154,7 @@
 	}
 
 	// Gambar pada pengaturan Beranda. Pemilih yang sama juga menyediakan upload gambar baru.
-	var homeImagePicker = document.querySelector('[data-home-image-picker]');
-	if (homeImagePicker) {
-		var homeImageInput = document.getElementById('image_path');
-		var homeImagePreview = document.querySelector('[data-home-image-preview]');
+	document.querySelectorAll('[data-home-image-picker]').forEach(function (homeImagePicker) {
 		homeImagePicker.addEventListener('click', function () {
 			window.openMediaPicker({ type: 'image', onSelect: function (item) {
 				var path = item.url;
@@ -168,10 +165,20 @@
 					var markerIndex = path.indexOf(marker);
 					if (markerIndex !== -1) { path = path.slice(markerIndex + 1); }
 				}
-				homeImageInput.value = path;
-				var srcset = document.getElementById('image_srcset');
-				if (srcset) { srcset.value = ''; }
+				var target = homeImagePicker.getAttribute('data-home-image-picker');
+				var homeImageInput = document.getElementById(target === 'srcset' ? 'image_srcset' : 'image_path');
+				if (target === 'srcset' && homeImagePicker.getAttribute('data-home-srcset-format') === 'link') {
+					var primary = document.getElementById('image_path').value;
+					homeImageInput.value = primary ? primary + ' 348w, ' + path + ' 300w' : path + ' 300w';
+				} else if (target === 'srcset') {
+					homeImageInput.value = item.url + ' ' + item.width + 'w';
+				} else {
+					homeImageInput.value = path;
+				}
+				var previewTarget = homeImagePicker.getAttribute('data-preview-target') || 'main';
+				var homeImagePreview = document.querySelector('[data-home-image-preview="' + previewTarget + '"]');
 				if (homeImagePreview) {
+					homeImagePreview.hidden = false;
 					homeImagePreview.innerHTML = '';
 					var image = document.createElement('img');
 					image.src = item.url;
@@ -181,5 +188,5 @@
 				}
 			} });
 		});
-	}
+	});
 })();
