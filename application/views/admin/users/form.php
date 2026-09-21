@@ -3,6 +3,7 @@ $is_new = empty($author['id']);
 $v = function ($key) use ($author) { return html_escape(isset($author[$key]) ? (string) $author[$key] : ''); };
 $action = $self ? 'admin/users/profile' : ($is_new ? 'admin/users/create' : 'admin/users/edit/'.$author['id']);
 ?>
+<?php if ( ! $self): ?><div class="form-back-row"><a class="btn form-back" href="<?= site_url('admin/users') ?>">&larr; Kembali ke Pengguna</a></div><?php endif; ?>
 <div class="card" style="max-width:680px">
 	<?= form_open($action) ?>
 		<div class="field">
@@ -58,6 +59,5 @@ $action = $self ? 'admin/users/profile' : ($is_new ? 'admin/users/create' : 'adm
 			<input type="password" id="password_confirm" name="password_confirm" autocomplete="new-password">
 		</div>
 		<button type="submit" class="btn btn-primary">Simpan</button>
-		<?php if ( ! $self): ?><a class="btn" href="<?= site_url('admin/users') ?>">Batal</a><?php endif; ?>
 	<?= form_close() ?>
 </div>

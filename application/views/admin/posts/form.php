@@ -3,6 +3,7 @@ $is_new = empty($post['id']);
 $published_at = ! empty($post['published_at']) ? date('Y-m-d\TH:i:s', strtotime($post['published_at'])) : date('Y-m-d\TH:i:s');
 ?>
 <?= form_open($is_new ? 'admin/posts/create' : 'admin/posts/edit/'.$post['id'], array('id' => 'post-form')) ?>
+<div class="form-back-row"><a class="btn form-back" href="<?= site_url('admin/posts') ?>">&larr; Kembali ke Post</a></div>
 <div class="editor-layout">
 	<div>
 		<div class="card">

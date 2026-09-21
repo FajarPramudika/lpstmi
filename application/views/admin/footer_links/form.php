@@ -1,5 +1,6 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 
+<div class="form-back-row"><a href="<?= site_url('admin/footer_links/index') ?>" class="btn form-back">&larr; Kembali ke Link footer</a></div>
 <div class="card" style="max-width:600px">
 	<?= form_open() ?>
 		<div class="form-group">
@@ -21,7 +22,6 @@
 
 		<div style="margin-top:20px">
 			<button type="submit" class="btn btn-primary">Simpan</button>
-			<a href="<?= site_url('admin/footer_links/index') ?>" class="btn">Batal</a>
 		</div>
 	<?= form_close() ?>
 </div>

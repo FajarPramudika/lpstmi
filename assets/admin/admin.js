@@ -152,4 +152,41 @@
 			remove.hidden = true;
 		});
 	}
+
+	// Gambar pada pengaturan Beranda. Pemilih yang sama juga menyediakan upload gambar baru.
+	document.querySelectorAll('[data-home-image-picker]').forEach(function (homeImagePicker) {
+		homeImagePicker.addEventListener('click', function () {
+			window.openMediaPicker({ type: 'image', onSelect: function (item) {
+				var path = item.url;
+				if (path.indexOf(baseUrl) === 0) {
+					path = path.slice(baseUrl.length);
+				} else {
+					var marker = '/wp-content/uploads/';
+					var markerIndex = path.indexOf(marker);
+					if (markerIndex !== -1) { path = path.slice(markerIndex + 1); }
+				}
+				var target = homeImagePicker.getAttribute('data-home-image-picker');
+				var homeImageInput = document.getElementById(target === 'srcset' ? 'image_srcset' : 'image_path');
+				if (target === 'srcset' && homeImagePicker.getAttribute('data-home-srcset-format') === 'link') {
+					var primary = document.getElementById('image_path').value;
+					homeImageInput.value = primary ? primary + ' 348w, ' + path + ' 300w' : path + ' 300w';
+				} else if (target === 'srcset') {
+					homeImageInput.value = item.url + ' ' + item.width + 'w';
+				} else {
+					homeImageInput.value = path;
+				}
+				var previewTarget = homeImagePicker.getAttribute('data-preview-target') || 'main';
+				var homeImagePreview = document.querySelector('[data-home-image-preview="' + previewTarget + '"]');
+				if (homeImagePreview) {
+					homeImagePreview.hidden = false;
+					homeImagePreview.innerHTML = '';
+					var image = document.createElement('img');
+					image.src = item.url;
+					image.alt = '';
+					image.style.cssText = 'max-width:100%;max-height:160px;height:auto;';
+					homeImagePreview.appendChild(image);
+				}
+			} });
+		});
+	});
 })();

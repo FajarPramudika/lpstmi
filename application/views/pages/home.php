@@ -199,16 +199,17 @@ foreach($chunks as $i => $chunk):
         $idx = $i * 4 + $j;
         $c_id = isset($partner_css_map[$idx]) ? $partner_css_map[$idx]['container_id'] : 'e45c5fc';
         $w_id = isset($partner_css_map[$idx]) ? $partner_css_map[$idx]['widget_id'] : 'd96a3ce';
+		$partner_srcset = ! empty($partner['image_srcset']) ? ' srcset="'.html_escape($partner['image_srcset']).'"' : '';
 ?>
 		<div class="elementor-element elementor-element-<?= $c_id ?> e-con-full e-flex e-con e-child" data-id="<?= $c_id ?>" data-element_type="container">
 				<div class="elementor-element elementor-element-<?= $w_id ?> elementor-widget elementor-widget-image" data-id="<?= $w_id ?>" data-element_type="widget" data-widget_type="image.default">
 				<div class="elementor-widget-container">
 <?php if ($partner['url']): // seperti widget gambar Elementor yang ber-link ?>
 																<a href="<?= html_escape(safe_href($partner['url'])) ?>" target="_blank">
-							<img loading="lazy" decoding="async" width="150" height="150" src="<?= base_url(html_escape($partner['image_path'])) ?>" class="attachment-full size-full<?= $partner['media_id'] ? ' wp-image-'.(int) $partner['media_id'] : '' ?>" alt="<?= html_escape($partner['name']) ?>" />								</a>
+							<img loading="lazy" decoding="async" width="150" height="150" src="<?= base_url(html_escape($partner['image_path'])) ?>" class="attachment-full size-full<?= $partner['media_id'] ? ' wp-image-'.(int) $partner['media_id'] : '' ?>" alt="<?= html_escape($partner['name']) ?>"<?= $partner_srcset ?> />								</a>
 															</div>
 <?php else: ?>
-															<img loading="lazy" decoding="async" width="150" height="150" src="<?= base_url(html_escape($partner['image_path'])) ?>" class="attachment-full size-full<?= $partner['media_id'] ? ' wp-image-'.(int) $partner['media_id'] : '' ?>" alt="<?= html_escape($partner['name']) ?>" />															</div>
+															<img loading="lazy" decoding="async" width="150" height="150" src="<?= base_url(html_escape($partner['image_path'])) ?>" class="attachment-full size-full<?= $partner['media_id'] ? ' wp-image-'.(int) $partner['media_id'] : '' ?>" alt="<?= html_escape($partner['name']) ?>"<?= $partner_srcset ?> />															</div>
 <?php endif; ?>
 				</div>
 				</div>

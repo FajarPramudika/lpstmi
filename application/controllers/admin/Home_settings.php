@@ -3,6 +3,9 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Home_settings extends Admin_Controller {
 
+	/** Editor juga dapat mengelola isi Beranda. */
+	protected $roles = array('admin', 'editor');
+
 	public function __construct()
 	{
 		parent::__construct();
@@ -264,6 +267,7 @@ class Home_settings extends Admin_Controller {
 		$data = array(
 			'name' => $this->input->post('name'),
 			'image_path' => $this->input->post('image_path'),
+			'image_srcset' => $this->input->post('image_srcset') ?: null,
 			'url' => $this->input->post('url') ?: null,
 			'order_num' => (int) $this->input->post('order_num'),
 		);
@@ -287,6 +291,7 @@ class Home_settings extends Admin_Controller {
 		$data = array(
 			'name' => $this->input->post('name'),
 			'image_path' => $this->input->post('image_path'),
+			'image_srcset' => $this->input->post('image_srcset') ?: null,
 			'url' => $this->input->post('url') ?: null,
 			'order_num' => (int) $this->input->post('order_num'),
 		);

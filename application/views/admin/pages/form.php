@@ -3,6 +3,7 @@ $is_new = empty($page['id']);
 $published_at = ! empty($page['published_at']) ? date('Y-m-d\TH:i:s', strtotime($page['published_at'])) : date('Y-m-d\TH:i:s');
 ?>
 <?= form_open($is_new ? 'admin/pages/create' : 'admin/pages/edit/'.$page['id'], array('id' => 'page-form')) ?>
+<div class="form-back-row"><a class="btn form-back" href="<?= site_url('admin/pages') ?>">&larr; Kembali ke Halaman</a></div>
 <div class="editor-layout">
 	<div>
 		<div class="card">

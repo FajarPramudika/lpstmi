@@ -1,6 +1,7 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
 <?php $is_create = empty($program); ?>
 <?= form_open($is_create ? 'admin/home_settings/store_program' : 'admin/home_settings/update_program/'.$program['id']) ?>
+<div class="form-back-row"><a class="btn form-back" href="<?= site_url('admin/home_settings?tab=programs') ?>">&larr; Kembali ke Beranda</a></div>
 <div class="editor-layout">
 	<div>
 		<div class="card">
@@ -36,7 +37,6 @@
 			</div>
 			
 			<button type="submit" class="btn btn-primary" style="width:100%;justify-content:center"><?= $is_create ? 'Tambah Program Studi' : 'Simpan Perubahan' ?></button>
-			<p style="text-align:center;margin:10px 0 0"><a href="<?= site_url('admin/home_settings?tab=programs') ?>">Batal</a></p>
 		</div>
 
 		<?php if (!$is_create): ?>

@@ -2,6 +2,7 @@
 $is_new = empty($item['id']);
 $type = isset($item['type']) ? $item['type'] : 'page';
 ?>
+<div class="form-back-row"><a class="btn form-back" href="<?= site_url('admin/menu') ?>">&larr; Kembali ke Menu</a></div>
 <div class="card" style="max-width:720px">
 	<?= form_open($is_new ? 'admin/menu/create' : 'admin/menu/edit/'.$item['id']) ?>
 		<div class="field">
@@ -54,7 +55,6 @@ $type = isset($item['type']) ? $item['type'] : 'page';
 			<div class="hint">Tidak ada batas kedalaman. Item ini dan sub-itemnya tidak bisa dipilih sebagai induk.</div>
 		</div>
 		<button type="submit" class="btn btn-primary">Simpan</button>
-		<a class="btn" href="<?= site_url('admin/menu') ?>">Batal</a>
 	<?= form_close() ?>
 </div>
 <script>

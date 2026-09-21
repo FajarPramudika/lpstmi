@@ -1,4 +1,5 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed'); $is_new = empty($term['id']); ?>
+<div class="form-back-row"><a class="btn form-back" href="<?= site_url('admin/terms/index/'.$type) ?>">&larr; Kembali ke <?= html_escape($tax['label']) ?></a></div>
 <div class="card" style="max-width:640px">
 	<?= form_open($is_new ? 'admin/terms/create/'.$type : 'admin/terms/edit/'.$type.'/'.$term['id']) ?>
 		<div class="field">
@@ -15,6 +16,5 @@
 			<textarea id="description" name="description" rows="3"><?= html_escape(isset($term['description']) ? $term['description'] : '') ?></textarea>
 		</div>
 		<button type="submit" class="btn btn-primary">Simpan</button>
-		<a class="btn" href="<?= site_url('admin/terms/index/'.$type) ?>">Batal</a>
 	<?= form_close() ?>
 </div>
