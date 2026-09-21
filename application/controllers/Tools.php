@@ -32,6 +32,12 @@ defined('BASEPATH') OR exit('No direct script access allowed');
  *   php index.php tools download_shortcodes
  *       Ganti salinan kartu Download Manager di halaman & post dengan [wpdm_package id='N'].
  *
+ *   php index.php tools export_seed
+ *       Tulis konten database (tanpa kredensial) ke application/seeds/seed.sql.
+ *
+ *   php index.php tools import_seed [ulang]
+ *       Muat application/seeds/seed.sql ke database baru (setelah migrate). Cara menyiapkan mesin lain.
+ *
  *   php index.php tools set_login <slug-author> <username> [admin|editor]
  *       Beri akses login panel admin ke author; password acak ditampilkan sekali.
  *
@@ -563,6 +569,184 @@ class Tools extends CI_Controller {
 
 		echo "Login untuk {$author['display_name']}: username {$username}, password {$password}\n";
 		echo "Segera ganti password lewat menu Profil saya.\n";
+	}
+
+	/* ------------------------------------------------------------------
+	 * Seed konten (export_seed / import_seed)
+	 * ------------------------------------------------------------------ */
+
+	/** Lokasi seed; di dalam application/ supaya tertutup .htaccess dan tidak bisa diunduh dari web. */
+	const SEED_FILE = 'seeds/seed.sql';
+
+	/**
+	 * Tabel yang ikut seed, berurutan. Setiap tabel di database harus ada di sini atau di $seed_skip:
+	 * tabel baru yang belum diputuskan membuat export_seed gagal, supaya tidak ada data yang ikut tanpa sengaja.
+	 */
+	protected $seed_tables = array(
+		'authors', 'media', 'terms', 'posts', 'post_terms', 'pages', 'downloads', 'menu_items',
+		'footer_links', 'contacts', 'home_options', 'home_banners', 'home_featured_links',
+		'home_study_programs', 'home_partners',
+	);
+
+	/** Tabel yang sengaja tidak ikut: versi skema (dikelola migrate) dan catatan login (IP pengunjung). */
+	protected $seed_skip = array('migrations', 'login_attempts');
+
+	/** Kolom login di authors: tidak pernah diekspor, dan tidak ditimpa saat impor. */
+	protected $seed_private = array('username', 'email', 'password_hash', 'password_changed_at', 'last_login_at');
+
+	/**
+	 * Tulis isi database (konten saja) ke application/seeds/seed.sql.
+	 * Halaman statis dan hasil editan admin tidak bisa dibangun ulang dari clone, jadi seed inilah cara
+	 * menyalin situs ke mesin lain. Kredensial dan email pengguna dikosongkan.
+	 *   php index.php tools export_seed
+	 */
+	public function export_seed()
+	{
+		$unknown = array_diff($this->db->list_tables(), $this->seed_tables, $this->seed_skip);
+		if ($unknown)
+		{
+			$this->fail('Tabel belum diputuskan ikut seed atau tidak: '.implode(', ', $unknown)
+				.'. Tambahkan ke Tools::$seed_tables atau $seed_skip.');
+		}
+
+		$out = array(
+			'-- Seed konten lpstmi_db. Dihasilkan oleh: php index.php tools export_seed',
+			'-- Muat dengan: php index.php tools import_seed (setelah tools migrate).',
+			'-- Tanpa kredensial: kolom '.implode(', ', $this->seed_private).' di authors dikosongkan.',
+			'-- schema: '.$this->schema_version(),
+		);
+		$counts = array();
+		foreach ($this->seed_tables as $table)
+		{
+			$fields = $this->db->list_fields($table);
+			$keys = array_column($this->db->query('SHOW KEYS FROM '.$this->db->protect_identifiers($table)." WHERE Key_name = 'PRIMARY'")->result_array(), 'Column_name');
+			foreach ($keys as $key)
+			{
+				$this->db->order_by($key, 'ASC');
+			}
+			$rows = $this->db->get($table)->result_array();
+
+			$columns = implode(', ', array_map(array($this->db, 'protect_identifiers'), $fields));
+			foreach ($rows as $row)
+			{
+				if ($table === 'authors')
+				{
+					foreach ($this->seed_private as $col)
+					{
+						$row[$col] = NULL;
+					}
+				}
+				// escape() mengubah newline menjadi \n, jadi satu baris data = satu baris file (diff git rapi).
+				$values = implode(', ', array_map(array($this->db, 'escape'), $row));
+				$out[] = 'INSERT INTO '.$this->db->protect_identifiers($table).' ('.$columns.') VALUES ('.$values.');';
+			}
+			$counts[] = $table.' '.count($rows);
+		}
+
+		$path = APPPATH.self::SEED_FILE;
+		if ( ! is_dir(dirname($path)))
+		{
+			mkdir(dirname($path), 0755, TRUE);
+		}
+		file_put_contents($path, implode("\n", $out)."\n");
+
+		echo 'Seed ditulis: application/'.self::SEED_FILE.' ('.round(filesize($path) / 1048576, 1)." MB)\n";
+		echo '  '.implode(', ', $counts)."\n";
+	}
+
+	/**
+	 * Muat application/seeds/seed.sql ke database. Menolak jika tabel konten sudah berisi,
+	 * kecuali dengan argumen "ulang" (isi tabel konten diganti; data login di authors dipertahankan).
+	 *   php index.php tools import_seed [ulang]
+	 */
+	public function import_seed($force = NULL)
+	{
+		$path = APPPATH.self::SEED_FILE;
+		if ( ! is_file($path))
+		{
+			$this->fail('Seed tidak ditemukan: application/'.self::SEED_FILE);
+		}
+		$lines = file($path, FILE_IGNORE_NEW_LINES);
+
+		$schema = NULL;
+		foreach ($lines as $line)
+		{
+			if (preg_match('/^-- schema: (\d+)$/', $line, $m))
+			{
+				$schema = (int) $m[1];
+				break;
+			}
+		}
+		if ($schema !== $this->schema_version())
+		{
+			$this->fail('Seed dibuat untuk skema versi '.var_export($schema, TRUE).', database versi '.$this->schema_version()
+				.'. Jalankan "tools migrate" dulu (atau ekspor ulang seed dari database yang skemanya sama).');
+		}
+
+		$content = array_diff($this->seed_tables, array('authors'));
+		// Hanya tabel yang diisi impor/admin yang dijadikan pengaman: menu, beranda, footer, dan kontak
+		// sudah diisi nilai awal oleh migrasi, jadi di database baru pun tidak pernah kosong.
+		$guarded = array('posts', 'pages', 'downloads', 'media', 'terms');
+		$filled = array_filter($guarded, function ($t) { return $this->db->count_all($t) > 0; });
+		if ($filled && $force !== 'ulang')
+		{
+			$this->fail('Tabel sudah berisi: '.implode(', ', $filled).'. Pakai "import_seed ulang" untuk menimpa'
+				.' (post, halaman, dan editan admin di database ini akan hilang).');
+		}
+
+		$this->db->query('SET FOREIGN_KEY_CHECKS = 0');
+		$this->db->trans_start();
+		foreach ($content as $table)
+		{
+			$this->db->query('DELETE FROM '.$this->db->protect_identifiers($table));
+		}
+
+		$counts = array();
+		foreach ($lines as $line)
+		{
+			if ( ! preg_match('/^INSERT INTO `([a-z_]+)` \(([^)]*)\) VALUES/', $line, $m))
+			{
+				continue;
+			}
+			if ($m[1] === 'authors')
+			{
+				// Author yang sudah ada (mis. akun login di mesin ini) hanya diperbarui profilnya.
+				$update = array();
+				foreach (explode(', ', $m[2]) as $col)
+				{
+					if ($col !== '`id`' && ! in_array(trim($col, '`'), $this->seed_private, TRUE))
+					{
+						$update[] = $col.' = VALUES('.$col.')';
+					}
+				}
+				$line = rtrim($line, ';').' ON DUPLICATE KEY UPDATE '.implode(', ', $update).';';
+			}
+			$this->db->query(rtrim($line, ';'));
+			$counts[$m[1]] = isset($counts[$m[1]]) ? $counts[$m[1]] + 1 : 1;
+		}
+		$this->db->trans_complete();
+		$this->db->query('SET FOREIGN_KEY_CHECKS = 1');
+
+		if ($this->db->trans_status() === FALSE)
+		{
+			$this->fail('Impor seed gagal; semua perubahan dibatalkan.');
+		}
+
+		$summary = array();
+		foreach ($counts as $table => $n)
+		{
+			$summary[] = $table.' '.$n;
+		}
+		echo "Seed dimuat.\n  ".implode(', ', $summary)."\n";
+		echo "Buat akun admin: php index.php tools set_login <slug-author> <username>\n";
+	}
+
+	/** Versi skema database saat ini (tabel migrations). */
+	protected function schema_version()
+	{
+		$row = $this->db->table_exists('migrations') ? $this->db->get('migrations')->row_array() : NULL;
+
+		return $row ? (int) $row['version'] : 0;
 	}
 
 	public function index()

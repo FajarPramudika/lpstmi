@@ -341,6 +341,14 @@ Dibuat dengan CI3 Migrations (`application/migrations/`, `php index.php tools mi
 | `pages` | halaman statis (Page WordPress); lihat bagian "Halaman statis dari database" |
 | `login_attempts` | percobaan login gagal (migrasi 018): `ip` (VARBINARY, `inet_pton`), `username`, `attempted_at`; lihat "Panel admin" |
 
+- **Menyiapkan mesin baru = `tools migrate` lalu `tools import_seed`** (`application/seeds/seed.sql`, ikut git), bukan
+  `import_*`. 32 halaman statis **tidak bisa** dibangun ulang dari clone (view sumbernya dihapus di commit `3066993`),
+  jadi `import_pages` di database kosong hanya menghasilkan `home` dan halaman lain 404. Seed juga membawa editan admin.
+  `tools export_seed` menulis ulang seed dari database ini: kolom login `authors` (username, email, password_hash,
+  password_changed_at, last_login_at) dikosongkan, `login_attempts` & `migrations` tidak ikut. Tabel baru **wajib**
+  dimasukkan ke `Tools::$seed_tables` atau `$seed_skip` (kalau tidak, export gagal). Seed menyimpan versi skema;
+  `import_seed` menolak jika berbeda, dan menolak jika `posts/pages/downloads/media/terms` sudah berisi (kecuali `ulang`).
+  Diverifikasi 2026-09-21 pada database kosong: `verify_db` OK 501, `verify home` hanya beda `alt` yang sudah dikenal.
 - URL situs di `content` disimpan sebagai token `{base_url}`, `{base_url_json}`, `{base_url_encoded}`; diganti saat render
   (`wp_content()`) dan dikembalikan jadi token saat disimpan dari admin (`content_to_tokens()`).
 - **Impor ulang** (`php index.php tools import_posts`) mengosongkan `posts`, `post_terms`, `terms`, `media` lalu mengisinya
@@ -569,6 +577,8 @@ widget Chaty/GTranslate.
 | Perintah | Fungsi |
 |---|---|
 | `migrate` | jalankan migrasi database |
+| `import_seed [ulang]` | muat seluruh konten dari `application/seeds/seed.sql` (cara menyiapkan mesin baru) |
+| `export_seed` | tulis konten database ke `application/seeds/seed.sql` (tanpa kredensial) |
 | `import_posts` | impor post/term/media/author dari clone (mengosongkan tabel konten dulu) |
 | `set_login <slug-author> <username> [admin\|editor]` | beri akses login admin |
 | `check [folder]` | uji semua halaman clone terhadap layout bersama (tanpa menulis file) |

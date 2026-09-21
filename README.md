@@ -81,16 +81,25 @@ Lalu isi `username` dan `password` sesuai user yang barusan dibuat. Berkas ini *
 php index.php tools migrate
 ```
 
-### 4. Impor konten dari hasil clone (sekali saja, untuk database kosong)
+### 4. Muat konten dari seed
 
 ```bash
-php index.php tools import_posts       # post, kategori, tag, media, author
-php index.php tools import_downloads   # 131 paket Download Manager
-php index.php tools import_pages       # halaman statis ke tabel pages
-php index.php tools import_media       # daftarkan berkas di wp-content/uploads
+php index.php tools import_seed
 ```
 
-> **Jangan menjalankan `import_posts` setelah konten dikelola lewat admin** — perintah itu mengosongkan tabel konten lebih dulu, sehingga post baru dan hasil edit akan hilang.
+Seed (`application/seeds/seed.sql`, ikut git) berisi seluruh konten situs: post, halaman statis, paket download, media, menu, beranda, footer, dan kontak — **termasuk hasil editan lewat admin**. Kolom login di `authors` (username, email, password) sengaja kosong, jadi akun admin dibuat di langkah berikutnya.
+
+> **Jangan memakai `import_posts`/`import_pages` untuk menyiapkan mesin baru.** Perintah itu membaca hasil clone, dan **32 halaman statis tidak bisa dibangun ulang dari clone** (view sumbernya sudah dihapus setelah dipindah ke database). Hasilnya situs tanpa error, tetapi `/sejarah-kampus` dan halaman statis lain 404. Perintah `import_*` hanya berguna untuk membangun ulang post/download dari clone, dan `import_posts` **mengosongkan tabel konten lebih dulu**.
+
+`import_seed` menolak jalan kalau database sudah berisi konten. `import_seed ulang` menimpanya (post, halaman, dan editan admin di database itu hilang; akun login dipertahankan). Seed harus dimuat setelah `migrate`, dengan versi skema yang sama.
+
+**Membagikan konten terbaru** (dari mesin yang kontennya dikelola):
+
+```bash
+php index.php tools export_seed    # tulis ulang application/seeds/seed.sql, lalu commit
+```
+
+Seed hanya berisi baris database. Berkas yang diunggah lewat admin ada di `wp-content/uploads/` dan harus ikut di-commit juga, atau gambarnya akan hilang di mesin lain.
 
 ### 5. Buat akun admin pertama
 
@@ -140,11 +149,15 @@ Header always set Strict-Transport-Security "max-age=31536000"
 
 ### 3. Database
 
-Buat user dengan hak terbatas seperti pada langkah development, lalu jalankan migrasi di server:
+Buat user dengan hak terbatas seperti pada langkah development, lalu jalankan migrasi di server. Untuk peluncuran pertama (database kosong), muat seed dan buat akun admin:
 
 ```bash
 php index.php tools migrate
+php index.php tools import_seed                  # hanya sekali, saat database masih kosong
+php index.php tools set_login <slug-author> <username> admin
 ```
+
+Setelah situs berjalan, **database produksi menjadi sumber konten**. Jangan memuat seed lagi ke sana (`import_seed ulang` menimpa semua perubahan dari admin); cadangkan dengan `mysqldump` biasa.
 
 ### 4. Di belakang proxy / CDN
 
@@ -217,6 +230,8 @@ Semua perintah hanya bisa dijalankan dari terminal.
 | --- | --- |
 | `php index.php tools migrate` | Menjalankan migrasi struktur database. |
 | `php index.php tools set_login <slug> <username> [admin\|editor]` | Memberi akses login panel admin ke seorang author. |
+| `php index.php tools import_seed [ulang]` | Memuat seluruh konten dari `application/seeds/seed.sql`. Cara menyiapkan mesin baru. |
+| `php index.php tools export_seed` | Menulis konten database ke `application/seeds/seed.sql` (tanpa kredensial). |
 | `php index.php tools import_posts` | Mengimpor post, media, kategori dari hasil clone. **Mengosongkan tabel konten dulu.** |
 | `php index.php tools import_downloads [ulang]` | Mengimpor paket Download Manager. |
 | `php index.php tools import_pages` | Memindahkan halaman statis ke tabel `pages` (aman diulang). |
