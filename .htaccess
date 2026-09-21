@@ -18,8 +18,13 @@
 <IfModule mod_rewrite.c>
 	RewriteEngine On
 
-	# Folder referensi clone tidak ikut dipublikasikan
+	# Folder referensi clone tidak ikut dipublikasikan (seharusnya memang tidak ikut di-deploy; ini jaring pengaman)
 	RewriteRule ^stmi\.ac\.id-clone(/|$) - [F,L]
+
+	# Repositori git (.git/, .gitignore, ...): riwayatnya memuat seluruh source code dan kredensial lama.
+	# Apache bawaan hanya menolak .ht*, jadi tanpa aturan ini /.git/config bisa diunduh kalau situs
+	# di-deploy dengan git clone langsung ke docroot.
+	RewriteRule (^|/)\.git - [F,L]
 
 	# File/folder yang ada (aset wp-content, wp-includes) dilayani langsung
 	RewriteCond %{REQUEST_FILENAME} !-f

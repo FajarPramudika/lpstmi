@@ -59,6 +59,14 @@ SetEnv CI_BASE_URL https://stmi.ac.id/
 ```
 
 - Jangan menyalin `application/config/database.local.php` ke server produksi (env yang dipakai, dan env menimpa file itu).
+- **`stmi.ac.id-clone/` tidak ikut ke produksi**: situs tidak membacanya saat melayani pengunjung (diuji 2026-09-21 pada
+  salinan tanpa clone: 500 URL publik + 367 halaman admin + simpan ulang 218 halaman/post, tanpa error). Clone hanya dipakai
+  perintah CLI (`convert`, `check`, `verify`, `verify_db`, `import_*`). Salin dengan
+  `git archive --format=tar HEAD | tar -x -C <tujuan> --exclude='stmi.ac.id-clone'` (tanpa `.git` juga).
+- `.htaccess` memblokir `.git`/`.gitignore` (`RewriteRule (^|/)\.git - [F,L]`) dan `stmi.ac.id-clone/` sebagai jaring
+  pengaman bila docroot berupa hasil `git clone` — riwayat git memuat password root MariaDB lama (commit `6fac9df`).
+- CLI di produksi **tidak** membaca `SetEnv` vhost: muat env dari file (`set -a; . /etc/lpstmi.env; set +a`) sebelum
+  `php index.php tools …`, lihat README.
 - Situs **harus** HTTPS penuh + redirect HTTP→HTTPS, karena `cookie_secure` menjadi `TRUE`; tanpa HTTPS, login tidak akan bisa.
 - Pastikan `CI_ENV` **tidak** disetel ke `development` di produksi.
 - Buat user DB produksi seperti yang lokal: `GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, INDEX, DROP, REFERENCES

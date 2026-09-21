@@ -123,6 +123,18 @@ Situs: `http://localhost:8000/` · Panel admin: `http://localhost:8000/admin`
 
 ## Menjalankan di Production
 
+### 0. Berkas yang disalin ke server
+
+Situs **tidak membutuhkan** `stmi.ac.id-clone/` (±500 MB): folder itu hanya dipakai perintah CLI untuk konversi, impor, dan verifikasi tampilan. Konten di server berasal dari database (seed), bukan dari clone. Folder `.git/` juga tidak perlu ada di docroot. Cara termudah menyalin hanya yang dibutuhkan:
+
+```bash
+git archive --format=tar HEAD | tar -x -C /var/www/lpstmi --exclude='stmi.ac.id-clone'
+```
+
+Hasilnya tanpa `stmi.ac.id-clone/` dan tanpa `.git/`. `git archive` mengambil isi **commit terakhir**, jadi commit dulu perubahan yang ingin ikut.
+
+Kalau server tetap di-deploy dengan `git clone`/`git pull` langsung ke docroot, `.htaccess` sudah memblokir `.git` dan `stmi.ac.id-clone/` (403) sebagai jaring pengaman — tetapi di nginx aturan itu harus ditulis ulang (lihat langkah 5).
+
 ### 1. Variabel environment di vhost
 
 Letakkan di konfigurasi vhost Apache, **di luar docroot**. Jangan menaruhnya di `.htaccess`, karena `.htaccess` bisa terbaca kalau konfigurasi server salah.
@@ -136,6 +148,24 @@ SetEnv CI_BASE_URL https://stmi.ac.id/
 ```
 
 Jangan menyalin `application/config/database.local.php` ke server production — cukup environment di atas.
+
+**Perintah CLI tidak membaca `SetEnv`.** Variabel di vhost hanya berlaku untuk request yang lewat Apache; `php index.php tools …` di terminal tidak melihatnya, dan karena `database.local.php` memang tidak ada di server, username database-nya kosong sehingga perintah gagal. Simpan nilai yang sama di file env **di luar docroot**, lalu muat sebelum menjalankan CLI:
+
+```bash
+# /etc/lpstmi.env — pemilik root, chmod 600
+DB_HOST=127.0.0.1
+DB_USER=lpstmi_app
+DB_PASS=<password produksi>
+DB_NAME=lpstmi_db
+CI_BASE_URL=https://stmi.ac.id/
+```
+
+```bash
+set -a; . /etc/lpstmi.env; set +a
+php index.php tools migrate
+```
+
+Setiap kali mengganti password database, ubah di **kedua** tempat (vhost dan file env).
 
 ### 2. HTTPS wajib
 
@@ -152,12 +182,16 @@ Header always set Strict-Transport-Security "max-age=31536000"
 Buat user dengan hak terbatas seperti pada langkah development, lalu jalankan migrasi di server. Untuk peluncuran pertama (database kosong), muat seed dan buat akun admin:
 
 ```bash
+set -a; . /etc/lpstmi.env; set +a                # kredensial DB untuk CLI (lihat langkah 1)
 php index.php tools migrate
 php index.php tools import_seed                  # hanya sekali, saat database masih kosong
 php index.php tools set_login <slug-author> <username> admin
 ```
 
-Setelah situs berjalan, **database produksi menjadi sumber konten**. Jangan memuat seed lagi ke sana (`import_seed ulang` menimpa semua perubahan dari admin); cadangkan dengan `mysqldump` biasa.
+Setelah situs berjalan, **database produksi menjadi sumber konten**. Jangan memuat seed lagi ke sana (`import_seed ulang` menimpa semua perubahan dari admin). Cadangan harus mencakup **dua hal**:
+
+- database: `mysqldump` biasa;
+- berkas unggahan: folder `wp-content/uploads/` — `mysqldump` hanya menyimpan baris tabel `media`, bukan berkas gambar/PDF-nya. Tanpa folder ini, pemulihan dari cadangan menghasilkan situs dengan gambar dan unduhan yang hilang.
 
 ### 4. Di belakang proxy / CDN
 
@@ -181,6 +215,7 @@ location / { try_files $uri $uri/ /index.php$is_args$args; }
 location ^~ /application/ { deny all; }   # berisi session aktif & log
 location ^~ /system/      { deny all; }
 location ^~ /stmi.ac.id-clone/ { deny all; }
+location ~ /\.git { deny all; }                # .git/, .gitignore: riwayat berisi source & kredensial lama
 
 # Jangan pernah mengeksekusi skrip di folder unggahan
 location ~* ^/wp-content/uploads/.*\.(php|phtml|phar|cgi|pl|py|sh)$ { deny all; }
