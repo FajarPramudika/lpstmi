@@ -475,6 +475,10 @@ Semua aturan ini sudah diverifikasi byte-per-byte terhadap 186 post + 152 halama
   terbuka untuk editor. `Users` memakai `array('admin', 'editor')` lalu membatasi per method (hanya `profile`).
 - Controller di `application/controllers/admin/` (`Admin_Controller` di `core/MY_Controller.php`), view di
   `views/admin/`, aset di `assets/admin/` (CSS/JS sendiri, TinyMCE 6.8.5 MIT di `assets/admin/vendor/tinymce/`).
+  Ikon garis sidebar & dasbor: `admin_icon()` di `helpers/admin_helper.php`.
+- **Dasbor** (`models/Dashboard_model.php`): 4 kartu yang bisa diklik (post, halaman, download + total unduhan, media;
+  label "N draft" menuju daftar draft), aksi cepat, dan "Terakhir diubah" 10 konten lintas post/halaman/download
+  (urut `modified_at`, link Edit + Lihat untuk yang terbit). Di lebar ≤1100px tabelnya menjadi daftar bertumpuk.
 - **Post:** daftar (filter status/kategori/cari), buat/edit (judul mentah, slug unik & tidak bentrok dengan halaman statis
   atau path sistem, konten TinyMCE, excerpt kosong = otomatis 40 kata + "…", kategori wajib ≥1, tag dipisah koma dan
   dibuat otomatis, gambar unggulan dari pustaka media, status, tanggal terbit dengan detik, author), hapus.

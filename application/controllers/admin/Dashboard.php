@@ -8,16 +8,14 @@ class Dashboard extends Admin_Controller {
 
 	public function index()
 	{
-		$this->load->model(array('post_model', 'term_model', 'media_model'));
-		list($recent) = $this->post_model->admin_list(array(), 1);
+		$this->load->model('dashboard_model');
 
 		$this->view('admin/dashboard', array(
-			'title'      => 'Dasbor',
-			'counts'     => $this->post_model->counts(),
-			'categories' => count($this->term_model->all('category')),
-			'tags'       => count($this->term_model->all('post_tag')),
-			'media'      => $this->db->count_all('media'),
-			'recent'     => array_slice($recent, 0, 8),
+			'title'          => 'Dasbor',
+			'counts'         => $this->dashboard_model->status_counts(),
+			'download_total' => $this->dashboard_model->download_total(),
+			'media'          => $this->db->count_all('media'),
+			'recent'         => $this->dashboard_model->recent_changes(10),
 		));
 	}
 }

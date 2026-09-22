@@ -24,7 +24,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : 'links';
 	<div class="filters">
 		<h2 style="margin:0">Daftar Layanan</h2>
 		<div style="flex:1"></div>
-		<a href="<?= site_url('admin/home_settings/create_link') ?>" class="btn">Tambah Layanan</a>
+		<a href="<?= site_url('admin/home_settings/create_link') ?>" class="btn btn-primary">Tambah Layanan</a>
 	</div>
 	<div class="card" style="padding:0">
 		<div class="table-wrap">
@@ -64,7 +64,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : 'links';
 	<div class="filters">
 		<h2 style="margin:0">Daftar Program Studi</h2>
 		<div style="flex:1"></div>
-		<a href="<?= site_url('admin/home_settings/create_program') ?>" class="btn">Tambah Program Studi</a>
+		<a href="<?= site_url('admin/home_settings/create_program') ?>" class="btn btn-primary">Tambah Program Studi</a>
 	</div>
 	<div class="card" style="padding:0">
 		<div class="table-wrap">
@@ -102,7 +102,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : 'links';
 	<div class="filters">
 		<h2 style="margin:0">Daftar Banners (Slider Utama)</h2>
 		<div style="flex:1"></div>
-		<a href="<?= site_url('admin/home_settings/create_banner') ?>" class="btn">Tambah Banner</a>
+		<a href="<?= site_url('admin/home_settings/create_banner') ?>" class="btn btn-primary">Tambah Banner</a>
 	</div>
 	<div class="card" style="padding:0">
 		<div class="table-wrap">
@@ -138,7 +138,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : 'links';
 	<div class="filters">
 		<h2 style="margin:0">Daftar Mitra Kerjasama</h2>
 		<div style="flex:1"></div>
-		<a href="<?= site_url('admin/home_settings/create_partner') ?>" class="btn">Tambah Mitra</a>
+		<a href="<?= site_url('admin/home_settings/create_partner') ?>" class="btn btn-primary">Tambah Mitra</a>
 	</div>
 	<div class="card" style="padding:0">
 		<div class="table-wrap">
