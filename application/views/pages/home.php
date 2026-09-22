@@ -151,7 +151,7 @@ STMI <br> JAKARTA</h5>				</div>
 					<div class="e-con-inner">
 				<div class="elementor-element elementor-element-a26676c elementor-widget elementor-widget-text-editor" data-id="a26676c" data-element_type="widget" data-widget_type="text-editor.default">
 				<div class="elementor-widget-container">
-									<p>Sekolah Tinggi Manajemen Industri (STMI) adalah Perguruan Tinggi Negeri yang berdiri sejak tahun 1968 di bawah binaan Kementerian Perindustrian. Tahun 2014 beralih menjadi Politeknik STMI Jakarta dengan spesialisasi kompetensi pada Industri Otomotif.</p><p>Politeknik STMI Jakarta menyelenggarakan pendidikan dengan jenjang Sarjana Terapan dengan gelar [S.Tr.]. Politeknik STMI Jakarta telah melakukan banyak kerjasama dengan industri, sehingga lulusan Politeknik STMI Jakarta terserap di dunia kerja.</p>								</div>
+									<?= safe_paragraphs($home_text['profile_text']) ?>								</div>
 				</div>
 					</div>
 				</div>
@@ -262,32 +262,34 @@ foreach($chunks as $i => $chunk):
 		<div class="elementor-element elementor-element-d30e8ed e-con-full animated-slow e-flex elementor-invisible e-con e-child" data-id="d30e8ed" data-element_type="container" data-settings="{&quot;animation&quot;:&quot;fadeInLeft&quot;}">
 				<div class="elementor-element elementor-element-612b653 elementor-widget elementor-widget-heading" data-id="612b653" data-element_type="widget" data-widget_type="heading.default">
 				<div class="elementor-widget-container">
-					<h5 class="elementor-heading-title elementor-size-default">Pengajar Profesional</h5>				</div>
+					<h5 class="elementor-heading-title elementor-size-default"><?= html_escape($home_text['feature_1_title']) ?></h5>				</div>
 				</div>
 				<div class="elementor-element elementor-element-a5ee28f elementor-widget elementor-widget-text-editor" data-id="a5ee28f" data-element_type="widget" data-widget_type="text-editor.default">
 				<div class="elementor-widget-container">
-									<p>Tenaga pengajar dengan pengalaman di bidang industri dan praktisi dari Industri</p>								</div>
+									<?= safe_paragraphs($home_text['feature_1_text']) ?>								</div>
 				</div>
 				<div class="elementor-element elementor-element-e11dda5 elementor-widget elementor-widget-heading" data-id="e11dda5" data-element_type="widget" data-widget_type="heading.default">
 				<div class="elementor-widget-container">
-					<h5 class="elementor-heading-title elementor-size-default">Kurikulum Terbaru</h5>				</div>
+					<h5 class="elementor-heading-title elementor-size-default"><?= html_escape($home_text['feature_2_title']) ?></h5>				</div>
 				</div>
 				<div class="elementor-element elementor-element-5fb5fe0 elementor-widget elementor-widget-text-editor" data-id="5fb5fe0" data-element_type="widget" data-widget_type="text-editor.default">
 				<div class="elementor-widget-container">
-									<p>Kami menerapakan kurikulum terbaru sejalan dengan kebutuhan industri</p>								</div>
+									<?= safe_paragraphs($home_text['feature_2_text']) ?>								</div>
 				</div>
 				<div class="elementor-element elementor-element-53a06ac elementor-widget elementor-widget-heading" data-id="53a06ac" data-element_type="widget" data-widget_type="heading.default">
 				<div class="elementor-widget-container">
-					<h5 class="elementor-heading-title elementor-size-default">Dual System</h5>				</div>
+					<h5 class="elementor-heading-title elementor-size-default"><?= html_escape($home_text['feature_3_title']) ?></h5>				</div>
 				</div>
 				<div class="elementor-element elementor-element-24ab31c elementor-widget elementor-widget-text-editor" data-id="24ab31c" data-element_type="widget" data-widget_type="text-editor.default">
 				<div class="elementor-widget-container">
-									<p>Kurikulum Pendidikan Berorientasi <em><strong>Dual System</strong></em></p>								</div>
+									<?= safe_paragraphs($home_text['feature_3_text']) ?>								</div>
 				</div>
+<?php if (($feature_list = safe_list_items($home_text['feature_3_list'])) !== ''): ?>
 				<div class="elementor-element elementor-element-1f7a122 elementor-widget elementor-widget-text-editor" data-id="1f7a122" data-element_type="widget" data-widget_type="text-editor.default">
 				<div class="elementor-widget-container">
-									<ul><li>5 semester di Kampus</li><li>2 semester di Industri</li><li>1 semester Tugas Akhir</li></ul>								</div>
+									<ul><?= $feature_list ?></ul>								</div>
 				</div>
+<?php endif; ?>
 				<div class="elementor-element elementor-element-f316e97 elementor-widget elementor-widget-image" data-id="f316e97" data-element_type="widget" data-widget_type="image.default">
 				<div class="elementor-widget-container">
 															<img loading="lazy" decoding="async" width="996" height="194" src="<?= base_url('wp-content/uploads/2024/03/Banner-STMI-1.png') ?>" class="attachment-full size-full wp-image-547" alt="" srcset="<?= base_url('wp-content/uploads/2024/03/Banner-STMI-1.png') ?> 996w, <?= base_url('wp-content/uploads/2024/03/Banner-STMI-1-300x58.png') ?> 300w, <?= base_url('wp-content/uploads/2024/03/Banner-STMI-1-768x150.png') ?> 768w" sizes="(max-width: 996px) 100vw, 996px" />															</div>

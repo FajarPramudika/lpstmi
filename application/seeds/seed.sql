@@ -1,7 +1,7 @@
 -- Seed konten lpstmi_db. Dihasilkan oleh: php index.php tools export_seed
 -- Muat dengan: php index.php tools import_seed (setelah tools migrate).
 -- Tanpa kredensial: kolom username, email, password_hash, password_changed_at, last_login_at di authors dikosongkan.
--- schema: 19
+-- schema: 20
 INSERT INTO `authors` (`id`, `slug`, `display_name`, `registered_at`, `gravatar_hash`, `website`, `post_count_offset`, `username`, `email`, `password_hash`, `password_changed_at`, `role`, `is_active`, `last_login_at`) VALUES ('1', 'admin_tro', 'Admin STMI', '2024-03-01 00:00:00', 'e1497d9887b30713c8998de30235d8d5642ca2cee6d30dd8a5343ae1f0834703', 'https://stmi.ac.id', '144', NULL, NULL, NULL, NULL, 'admin', '1', NULL);
 INSERT INTO `authors` (`id`, `slug`, `display_name`, `registered_at`, `gravatar_hash`, `website`, `post_count_offset`, `username`, `email`, `password_hash`, `password_changed_at`, `role`, `is_active`, `last_login_at`) VALUES ('2', 'mitafuljana', 'Admin 2', '2024-06-10 00:00:00', '51cc17129f66cec2830f8bcd27e39341cdfb73dcf005b89f831a01c2af2fc2c9', NULL, '0', NULL, NULL, NULL, NULL, 'editor', '1', NULL);
 INSERT INTO `authors` (`id`, `slug`, `display_name`, `registered_at`, `gravatar_hash`, `website`, `post_count_offset`, `username`, `email`, `password_hash`, `password_changed_at`, `role`, `is_active`, `last_login_at`) VALUES ('3', 'khanifan', 'Ikhsan Khanifan', '2025-02-14 00:00:00', '9255f7b1b3edf1899b4cc4a6d16ee69da6f0d9c44ec88da07f320c6440e88307', NULL, '0', NULL, NULL, NULL, NULL, 'editor', '1', NULL);
@@ -1376,6 +1376,14 @@ INSERT INTO `contacts` (`key`, `value`) VALUES ('social_twitter', 'https://twitt
 INSERT INTO `contacts` (`key`, `value`) VALUES ('social_instagram', 'https://www.instagram.com/stmijakarta/?hl=en');
 INSERT INTO `contacts` (`key`, `value`) VALUES ('social_facebook', 'https://www.facebook.com/PoliteknikSTMIJakarta');
 INSERT INTO `contacts` (`key`, `value`) VALUES ('social_youtube', 'https://www.youtube.com/channel/UCFalakPYmXniFeqHapt1k8w');
+INSERT INTO `home_options` (`key`, `value`) VALUES ('feature_1_text', 'Tenaga pengajar dengan pengalaman di bidang industri dan praktisi dari Industri');
+INSERT INTO `home_options` (`key`, `value`) VALUES ('feature_1_title', 'Pengajar Profesional');
+INSERT INTO `home_options` (`key`, `value`) VALUES ('feature_2_text', 'Kami menerapakan kurikulum terbaru sejalan dengan kebutuhan industri');
+INSERT INTO `home_options` (`key`, `value`) VALUES ('feature_2_title', 'Kurikulum Terbaru');
+INSERT INTO `home_options` (`key`, `value`) VALUES ('feature_3_list', '5 semester di Kampus\n2 semester di Industri\n1 semester Tugas Akhir');
+INSERT INTO `home_options` (`key`, `value`) VALUES ('feature_3_text', 'Kurikulum Pendidikan Berorientasi <em><strong>Dual System</strong></em>');
+INSERT INTO `home_options` (`key`, `value`) VALUES ('feature_3_title', 'Dual System');
+INSERT INTO `home_options` (`key`, `value`) VALUES ('profile_text', 'Sekolah Tinggi Manajemen Industri (STMI) adalah Perguruan Tinggi Negeri yang berdiri sejak tahun 1968 di bawah binaan Kementerian Perindustrian. Tahun 2014 beralih menjadi Politeknik STMI Jakarta dengan spesialisasi kompetensi pada Industri Otomotif.\n\nPoliteknik STMI Jakarta menyelenggarakan pendidikan dengan jenjang Sarjana Terapan dengan gelar [S.Tr.]. Politeknik STMI Jakarta telah melakukan banyak kerjasama dengan industri, sehingga lulusan Politeknik STMI Jakarta terserap di dunia kerja.');
 INSERT INTO `home_options` (`key`, `value`) VALUES ('video_url', 'https://youtu.be/kTt11d4Twik');
 INSERT INTO `home_banners` (`id`, `image_path`, `image_srcset`, `image_class`, `url`, `order_num`) VALUES ('1', 'wp-content/uploads/2024/03/Header-Politeknik-STMI.jpg', NULL, 'swiper-slide-image', NULL, '1');
 INSERT INTO `home_featured_links` (`id`, `container_id`, `widget_id`, `url`, `image_path`, `image_srcset`, `image_class`, `img_hint_key`, `order_num`, `row_number`) VALUES ('1', '5fda677', 'e1a2c9b', 'http://e-learning.stmi.ac.id/', 'wp-content/uploads/2024/03/E-Learning-STMI.png', 'wp-content/uploads/2024/03/E-Learning-STMI.png 348w, wp-content/uploads/2024/03/E-Learning-STMI-300x77.png 300w', 'attachment-full size-full wp-image-724', NULL, '1', '1');

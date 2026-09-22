@@ -16,6 +16,7 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : 'links';
 	<li class="<?= $tab === 'banners' ? 'active' : '' ?>"><a href="?tab=banners">Banners (Slider)</a></li>
 	<li class="<?= $tab === 'partners' ? 'active' : '' ?>"><a href="?tab=partners">Mitra Kerjasama</a></li>
 	<li class="<?= $tab === 'options' ? 'active' : '' ?>"><a href="?tab=options">Video & Opsi Lain</a></li>
+	<li class="<?= $tab === 'texts' ? 'active' : '' ?>"><a href="?tab=texts">Profil & Keunggulan</a></li>
 </ul>
 
 <!-- TAB LINKS -->
@@ -184,6 +185,59 @@ $tab = isset($_GET['tab']) ? $_GET['tab'] : 'links';
 			<div class="hint">Tautan video YouTube yang dirender pada beranda. Contoh: <code>https://youtu.be/kTt11d4Twik</code></div>
 		</div>
 		<button type="submit" class="btn btn-primary">Simpan Pengaturan</button>
+	</div>
+	<?= form_close() ?>
+</div>
+
+<!-- TAB TEXTS -->
+<div class="tab-content <?= $tab === 'texts' ? 'active' : '' ?>">
+	<div class="filters">
+		<h2 style="margin:0">Profil & Keunggulan</h2>
+		<div style="flex:1"></div>
+	</div>
+	<?= form_open('admin/home_settings/update_texts') ?>
+	<div class="card">
+		<div class="field">
+			<label for="profile_text">Profil STMI</label>
+			<textarea id="profile_text" name="profile_text" rows="8" required maxlength="3000"><?= html_escape($texts['profile_text']) ?></textarea>
+			<div class="hint">Paragraf dipisah satu baris kosong. Boleh memakai <code>&lt;strong&gt;</code>, <code>&lt;em&gt;</code>, <code>&lt;br&gt;</code>; tag lain tampil sebagai teks biasa.</div>
+		</div>
+		<h3>Keunggulan 1</h3>
+		<div class="field">
+			<label for="feature_1_title">Judul</label>
+			<input type="text" id="feature_1_title" name="feature_1_title" value="<?= html_escape($texts['feature_1_title']) ?>" required maxlength="100">
+		</div>
+		<div class="field">
+			<label for="feature_1_text">Teks</label>
+			<textarea id="feature_1_text" name="feature_1_text" rows="3" required maxlength="500"><?= html_escape($texts['feature_1_text']) ?></textarea>
+			<div class="hint">Boleh memakai <code>&lt;strong&gt;</code>, <code>&lt;em&gt;</code>, <code>&lt;br&gt;</code>; tag lain tampil sebagai teks biasa.</div>
+		</div>
+		<h3>Keunggulan 2</h3>
+		<div class="field">
+			<label for="feature_2_title">Judul</label>
+			<input type="text" id="feature_2_title" name="feature_2_title" value="<?= html_escape($texts['feature_2_title']) ?>" required maxlength="100">
+		</div>
+		<div class="field">
+			<label for="feature_2_text">Teks</label>
+			<textarea id="feature_2_text" name="feature_2_text" rows="3" required maxlength="500"><?= html_escape($texts['feature_2_text']) ?></textarea>
+			<div class="hint">Boleh memakai <code>&lt;strong&gt;</code>, <code>&lt;em&gt;</code>, <code>&lt;br&gt;</code>; tag lain tampil sebagai teks biasa.</div>
+		</div>
+		<h3>Keunggulan 3</h3>
+		<div class="field">
+			<label for="feature_3_title">Judul</label>
+			<input type="text" id="feature_3_title" name="feature_3_title" value="<?= html_escape($texts['feature_3_title']) ?>" required maxlength="100">
+		</div>
+		<div class="field">
+			<label for="feature_3_text">Teks</label>
+			<textarea id="feature_3_text" name="feature_3_text" rows="3" required maxlength="500"><?= html_escape($texts['feature_3_text']) ?></textarea>
+			<div class="hint">Boleh memakai <code>&lt;strong&gt;</code>, <code>&lt;em&gt;</code>, <code>&lt;br&gt;</code>; tag lain tampil sebagai teks biasa.</div>
+		</div>
+		<div class="field">
+			<label for="feature_3_list">Daftar (Keunggulan 3)</label>
+			<textarea id="feature_3_list" name="feature_3_list" rows="4" maxlength="1000"><?= html_escape($texts['feature_3_list']) ?></textarea>
+			<div class="hint">Satu butir per baris, maksimal 10 butir. Kosongkan untuk menyembunyikan daftar.</div>
+		</div>
+		<button type="submit" class="btn btn-primary">Simpan Teks</button>
 	</div>
 	<?= form_close() ?>
 </div>

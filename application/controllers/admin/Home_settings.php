@@ -24,6 +24,7 @@ class Home_settings extends Admin_Controller {
 		$data['banners'] = $this->home_banner_model->all();
 		$data['partners'] = $this->home_partner_model->all();
 		$data['options'] = $this->home_option_model->get_all();
+		$data['texts'] = $this->home_option_model->texts();
 		$this->view('admin/home_settings/index', $data);
 	}
 
@@ -307,5 +308,75 @@ class Home_settings extends Admin_Controller {
 		$this->home_option_model->set('video_url', $video_url);
 		$this->flash('success', 'Pengaturan opsi berhasil disimpan.');
 		redirect('admin/home_settings?tab=options');
+	}
+
+	/** Batas panjang teks tab "Profil & Keunggulan" (karakter) dan jumlah butir daftar Dual System. */
+	protected $text_limits = array(
+		'profile_text'    => 3000,
+		'feature_1_title' => 100, 'feature_1_text' => 500,
+		'feature_2_title' => 100, 'feature_2_text' => 500,
+		'feature_3_title' => 100, 'feature_3_text' => 500,
+		'feature_3_list'  => 1000,
+	);
+	const MAX_LIST_ITEMS = 10;
+
+	/**
+	 * Teks profil & tiga blok keunggulan (home_options, lihat Home_option_model::$text_keys).
+	 * Disimpan sebagai teks; saat dirender judul di-escape penuh, sisanya lewat safe_inline_html()
+	 * (safe_paragraphs/safe_list_items), jadi markup selain tag format sederhana tidak pernah menjadi HTML.
+	 */
+	public function update_texts()
+	{
+		$this->require_post();
+
+		$labels = array(
+			'profile_text' => 'Profil', 'feature_1_title' => 'Judul keunggulan 1', 'feature_1_text' => 'Teks keunggulan 1',
+			'feature_2_title' => 'Judul keunggulan 2', 'feature_2_text' => 'Teks keunggulan 2',
+			'feature_3_title' => 'Judul keunggulan 3', 'feature_3_text' => 'Teks keunggulan 3',
+			'feature_3_list' => 'Daftar keunggulan 3',
+		);
+
+		$values = array();
+		$errors = array();
+		foreach (Home_option_model::$text_keys as $key)
+		{
+			// Textarea mengirim CRLF; simpan LF supaya pemisah paragraf/baris konsisten.
+			$value = trim(str_replace("\r\n", "\n", (string) $this->input->post($key)));
+			if ($value === '' && $key !== 'feature_3_list')
+			{
+				$errors[] = $labels[$key].' wajib diisi.';
+			}
+			elseif (mb_strlen($value, 'UTF-8') > $this->text_limits[$key])
+			{
+				$errors[] = $labels[$key].' maksimal '.$this->text_limits[$key].' karakter.';
+			}
+			$values[$key] = $value;
+		}
+		if (count(preg_split('/\n/', $values['feature_3_list'], -1, PREG_SPLIT_NO_EMPTY)) > self::MAX_LIST_ITEMS)
+		{
+			$errors[] = $labels['feature_3_list'].' maksimal '.self::MAX_LIST_ITEMS.' butir.';
+		}
+
+		if ($errors)
+		{
+			$this->flash('error', implode(' ', $errors).' Data tidak disimpan.');
+			redirect('admin/home_settings?tab=texts');
+		}
+
+		$escaped = array();
+		foreach ($values as $key => $value)
+		{
+			$this->home_option_model->set($key, $value);
+			// Judul di-escape penuh; sisanya hanya tag format sederhana yang lolos safe_inline_html().
+			$allowed = (substr($key, -6) === '_title') ? '' : '<br><strong><em><b><i><sup><sub><small>';
+			if (strip_tags($value, $allowed) !== $value)
+			{
+				$escaped[] = $labels[$key];
+			}
+		}
+
+		$note = $escaped ? ' Markup yang tidak diizinkan di '.implode(', ', $escaped).' akan tampil sebagai teks biasa.' : '';
+		$this->flash('success', 'Teks profil & keunggulan berhasil disimpan.'.$note);
+		redirect('admin/home_settings?tab=texts');
 	}
 }

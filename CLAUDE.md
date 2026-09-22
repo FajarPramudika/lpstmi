@@ -465,8 +465,10 @@ Semua aturan ini sudah diverifikasi byte-per-byte terhadap 186 post + 152 halama
   session yang nilainya berbeda — jadi **sesi lain ikut berakhir**, termasuk saat admin mengganti password pengguna lain.
   Session milik yang melakukan perubahan diperbarui supaya tidak ikut terlempar. `password_changed_at` NULL = belum pernah
   diganti, sehingga session lama tidak terputus hanya karena migrasi dijalankan.
-- Peran: **admin** (semua), **editor** (dasbor, post, halaman, download, media, kategori, tag, profil sendiri).
-  Khusus admin: **pengguna, menu, beranda, link footer, kontak & media sosial** — editor mendapat **403** di sana,
+- Peran: **admin** (semua), **editor** (dasbor, post, halaman, download, media, kategori, tag, **beranda**, profil sendiri).
+  Beranda (`admin/Home_settings`, semua tab termasuk "Profil & Keunggulan") dibuka untuk editor di commit `77e8ea7`;
+  keputusan user 2026-09-22: **tetap boleh diakses editor**.
+  Khusus admin: **pengguna, menu, link footer, kontak & media sosial** — editor mendapat **403** di sana,
   dan menunya disembunyikan di `views/admin/layout.php`.
   `Admin_Controller::$roles` default **`array('admin')`** (ketat). Controller yang juga untuk editor **wajib**
   menyatakan `protected $roles = array('admin', 'editor');` sendiri, supaya controller admin baru tidak otomatis
@@ -653,6 +655,13 @@ kecuali tag format sederhana seperti `<br>` yang memang dipakai judul "Teknik In
 memakai `safe_inline_svg()` (hanya elemen gambar; `<script>`, `<animate>`, atribut `on*`/`href` dibuang). Keduanya di
 `helpers/wp_helper.php`, dan `admin/Home_settings` juga membersihkannya saat menyimpan. Kelima baris data lama melewati
 kedua fungsi ini **tanpa berubah satu byte pun**, jadi `verify home` tetap sama.
+**Teks profil STMI & tiga blok keunggulan** (Pengajar Profesional, Kurikulum Terbaru, Dual System) ada di `home_options`
+(migrasi 020, key di `Home_option_model::$text_keys`), dikelola di tab admin Beranda "Profil & Keunggulan" (admin & editor). Disimpan sebagai
+teks (CRLF → LF): judul lewat `html_escape()`, paragraf lewat `safe_paragraphs()` (dipisah baris kosong → `<p>..</p><p>..</p>`),
+daftar Dual System lewat `safe_list_items()` (satu butir per baris; kosong = widget `1f7a122` tidak dirender). Nilai awal =
+teks clone apa adanya (termasuk salah ketik "menerapakan"); simpan ulang tanpa perubahan tetap byte-identik.
+`views/pages/home.php` **tidak boleh diakhiri newline** (berakhir `</main>\n\n\t`); newline tambahan muncul sebagai byte ekstra
+sebelum `<footer` dan membuat `verify home` bergeser.
 `tools verify <slug> dump` menyimpan HTML seharusnya & hasil render ke `application/cache/verify/` untuk di-diff.
 Semua 186 post, 152 halaman arsip (kategori, tag, author, dengan paginasi), 131 paket download, dan 32 halaman dirender dari
 database; `verify_db` = `OK 501, BEDA 0`.

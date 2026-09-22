@@ -665,6 +665,48 @@ if ( ! function_exists('safe_inline_svg'))
 	}
 }
 
+if ( ! function_exists('safe_paragraphs'))
+{
+	/**
+	 * Teks berparagraf dari database (dipisah baris kosong) -> <p>..</p><p>..</p> tanpa whitespace di antaranya,
+	 * seperti output widget teks Elementor. Isi tiap paragraf lewat safe_inline_html().
+	 */
+	function safe_paragraphs($text)
+	{
+		$out = '';
+		foreach (preg_split('/\R[ \t]*\R\s*/', trim((string) $text)) as $para)
+		{
+			if (($para = trim($para)) !== '')
+			{
+				$out .= '<p>'.safe_inline_html($para).'</p>';
+			}
+		}
+
+		return $out;
+	}
+}
+
+if ( ! function_exists('safe_list_items'))
+{
+	/**
+	 * Daftar dari database (satu butir per baris) -> <li>..</li><li>..</li>; baris kosong dilewati.
+	 * String kosong = tidak ada butir (pemanggil yang memutuskan widgetnya tidak ditampilkan).
+	 */
+	function safe_list_items($text)
+	{
+		$out = '';
+		foreach (preg_split('/\R/', (string) $text) as $item)
+		{
+			if (($item = trim($item)) !== '')
+			{
+				$out .= '<li>'.safe_inline_html($item).'</li>';
+			}
+		}
+
+		return $out;
+	}
+}
+
 if ( ! function_exists('is_safe_url'))
 {
 	/**

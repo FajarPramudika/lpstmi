@@ -69,6 +69,7 @@ class Pages extends MY_Controller {
 			$data['home_banners'] = $this->home_banner_model->all();
 			$data['home_partners'] = $this->home_partner_model->all();
 			$data['home_options'] = $this->home_option_model->get_all();
+			$data['home_text'] = $this->home_option_model->texts();
 		}
 
 		$data['menu_context'] = array('page' => ($slug === 'home') ? '' : $slug);
