@@ -15,6 +15,46 @@
 	# Header always set Strict-Transport-Security "max-age=31536000"
 </IfModule>
 
+# Kompresi respons teks. Terukur 2026-09-22: HTML/CSS/JS lokal beranda 2,8 MB -> 0,56 MB,
+# Lighthouse desktop 66 -> 86, LCP mobile (simulasi 4G) 27,3 s -> 18,4 s. Isi yang diterima browser tetap byte-identik
+# setelah didekompresi, jadi aturan "tampilan identik" tidak tersentuh.
+<IfModule mod_deflate.c>
+	AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml application/xml \
+		application/javascript text/javascript application/json image/svg+xml \
+		font/ttf application/x-font-ttf application/vnd.ms-fontobject
+
+	# Halaman /admin TIDAK dikompres: halaman itu memuat token CSRF sekaligus memantulkan input
+	# (form login, hasil validasi), kombinasi yang membuat kompresi di atas HTTPS rentan BREACH.
+	# THE_REQUEST dipakai (bukan REQUEST_URI) karena setelah rewrite ke index.php REQUEST_URI berubah.
+	# Aset /assets/admin/ tetap dikompres (statis, tanpa rahasia).
+	<If "%{THE_REQUEST} =~ m#^\S+ /admin(/|\?|\s)#">
+		SetEnv no-gzip 1
+	</If>
+</IfModule>
+
+# Masa cache browser untuk aset statis. 30 hari, bukan 1 tahun: nama file tidak mengandung hash isi,
+# jadi file yang diganti dengan nama sama baru terlihat setelah cache kedaluwarsa (atau hard refresh).
+# Dibatasi ke folder aset supaya tidak ikut ke respons PHP (mis. file unduhan /download/...?wpdmdl=,
+# yang harus tetap sampai ke server agar hitungan unduhan bertambah). HTML tidak di-cache.
+<IfModule mod_expires.c>
+	<If "%{REQUEST_URI} =~ m#^/(wp-content|wp-includes|assets)/#">
+		ExpiresActive On
+		ExpiresByType text/css "access plus 30 days"
+		ExpiresByType application/javascript "access plus 30 days"
+		ExpiresByType text/javascript "access plus 30 days"
+		ExpiresByType image/jpeg "access plus 30 days"
+		ExpiresByType image/png "access plus 30 days"
+		ExpiresByType image/gif "access plus 30 days"
+		ExpiresByType image/webp "access plus 30 days"
+		ExpiresByType image/svg+xml "access plus 30 days"
+		ExpiresByType image/x-icon "access plus 30 days"
+		ExpiresByType font/woff2 "access plus 30 days"
+		ExpiresByType font/woff "access plus 30 days"
+		ExpiresByType font/ttf "access plus 30 days"
+		ExpiresByType application/vnd.ms-fontobject "access plus 30 days"
+	</If>
+</IfModule>
+
 <IfModule mod_rewrite.c>
 	RewriteEngine On
 

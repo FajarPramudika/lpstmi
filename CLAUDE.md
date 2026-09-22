@@ -73,6 +73,7 @@ SetEnv CI_BASE_URL https://stmi.ac.id/
   ON lpstmi_db.* TO 'lpstmi_app'@'127.0.0.1'` — **jangan** `root`, jangan `ALL PRIVILEGES`, jangan `*.*`.
 - Kalau web server-nya nginx, `.htaccess` **diabaikan**: aturan `Require all denied` untuk `application/` dan `system/`
   serta blokir `stmi.ac.id-clone/` harus ditulis ulang sebagai aturan nginx. `application/cache/sessions/` berisi sesi aktif.
+  Konfigurasi nginx lengkap yang sudah diuji ada di README (production langkah 5).
 
 Temuan 2 & 6 (XSS beranda, batas peran editor) dan 3, 7, 8 (brute-force login, ganti password, rotasi sesi)
 telah dikerjakan juga. Yang **belum**:
@@ -149,6 +150,26 @@ bahwa `isEvalSupported` masih `false` — mitigasi ini bergantung pada file itu.
   masuk atribut `href`. Keduanya di `helpers/wp_helper.php`.
   **Kalau expression di partial diubah** (mis. menambah `safe_href()`), `Wp_clone::neutralize_contacts()` /
   `neutralize_footer_links()` harus ikut diubah, atau `tools check` langsung turun dari 502 OK.
+
+## Performa (diukur 2026-09-22, hanya optimasi yang tidak mengubah byte HTML/aset)
+
+- `.htaccess`: **gzip** (`mod_deflate`) untuk HTML/CSS/JS/JSON/SVG/TTF dan **cache browser 30 hari** (`mod_expires`)
+  hanya untuk aset di `wp-content/`, `wp-includes/`, `assets/`. Padanan nginx (sudah diuji dengan nginx + FPM) di README.
+  Beranda: teks lokal 2,8 MB → 0,56 MB, Lighthouse desktop 66 → 86, LCP mobile 27,3 → 18,4 s. HTML hasil dekompresi
+  identik byte per byte; `verify`/`verify_db` tidak terpengaruh (fetch-nya tanpa `Accept-Encoding`).
+- **`/admin` tidak dikompres** (BREACH: token CSRF + input dipantulkan). Di `.htaccess` dicocokkan lewat
+  `%{THE_REQUEST}`, bukan `REQUEST_URI`, karena setelah rewrite ke `index.php` nilai itu berubah.
+- Cache browser **tidak** untuk HTML maupun respons PHP (unduhan `?wpdmdl=` harus sampai server agar hitungan naik).
+  30 hari, bukan 1 tahun, karena nama berkas tidak memuat hash isi. Manfaat terukurnya kecil: tanpa header pun Chrome
+  memakai cache heuristik dari `Last-Modified`.
+- Keterbatasan: di Apache + PHP-FPM, respons **404** tidak ikut dikompres (juga tidak dengan `mod_filter`); di nginx ikut.
+- **OPcache** paling berpengaruh di server: beranda 24 ms → 7,5 ms, 41 → 133 req/detik. Konfigurasi `php.ini` produksi,
+  bukan kode. Render beranda ±7,5 ms, 9 query ±4 ms (`home_featured_links` di-query dua kali, ±0,25 ms, dibiarkan).
+- **Tidak dikerjakan** (keputusan user): cache hasil render (hemat ±10 ms, risiko data usang tinggi), serta semua yang
+  mengubah markup atau isi aset (render-blocking, CSS tak terpakai, kompres ulang gambar). Skor mobile sisanya datang dari situ.
+- Di nginx, header keamanan dipasang di level server dan salinan dari PHP dibuang dengan `fastcgi_hide_header`;
+  tanpa itu respons PHP mengirim tiap header dua kali. Kredensial DB lewat `fastcgi_param` (terbaca `getenv()`).
+- Jangan menguji URL unduhan `?wpdmdl=` terhadap `lpstmi_db`: hitungan `download_count` naik dan `verify_db` jadi BEDA.
 
 ## Eksplorasi kode (codebase-memory-mcp)
 

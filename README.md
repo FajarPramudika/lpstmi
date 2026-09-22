@@ -11,7 +11,7 @@ Dokumen ini fokus pada **konfigurasi yang dibutuhkan untuk menjalankan aplikasi*
 - Ekstensi PHP: `mysqli`, `gd`, `fileinfo`, `mbstring`, `iconv`, `json`.
   - `gd` dipakai membuat ukuran turunan gambar ala WordPress, `fileinfo` untuk memvalidasi isi file yang diunggah.
 - Batas upload PHP: `upload_max_filesize` ≥ **20M** dan `post_max_size` ≥ **25M** (batas aplikasi 20 MB per berkas).
-- Web server: Apache dengan **`mod_rewrite`** dan **`mod_headers`**, atau nginx (lihat catatan di bagian production).
+- Web server: Apache dengan **`mod_rewrite`**, **`mod_headers`**, **`mod_env`**, dan (untuk performa) **`mod_deflate`** + **`mod_expires`**, atau nginx (lihat catatan di bagian production).
 
 ## Konfigurasi
 
@@ -236,19 +236,80 @@ location ~ /\.git { deny all; }                # .git/, .gitignore: riwayat beri
 # Jangan pernah mengeksekusi skrip di folder unggahan
 location ~* ^/wp-content/uploads/.*\.(php|phtml|phar|cgi|pl|py|sh)$ { deny all; }
 
-# Header keamanan untuk berkas statis (respons PHP sudah dapat dari aplikasi)
+# Header keamanan untuk semua respons (salinan dari PHP dibuang di blok .php di bawah)
 add_header X-Content-Type-Options "nosniff" always;
 add_header Referrer-Policy "strict-origin-when-cross-origin" always;
 add_header X-Frame-Options "SAMEORIGIN" always;
 add_header Content-Security-Policy "frame-ancestors 'self'; base-uri 'self'" always;
+add_header Permissions-Policy "geolocation=(), microphone=(), camera=()" always;
+
+# Kompresi respons teks (padanan mod_deflate di .htaccess)
+gzip on;
+gzip_vary on;
+gzip_proxied any;
+gzip_types text/plain text/css text/xml application/xml application/javascript text/javascript
+           application/json image/svg+xml font/ttf application/vnd.ms-fontobject;
+
+# Cache browser 30 hari untuk aset statis (padanan mod_expires di .htaccess).
+# "expires" tidak memakai add_header, jadi header keamanan di atas tetap berlaku di blok ini.
+location ~* ^/(wp-content|wp-includes|assets)/.+\.(css|js|jpe?g|png|gif|webp|svg|ico|woff2?|ttf|eot)$ {
+    expires 30d;
+}
+
+location ~ \.php$ {
+    # /admin tidak dikompres (token CSRF + input yang dipantulkan = rentan BREACH).
+    if ($request_uri ~ "^/admin(/|\?|$)") { gzip off; }
+    # Header yang sama sudah dipasang di level server; buang salinan dari PHP supaya tidak dobel.
+    fastcgi_hide_header X-Content-Type-Options;
+    fastcgi_hide_header Referrer-Policy;
+    fastcgi_hide_header X-Frame-Options;
+    fastcgi_hide_header Content-Security-Policy;
+    fastcgi_hide_header Permissions-Policy;
+    include fastcgi_params;
+    # Kredensial DB (padanan SetEnv Apache; dibaca getenv() di config/database.php)
+    fastcgi_param DB_HOST 127.0.0.1;
+    fastcgi_param DB_USER lpstmi_app;
+    fastcgi_param DB_PASS <password produksi>;
+    fastcgi_param DB_NAME lpstmi_db;
+    fastcgi_param CI_BASE_URL https://stmi.ac.id/;
+    fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    fastcgi_pass unix:/run/php/php7.3-fpm.sock;   # sesuaikan dengan pool FPM
+}
 ```
+
+Konfigurasi di atas sudah diuji dengan nginx + PHP-FPM 7.3 (2026-09-22): tiap header keamanan terkirim tepat satu kali, `/admin` tidak dikompres, aset statis mendapat `max-age` 30 hari, `.git` dan `application/` 403, dan kredensial dari `fastcgi_param` terbaca aplikasi. nginx tidak punya `SetEnv`; kalau kredensial tidak ingin ditulis di konfigurasi situs, taruh di pool PHP-FPM sebagai `env[DB_PASS] = …`.
 
 > Awas perilaku nginx: begitu sebuah `location` memakai `add_header`-nya sendiri, **semua** `add_header` dari
 > level di atasnya berhenti berlaku di blok itu. Jadi header di atas harus diulang di setiap `location` yang
 > punya `add_header` sendiri. Setelah deploy, pastikan dengan
 > `curl -sI https://stmi.ac.id/wp-content/uploads/<berkas> | grep -i nosniff`.
 
-### 6. Pemeliharaan
+### 6. Performa: kompresi, cache browser, OPcache
+
+Diukur 2026-09-22 pada beranda (Apache 2.4 + PHP-FPM 7.3, Lighthouse, median 3 kali). Semuanya **tidak mengubah satu byte pun** HTML maupun berkas aset:
+
+| | Sebelum | Sesudah |
+|---|---|---|
+| Transfer HTML/CSS/JS lokal | 2,8 MB | 0,56 MB (gzip) |
+| Lighthouse desktop (LCP) | 66 (3,7 s) | **86** (1,9 s) |
+| Lighthouse mobile, simulasi 4G (LCP) | 35 (27,3 s) | 38 (**18,4 s**) — skor mobile berisik (rentang 31–47 dari 6 run, bergantung TBT/CPU); yang stabil adalah LCP & transfer (4,9 → 3,4 MB) |
+| Waktu PHP beranda, OPcache mati → nyala | 24 ms, 41 req/detik | **7,5 ms, 133 req/detik** |
+
+- **Kompresi & cache browser** sudah ada di `.htaccess`; di Apache cukup pastikan modulnya aktif: `a2enmod deflate expires env headers rewrite`. Di nginx pakai konfigurasi langkah 5.
+  - `/admin` sengaja **tidak** dikompres (token CSRF + input yang dipantulkan = rentan BREACH di HTTPS).
+  - Aset di `wp-content/`, `wp-includes/`, `assets/` di-cache browser 30 hari. Nama berkas tidak memuat hash isi, jadi berkas yang **diganti dengan nama sama** baru terlihat oleh pengunjung lama setelah cache habis; unggah dengan nama baru bila perlu segera terlihat. HTML dan respons PHP (termasuk unduhan `?wpdmdl=`) tidak di-cache.
+  - Keterbatasan yang diketahui: di Apache + PHP-FPM, halaman **404** tidak ikut dikompres (Apache tidak memasang filter pada respons error dari FastCGI). Di nginx 404 ikut terkompres.
+  - Brotli tidak perlu: hanya 5% lebih kecil dari gzip untuk berkas situs ini.
+- **OPcache wajib aktif** di PHP yang melayani web (bukan hanya CLI). Periksa dengan `php-fpm7.3 -i | grep -E '^opcache.enable '` (untuk mod_php: halaman `phpinfo()` sementara, lalu hapus). Nilai yang disarankan di `php.ini`:
+  ```ini
+  opcache.enable=1
+  opcache.memory_consumption=128
+  opcache.max_accelerated_files=10000
+  opcache.validate_timestamps=1   ; biarkan 1: berkas hasil deploy terbaca tanpa restart PHP
+  ```
+- Sisa skor mobile datang dari CSS/JS yang memblokir render, CSS tak terpakai, dan skrip pihak ketiga (GTranslate, Histats, Matomo). Perbaikannya **mengubah markup**, jadi di luar aturan "tampilan identik".
+
+### 7. Pemeliharaan
 
 - **Log** menumpuk satu berkas per hari di `application/logs/`. Belum ada pembersihan otomatis; siapkan cron penghapus berkas lama bila perlu.
 - **Peristiwa keamanan** (login berhasil/gagal, perubahan akun dan peran) dicatat di log yang sama dengan awalan `[keamanan]`.
