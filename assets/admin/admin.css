@@ -179,6 +179,15 @@ input.title-input { font-size: 18px; padding: 10px 12px; }
 .modal-body { padding: 16px 18px; overflow-y: auto; }
 .modal .media-item { cursor: pointer; }
 .modal .media-item.selected { outline: 3px solid var(--accent); }
+.confirm-modal { z-index: 60; }
+.confirm-modal .modal-box { width: min(460px, 100%); max-height: none; }
+.confirm-body { display: flex; align-items: flex-start; gap: 14px; padding: 24px; }
+.confirm-icon { flex: none; width: 40px; height: 40px; display: grid; place-items: center; border-radius: 50%; background: var(--danger-soft); color: var(--danger); font-size: 22px; font-weight: 700; }
+.confirm-body h2 { margin: 2px 0 6px; font-size: 18px; }
+.confirm-body p { margin: 0; color: var(--muted); line-height: 1.5; white-space: pre-line; }
+.confirm-actions { justify-content: flex-end; }
+.btn-confirm-delete { background: var(--danger); border-color: var(--danger); color: #fff; }
+.btn-confirm-delete:hover { background: #a92a20; border-color: #a92a20; }
 
 .pager { display: flex; gap: 16px; align-items: center; margin-top: 16px; font-size: 13px; }
 

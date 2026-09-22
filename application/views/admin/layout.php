@@ -138,6 +138,21 @@ $flash = $this->session->flashdata('flash');
 		</div>
 	</div>
 </div>
+<div class="modal confirm-modal" id="delete-confirm-modal" role="alertdialog" aria-modal="true" aria-labelledby="delete-confirm-title" aria-describedby="delete-confirm-message">
+	<div class="modal-box">
+		<div class="confirm-body">
+			<div class="confirm-icon" aria-hidden="true">!</div>
+			<div>
+				<h2 id="delete-confirm-title">Hapus data?</h2>
+				<p id="delete-confirm-message" data-confirm-message></p>
+			</div>
+		</div>
+		<div class="modal-foot confirm-actions">
+			<button type="button" class="btn" data-confirm-cancel>Batal</button>
+			<button type="button" class="btn btn-confirm-delete" data-confirm-approve>Ya, hapus</button>
+		</div>
+	</div>
+</div>
 <script src="<?= base_url('assets/admin/admin.js') ?>"></script>
 <?php if (isset($scripts)) echo $scripts; ?>
 </body>
