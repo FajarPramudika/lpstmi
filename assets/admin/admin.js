@@ -13,12 +13,54 @@
 		return form;
 	}
 
-	// Konfirmasi sebelum aksi berbahaya.
-	document.addEventListener('submit', function (e) {
-		var msg = e.target.getAttribute('data-confirm');
-		if (msg && !window.confirm(msg)) {
+	// Modal konfirmasi untuk semua aksi hapus; menggantikan dialog bawaan browser.
+	var deleteConfirmModal = document.getElementById('delete-confirm-modal');
+	var deleteConfirmAction = null;
+	var deleteConfirmFocus = null;
+	function closeDeleteConfirm() {
+		deleteConfirmModal.classList.remove('open');
+		deleteConfirmAction = null;
+		if (deleteConfirmFocus) { deleteConfirmFocus.focus(); }
+		deleteConfirmFocus = null;
+	}
+	window.openDeleteConfirm = function (message, onApprove, trigger) {
+		deleteConfirmAction = onApprove;
+		deleteConfirmFocus = trigger || document.activeElement;
+		deleteConfirmModal.querySelector('[data-confirm-message]').textContent = message;
+		deleteConfirmModal.classList.add('open');
+		deleteConfirmModal.querySelector('[data-confirm-cancel]').focus();
+	};
+	deleteConfirmModal.querySelector('[data-confirm-cancel]').addEventListener('click', closeDeleteConfirm);
+	deleteConfirmModal.querySelector('[data-confirm-approve]').addEventListener('click', function () {
+		var action = deleteConfirmAction;
+		deleteConfirmModal.classList.remove('open');
+		deleteConfirmAction = null;
+		deleteConfirmFocus = null;
+		if (action) { action(); }
+	});
+	deleteConfirmModal.addEventListener('click', function (e) {
+		if (e.target === deleteConfirmModal) { closeDeleteConfirm(); }
+	});
+	document.addEventListener('keydown', function (e) {
+		if (e.key === 'Escape' && deleteConfirmModal.classList.contains('open')) {
 			e.preventDefault();
+			closeDeleteConfirm();
 		}
+	});
+	document.addEventListener('submit', function (e) {
+		var form = e.target;
+		var msg = form.getAttribute('data-confirm');
+		if (!msg) { return; }
+		if (form.getAttribute('data-confirmed') === '1') {
+			form.removeAttribute('data-confirmed');
+			return;
+		}
+		e.preventDefault();
+		window.openDeleteConfirm(msg, function () {
+			form.setAttribute('data-confirmed', '1');
+			if (typeof form.requestSubmit === 'function') { form.requestSubmit(); }
+			else { form.submit(); }
+		}, e.submitter);
 	});
 
 	// Menu samping di layar kecil: tombol menu membuka, area gelap / Esc menutup.

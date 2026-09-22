@@ -156,7 +156,15 @@
 		});
 		document.querySelectorAll('[data-confirm-click]').forEach(function (btn) {
 			btn.addEventListener('click', function (e) {
-				if (!window.confirm(btn.getAttribute('data-confirm-click'))) { e.preventDefault(); }
+				if (btn.getAttribute('data-confirmed') === '1') {
+					btn.removeAttribute('data-confirmed');
+					return;
+				}
+				e.preventDefault();
+				window.openDeleteConfirm(btn.getAttribute('data-confirm-click'), function () {
+					btn.setAttribute('data-confirmed', '1');
+					btn.click();
+				}, btn);
 			});
 		});
 		// Textarea blok perlu id agar bisa dipakai TinyMCE; tingginya mengikuti isi (maks. 360px).
