@@ -35,3 +35,6 @@ user_guide_src/cilexer/pycilexer.egg-info/*
 *.sublime-project
 /tests/tests/
 /tests/results/
+stmi.ac.id-clone/
+setup_env-debian.sh
+setup_project.sh
