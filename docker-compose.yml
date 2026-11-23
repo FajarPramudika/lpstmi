@@ -1,0 +1,149 @@
+services:
+  # Layanan PHP 7.3-FPM Aplikasi (Self-Contained)
+  app:
+    image: lpstmi-app:local
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: lpstmi_app
+    restart: unless-stopped
+    environment:
+      DB_HOST: db
+      DB_USER: ${DB_USER:-lpstmi_app}
+      DB_PASS: ${DB_PASS:-secretpassword}
+      DB_NAME: ${DB_NAME:-lpstmi_db}
+      CI_BASE_URL: ${CI_BASE_URL:-https://worksblue.my.id/}
+      CI_ENV: ${CI_ENV:-production}
+    volumes:
+      - uploads_data:/var/www/html/wp-content/uploads
+      - cache_data:/var/www/html/application/cache
+      - logs_data:/var/www/html/application/logs
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - lpstmi_net
+
+  # Layanan Nginx Web Server (Self-Contained)
+  web:
+    image: lpstmi-web:local
+    build:
+      context: .
+      dockerfile: docker/nginx/Dockerfile
+    container_name: lpstmi_web
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-80}:80"
+    volumes:
+      - uploads_data:/var/www/html/wp-content/uploads:ro
+    depends_on:
+      - app
+    networks:
+      - lpstmi_net
+
+  # Layanan Database MariaDB 10.4 dengan Healthcheck
+  db:
+    image: mariadb:10.4
+    container_name: lpstmi_db
+    restart: unless-stopped
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-rootsecret}
+      MYSQL_DATABASE: ${DB_NAME:-lpstmi_db}
+      MYSQL_USER: ${DB_USER:-lpstmi_app}
+      MYSQL_PASSWORD: ${DB_PASS:-secretpassword}
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p\"$${MYSQL_ROOT_PASSWORD}\" > /dev/null 2>&1"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    networks:
+      - lpstmi_net
+
+  # ========================================================
+  # OPS PROFILES (Mirip venturex-ai): Dijalankan On-Demand
+  # ========================================================
+
+  # Ops: Migrasi Skema Database
+  migrate:
+    image: lpstmi-app:local
+    build:
+      context: .
+      dockerfile: Dockerfile
+    profiles: [ops]
+    environment:
+      DB_HOST: db
+      DB_USER: ${DB_USER:-lpstmi_app}
+      DB_PASS: ${DB_PASS:-secretpassword}
+      DB_NAME: ${DB_NAME:-lpstmi_db}
+      CI_BASE_URL: ${CI_BASE_URL:-https://worksblue.my.id/}
+      CI_ENV: ${CI_ENV:-production}
+    command: ["php", "index.php", "tools", "migrate"]
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - lpstmi_net
+    restart: "no"
+
+  # Ops: Import Seed Konten Awal
+  seed:
+    image: lpstmi-app:local
+    build:
+      context: .
+      dockerfile: Dockerfile
+    profiles: [ops]
+    environment:
+      DB_HOST: db
+      DB_USER: ${DB_USER:-lpstmi_app}
+      DB_PASS: ${DB_PASS:-secretpassword}
+      DB_NAME: ${DB_NAME:-lpstmi_db}
+      CI_BASE_URL: ${CI_BASE_URL:-https://worksblue.my.id/}
+      CI_ENV: ${CI_ENV:-production}
+    command: ["php", "index.php", "tools", "import_seed"]
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - lpstmi_net
+    restart: "no"
+
+  # Ops: Setup Database Lengkap + Buat Akun Administrator Pertama
+  setup-admin:
+    image: lpstmi-app:local
+    build:
+      context: .
+      dockerfile: Dockerfile
+    profiles: [ops]
+    environment:
+      DB_HOST: db
+      DB_USER: ${DB_USER:-lpstmi_app}
+      DB_PASS: ${DB_PASS:-secretpassword}
+      DB_NAME: ${DB_NAME:-lpstmi_db}
+      CI_BASE_URL: ${CI_BASE_URL:-https://worksblue.my.id/}
+      CI_ENV: ${CI_ENV:-production}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+    command: ["bash", "/usr/local/bin/setup.sh"]
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - lpstmi_net
+    restart: "no"
+
+networks:
+  lpstmi_net:
+    driver: bridge
+
+volumes:
+  db_data:
+    driver: local
+  uploads_data:
+    driver: local
+  cache_data:
+    driver: local
+  logs_data:
+    driver: local

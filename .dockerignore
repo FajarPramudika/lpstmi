@@ -1,0 +1,23 @@
+# Git
+.git
+.gitignore
+
+# Clone HTTrack (~500 MB, hanya untuk CLI lokal)
+stmi.ac.id-clone/
+
+# Kredensial & konfigurasi lokal host
+application/config/database.local.php
+.env
+
+# Cache & log sementara lokal
+application/cache/sessions/*
+application/cache/ratelimit/*
+application/logs/*.php
+
+# Editor & Dokumentasi
+.editorconfig
+.idea/
+.vscode/
+*.md
+license.txt
+readme.rst
