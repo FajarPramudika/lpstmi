@@ -1,40 +1,79 @@
-.DS_Store
-
-# Kredensial & laporan yang tidak boleh ikut git
+# ========================================================
+# Kredensial, Environment, & Rahasia (JANGAN DI-COMMIT)
+# ========================================================
+.env
+.env.*
+!.env.example
 application/config/database.local.php
 security-audit.md
 security-fix.md
 
+# ========================================================
+# Cache & Sesi Aplikasi
+# ========================================================
 application/cache/*
 !application/cache/index.html
+application/cache/sessions/*
+!application/cache/sessions/index.html
+application/cache/ratelimit/*
+!application/cache/ratelimit/index.html
 
+# ========================================================
+# Log Harian & Runtime Logs
+# ========================================================
 application/logs/*
 !application/logs/index.html
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
-!application/*/.htaccess
-
-composer.lock
+# ========================================================
+# Database Dumps / Cadangan Lokal
+# (Kecuali application/seeds/seed.sql yang merupakan bagian repo)
+# ========================================================
+*.sql
+*.sql.gz
+*.sqlite
+*.db
+!application/seeds/seed.sql
 tests/mocks/database/ci_test.sqlite
 
-user_guide_src/build/*
-user_guide_src/cilexer/build/*
-user_guide_src/cilexer/dist/*
-user_guide_src/cilexer/pycilexer.egg-info/*
+# ========================================================
+# Direktori Khusus & Berkas Besar
+# ========================================================
+stmi.ac.id-clone/
 /vendor/
+composer.lock
+setup_env-debian.sh
+setup_project.sh
 
-# IDE Files
-#-------------------------
+# ========================================================
+# IDE, Editor, & Sistem Operasi
+# ========================================================
+.DS_Store
+Thumbs.db
+ehthumbs.db
+desktop.ini
+.idea/
+.vscode/
 /nbproject/
-.idea/*
-
-## Sublime Text cache files
 *.tmlanguage.cache
 *.tmPreferences.cache
 *.stTheme.cache
 *.sublime-workspace
 *.sublime-project
+
+# ========================================================
+# Pengujian & Dokumentasi CodeIgniter
+# ========================================================
 /tests/tests/
 /tests/results/
-stmi.ac.id-clone/
-setup_env-debian.sh
-setup_project.sh
+user_guide_src/build/*
+user_guide_src/cilexer/build/*
+user_guide_src/cilexer/dist/*
+user_guide_src/cilexer/pycilexer.egg-info/*
+
+# Pengaman Folder CodeIgniter
+!application/*/.htaccess

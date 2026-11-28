@@ -12,8 +12,8 @@ services:
       DB_USER: ${DB_USER:-lpstmi_app}
       DB_PASS: ${DB_PASS:-secretpassword}
       DB_NAME: ${DB_NAME:-lpstmi_db}
-      CI_BASE_URL: ${CI_BASE_URL:-https://worksblue.my.id/}
-      CI_ENV: ${CI_ENV:-production}
+      CI_BASE_URL: ${CI_BASE_URL:-http://localhost/}
+      CI_ENV: ${CI_ENV:-development}
     volumes:
       - uploads_data:/var/www/html/wp-content/uploads
       - cache_data:/var/www/html/application/cache
@@ -79,8 +79,8 @@ services:
       DB_USER: ${DB_USER:-lpstmi_app}
       DB_PASS: ${DB_PASS:-secretpassword}
       DB_NAME: ${DB_NAME:-lpstmi_db}
-      CI_BASE_URL: ${CI_BASE_URL:-https://worksblue.my.id/}
-      CI_ENV: ${CI_ENV:-production}
+      CI_BASE_URL: ${CI_BASE_URL:-http://localhost/}
+      CI_ENV: ${CI_ENV:-development}
     command: ["php", "index.php", "tools", "migrate"]
     depends_on:
       db:
@@ -101,8 +101,8 @@ services:
       DB_USER: ${DB_USER:-lpstmi_app}
       DB_PASS: ${DB_PASS:-secretpassword}
       DB_NAME: ${DB_NAME:-lpstmi_db}
-      CI_BASE_URL: ${CI_BASE_URL:-https://worksblue.my.id/}
-      CI_ENV: ${CI_ENV:-production}
+      CI_BASE_URL: ${CI_BASE_URL:-http://localhost/}
+      CI_ENV: ${CI_ENV:-development}
     command: ["php", "index.php", "tools", "import_seed"]
     depends_on:
       db:
@@ -123,8 +123,8 @@ services:
       DB_USER: ${DB_USER:-lpstmi_app}
       DB_PASS: ${DB_PASS:-secretpassword}
       DB_NAME: ${DB_NAME:-lpstmi_db}
-      CI_BASE_URL: ${CI_BASE_URL:-https://worksblue.my.id/}
-      CI_ENV: ${CI_ENV:-production}
+      CI_BASE_URL: ${CI_BASE_URL:-http://localhost/}
+      CI_ENV: ${CI_ENV:-development}
       ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
     command: ["bash", "/usr/local/bin/setup.sh"]
     depends_on:
